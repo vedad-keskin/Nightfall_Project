@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
 import 'package:nightfall_project/impostor_game/layouts/game_layout.dart';
+import 'package:nightfall_project/mafia_game/layouts/game_layout.dart';
 
 void main() {
   runApp(const MyApp());
@@ -95,11 +96,39 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                         child: AnimatedScale(
                           duration: const Duration(milliseconds: 500),
                           scale: _currentPage == 0 ? 1.0 : 0.8,
-                          child: const PixelDialog(
+                          child: PixelDialog(
                             title: 'MAFIA',
                             color: Colors.black54, // More transparent
                             accentColor: Colors.redAccent,
                             soundPath: 'audio/wolf_howl.mp3',
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  transitionDuration: const Duration(
+                                    seconds: 3,
+                                  ),
+                                  reverseTransitionDuration: const Duration(
+                                    seconds: 1,
+                                  ),
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                        return const MafiaGameLayout();
+                                      },
+                                  transitionsBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                        child,
+                                      ) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),

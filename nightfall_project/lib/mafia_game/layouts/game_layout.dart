@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
 
-class ImpostorGameLayout extends StatelessWidget {
-  const ImpostorGameLayout({super.key});
+class MafiaGameLayout extends StatelessWidget {
+  const MafiaGameLayout({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Layer
+          // Background Layer (Shared Component)
           const PixelStarfield(),
 
           // Foreground Content
@@ -78,7 +78,7 @@ class ImpostorGameLayout extends StatelessWidget {
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          'IMPOSTOR GAME',
+                                          'MAFIA GAME',
                                           style: GoogleFonts.pressStart2p(
                                             color: const Color(0xFFE0E1DD),
                                             fontSize: 15,
@@ -103,17 +103,25 @@ class ImpostorGameLayout extends StatelessWidget {
                                 margin: const EdgeInsets.only(bottom: 16),
                               ),
                               // Main Game Content
-                              const Expanded(
+                              Expanded(
                                 child: Center(
-                                  // Placeholder for game content
-                                  child: Text(
-                                    "GAME AREA",
-                                    style: TextStyle(
-                                      color: Color(0xFFE0E1DD),
-                                      fontFamily: 'Courier',
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "COMING SOON",
+                                        style: GoogleFonts.pressStart2p(
+                                          color: const Color(0xFFE0E1DD),
+                                          fontSize: 24,
+                                          shadows: [
+                                            const Shadow(
+                                              color: Colors.black,
+                                              offset: Offset(2, 2),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
