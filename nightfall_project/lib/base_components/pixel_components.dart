@@ -19,50 +19,85 @@ class PixelDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 300,
-      padding: const EdgeInsets.all(4),
+      width: 310,
+      // Layer 1: Outer Border / Shadow Base
       decoration: BoxDecoration(
-        color: const Color(0xFF1B263B), // Dark medieval blue
-        border: Border.all(
-          color: const Color(0xFF778DA9), // Silvery blue-grey border
-          width: 4,
-        ),
+        color: const Color(0xFF000000), // Pure black outer
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.8),
-            offset: const Offset(8, 8),
-            blurRadius: 0, // Hard pixel shadow
+            color: Colors.black.withOpacity(0.5),
+            offset: const Offset(12, 12), // Deep shadow
+            blurRadius: 0,
           ),
         ],
       ),
+      padding: const EdgeInsets.all(4), // Thickness of outer black border
       child: Container(
-        padding: const EdgeInsets.all(24),
-        color: const Color(0xFF0D1B2A), // Deepest night blue
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.pressStart2p(
-                color: const Color(0xFFE0E1DD), // Off-white/Silver text
-                fontSize: 27,
-                shadows: [
-                  const Shadow(color: Color(0xFF000000), offset: Offset(3, 3)),
-                ],
-              ),
-              textAlign: TextAlign.center,
+        // Layer 2: Main Frame Color (Silver/Stone)
+        decoration: const BoxDecoration(
+          color: Color(0xFF778DA9), // Stone Grey
+          border: Border.symmetric(
+            vertical: BorderSide(
+              color: Color(0xFF415A77),
+              width: 4,
+            ), // Side accents
+            horizontal: BorderSide(
+              color: Color(0xFFE0E1DD),
+              width: 4,
+            ), // Top/Bottom highlights
+          ),
+        ),
+        padding: const EdgeInsets.all(4), // Thickness of metallic frame
+        child: Container(
+          // Layer 3: Inner Inset Border
+          decoration: BoxDecoration(
+            color: const Color(0xFF0D1B2A), // Inner BG base
+            border: Border.all(color: const Color(0xFF000000), width: 2),
+          ),
+          child: Container(
+            // Actual Content Background
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            color: const Color(0xFF0D1B2A), // Dark Night Blue
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1B263B),
+                    border: Border.all(
+                      color: const Color(0xFF415A77),
+                      width: 2,
+                    ),
+                  ),
+                  child: Text(
+                    title,
+                    style: GoogleFonts.pressStart2p(
+                      color: const Color(0xFFE0E1DD),
+                      fontSize: 24,
+                      shadows: [
+                        const Shadow(
+                          color: Color(0xFF000000),
+                          offset: Offset(2, 2),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                PixelButton(
+                  label: 'PLAY NOW',
+                  color: const Color(0xFF415A77),
+                  soundPath: soundPath,
+                  onPressed: () {},
+                ),
+              ],
             ),
-            const SizedBox(height: 32),
-            PixelButton(
-              label: 'PLAY NOW',
-              // Use a rich dark accent interaction color, or keep dynamic if needed
-              color: const Color(0xFF415A77),
-              soundPath: soundPath,
-              onPressed: () {
-                // Placeholder action if needed, or handled by parent
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -129,38 +164,44 @@ class _PixelButtonState extends State<PixelButton> {
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: Transform.translate(
-        offset: Offset(
-          0,
-          translate,
-        ), // Move ONLY vertically for a button press feel? Or x,y? Original was x,y. Let's keep x,y for pixel art feel or just y. Let's stick to original x,y for consistent 3D feel.
-        // Actually, for a "press" usually just Y or both if the shadow is diagonal. Shadow is diagonal (4,4), so shift (4,4) to "cover" the shadow.
+        offset: Offset(0, translate),
         child: Container(
+          // Complex Button Border
           decoration: BoxDecoration(
-            color: _isPressed ? widget.color.withOpacity(0.8) : widget.color,
-            border: Border.all(
-              color: const Color(0xFFE0E1DD), // Silver border
-              width: 2,
-            ),
+            color: Colors.black, // Outer border color
             boxShadow: [
               if (!_isPressed)
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.6),
+                  color: Colors.black.withOpacity(0.5),
                   offset: const Offset(4, 4),
                   blurRadius: 0,
                 ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            child: Text(
-              widget.label,
-              style: GoogleFonts.vt323(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  const Shadow(color: Colors.black, offset: Offset(1, 1)),
-                ],
+          padding: const EdgeInsets.only(
+            bottom: 4,
+          ), // Bottom "3D" lip color (black here)
+          child: Container(
+            color: _isPressed ? widget.color.withOpacity(0.8) : widget.color,
+            padding: const EdgeInsets.all(2), // Inner border width
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                  width: 1,
+                ), // Highlight
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              child: Text(
+                widget.label,
+                style: GoogleFonts.vt323(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    const Shadow(color: Colors.black, offset: Offset(1, 1)),
+                  ],
+                ),
               ),
             ),
           ),
