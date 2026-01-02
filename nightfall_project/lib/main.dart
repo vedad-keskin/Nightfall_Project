@@ -98,6 +98,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                             title: 'MAFIA',
                             color: Colors.black54, // More transparent
                             accentColor: Colors.redAccent,
+                            soundPath: 'audio/wolf_howl.mp3',
                           ),
                         ),
                       ),
@@ -126,6 +127,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                               0.7,
                             ), // RedAccent with opacity
                             accentColor: Colors.black87,
+                            soundPath: 'audio/mystery_mist.mp3',
                           ),
                         ),
                       ),

@@ -6,12 +6,14 @@ class PixelDialog extends StatelessWidget {
   final String title;
   final Color color;
   final Color accentColor;
+  final String? soundPath;
 
   const PixelDialog({
     super.key,
     required this.title,
     required this.color,
     required this.accentColor,
+    this.soundPath,
   });
 
   @override
@@ -55,6 +57,7 @@ class PixelDialog extends StatelessWidget {
               label: 'PLAY NOW',
               // Use a rich dark accent interaction color, or keep dynamic if needed
               color: const Color(0xFF415A77),
+              soundPath: soundPath,
               onPressed: () {
                 // Placeholder action if needed, or handled by parent
               },
@@ -70,12 +73,14 @@ class PixelButton extends StatefulWidget {
   final String label;
   final Color color;
   final VoidCallback? onPressed;
+  final String? soundPath;
 
   const PixelButton({
     super.key,
     required this.label,
     required this.color,
     this.onPressed,
+    this.soundPath,
   });
 
   @override
@@ -100,7 +105,9 @@ class _PixelButtonState extends State<PixelButton> {
 
   Future<void> _playSound() async {
     try {
-      await _audioPlayer.play(AssetSource('images/click.wav'));
+      await _audioPlayer.play(
+        AssetSource(widget.soundPath ?? 'images/click.wav'),
+      );
     } catch (e) {
       debugPrint('Error playing sound: $e');
     }
