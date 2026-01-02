@@ -35,6 +35,10 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
   String _typedVerdict = "";
   Timer? _typewriterTimer;
 
+  bool _showRealImpostor = false;
+  String _typedImpostorName = "";
+  Timer? _impostorTimer;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +66,7 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
   @override
   void dispose() {
     _typewriterTimer?.cancel();
+    _impostorTimer?.cancel();
     super.dispose();
   }
 
@@ -77,6 +82,33 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
       if (index < fullText.length) {
         setState(() {
           _typedVerdict += fullText[index];
+        });
+        index++;
+      } else {
+        timer.cancel();
+        if (_impostorWon) {
+          Future.delayed(const Duration(seconds: 1), () {
+            if (mounted) {
+              _startImpostorReveal();
+            }
+          });
+        }
+      }
+    });
+  }
+
+  void _startImpostorReveal() {
+    setState(() {
+      _showRealImpostor = true;
+    });
+
+    final fullText = _realImpostor.name.toUpperCase();
+    int index = 0;
+
+    _impostorTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      if (index < fullText.length) {
+        setState(() {
+          _typedImpostorName += fullText[index];
         });
         index++;
       } else {
@@ -104,36 +136,47 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
         children: [
           const PixelStarfield(),
           SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "THE VERDICT",
-                      style: GoogleFonts.pressStart2p(
-                        color: Colors.white,
-                        fontSize: 24,
+            child: SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
+                      Text(
+                        "THE VERDICT",
+                        style: GoogleFonts.pressStart2p(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 48),
-                    _buildVerdictCard(),
-                    const SizedBox(height: 48),
-                    if (_isRevealDone) ...[
-                      _buildResultText(),
-                      const SizedBox(height: 64),
-                      PixelButton(
-                        label: "BACK TO MENU",
-                        color: const Color(0xFF415A77),
-                        onPressed: () {
-                          Navigator.of(
-                            context,
-                          ).popUntil(ModalRoute.withName('/impostor_game'));
-                        },
-                      ),
+                      const SizedBox(height: 20),
+                      _buildVerdictCard(),
+                      if (_showRealImpostor) ...[
+                        const SizedBox(height: 20),
+                        _buildRealImpostorCard(),
+                      ],
+                      const SizedBox(height: 20),
+                      if (_isRevealDone &&
+                          (!_impostorWon ||
+                              _typedImpostorName.length ==
+                                  _realImpostor.name.length)) ...[
+                        _buildResultText(),
+                        const SizedBox(height: 20),
+                        PixelButton(
+                          label: "BACK TO MENU",
+                          color: const Color(0xFF415A77),
+                          onPressed: () {
+                            Navigator.of(
+                              context,
+                            ).popUntil(ModalRoute.withName('/impostor_game'));
+                          },
+                        ),
+                      ],
+                      const SizedBox(height: 40),
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -148,6 +191,7 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
       duration: const Duration(milliseconds: 800),
       curve: Curves.elasticOut,
       padding: const EdgeInsets.all(32),
+      width: double.infinity,
       decoration: BoxDecoration(
         color: _isRevealDone
             ? (_impostorWon ? const Color(0xFF3D0C02) : const Color(0xFF1B4332))
@@ -194,6 +238,35 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
     );
   }
 
+  Widget _buildRealImpostorCard() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 500),
+      padding: const EdgeInsets.all(24),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: const Color(0xFF3D0C02),
+        border: Border.all(color: const Color(0xFFE63946), width: 4),
+      ),
+      child: Column(
+        children: [
+          Text(
+            "THE REAL IMPOSTOR WAS:",
+            style: GoogleFonts.vt323(color: Colors.white70, fontSize: 20),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            _typedImpostorName,
+            style: GoogleFonts.pressStart2p(
+              color: const Color(0xFFE63946),
+              fontSize: 22,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildResultText() {
     return Column(
       children: [
@@ -206,12 +279,7 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
-          Text(
-            "Real Impostor: ${_realImpostor.name}",
-            style: GoogleFonts.vt323(color: Colors.white70, fontSize: 22),
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 24),
           Text(
             "+1 POINT TO ${_realImpostor.name.toUpperCase()}",
             style: GoogleFonts.pressStart2p(
