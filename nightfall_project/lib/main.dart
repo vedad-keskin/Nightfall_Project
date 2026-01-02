@@ -166,6 +166,9 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                                       (context, animation, secondaryAnimation) {
                                         return const ImpostorGameLayout();
                                       },
+                                  settings: const RouteSettings(
+                                    name: '/impostor_game',
+                                  ),
                                   transitionsBuilder:
                                       (
                                         context,

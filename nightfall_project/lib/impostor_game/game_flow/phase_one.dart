@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
+import 'package:nightfall_project/impostor_game/game_flow/phase_two.dart';
 import 'package:nightfall_project/impostor_game/offline_db/category_service.dart';
 import 'package:nightfall_project/impostor_game/offline_db/player_service.dart';
 import 'package:nightfall_project/impostor_game/offline_db/words_service.dart';
@@ -270,12 +271,13 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                       label: "GAME START",
                       color: const Color(0xFFE63946),
                       onPressed: () {
-                        // Navigate to actual game phase (not implemented yet)
-                        // For now just pop or show a placeholder
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Game Starting! Implementation needed.',
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PhaseTwoScreen(
+                              players: widget.players,
+                              category: widget.category,
+                              word: widget.word,
+                              impostorId: widget.impostorId,
                             ),
                           ),
                         );
