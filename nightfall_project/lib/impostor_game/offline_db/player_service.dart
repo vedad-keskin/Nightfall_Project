@@ -99,4 +99,12 @@ class PlayerService {
     await savePlayers(updatedList);
     return updatedList;
   }
+
+  Future<List<Player>> resetPlayersPoints(List<Player> currentPlayers) async {
+    final updatedList = currentPlayers
+        .map((p) => Player(id: p.id, name: p.name, points: 0))
+        .toList();
+    await savePlayers(updatedList);
+    return updatedList;
+  }
 }

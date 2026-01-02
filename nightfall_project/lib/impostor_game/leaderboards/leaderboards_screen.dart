@@ -36,6 +36,56 @@ class _LeaderboardsScreenState extends State<LeaderboardsScreen> {
     }
   }
 
+  Future<void> _showResetConfirmation() async {
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF0D1B2A),
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(color: Color(0xFF778DA9), width: 4),
+        ),
+        title: Text(
+          'RESET POINTS?',
+          style: GoogleFonts.pressStart2p(
+            color: const Color(0xFFE0E1DD),
+            fontSize: 16,
+          ),
+        ),
+        content: Text(
+          'All player points will be set to zero. This cannot be undone.',
+          style: GoogleFonts.vt323(color: Colors.white70, fontSize: 18),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              'CANCEL',
+              style: GoogleFonts.pressStart2p(
+                color: Colors.white54,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          PixelButton(
+            label: 'RESET',
+            color: Colors.redAccent.withOpacity(0.8),
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final updatedPlayers = await _playerService.resetPlayersPoints(_players);
+      if (mounted) {
+        setState(() {
+          _players = updatedPlayers;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,14 +108,14 @@ class _LeaderboardsScreenState extends State<LeaderboardsScreen> {
                           Navigator.of(context).pop();
                         },
                       ),
-                      const SizedBox(width: 18),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: Center(
                           child: Text(
                             'LEADERBOARDS',
                             style: GoogleFonts.pressStart2p(
                               color: const Color(0xFFE0E1DD),
-                              fontSize: 18,
+                              fontSize: 17,
                               shadows: [
                                 const Shadow(
                                   color: Colors.black,
@@ -77,7 +127,12 @@ class _LeaderboardsScreenState extends State<LeaderboardsScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 2),
+                      const SizedBox(width: 6),
+                      PixelButton(
+                        label: 'RESET',
+                        color: Colors.redAccent.withOpacity(0.7),
+                        onPressed: _showResetConfirmation,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
