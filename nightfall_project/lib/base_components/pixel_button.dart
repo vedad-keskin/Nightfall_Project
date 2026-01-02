@@ -37,10 +37,9 @@ class _PixelButtonState extends State<PixelButton> {
   }
 
   Future<void> _playSound() async {
+    if (widget.soundPath == null) return;
     try {
-      await _audioPlayer.play(
-        AssetSource(widget.soundPath ?? 'images/wolf_howl.mp3'),
-      );
+      await _audioPlayer.play(AssetSource(widget.soundPath!));
     } catch (e) {
       debugPrint('Error playing sound: $e');
     }

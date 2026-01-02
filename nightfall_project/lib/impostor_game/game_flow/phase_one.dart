@@ -161,20 +161,34 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                 // Header
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Text(
-                      'PASS THE DEVICE',
-                      style: GoogleFonts.pressStart2p(
-                        color: const Color(0xFFE0E1DD),
-                        fontSize: 18,
-                        shadows: [
-                          const Shadow(
-                            color: Colors.black,
-                            offset: Offset(4, 4),
-                          ),
-                        ],
+                  child: Row(
+                    children: [
+                      PixelButton(
+                        label: 'BACK',
+                        color: const Color(0xFF415A77),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
-                    ),
+                      const SizedBox(width: 18),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'PASS THE DEVICE',
+                            style: GoogleFonts.pressStart2p(
+                              color: const Color(0xFFE0E1DD),
+                              fontSize: 18, // Adjusted slightly for row
+                              shadows: [
+                                const Shadow(
+                                  color: Colors.black,
+                                  offset: Offset(4, 4),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
