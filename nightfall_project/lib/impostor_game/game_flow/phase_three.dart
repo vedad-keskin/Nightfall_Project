@@ -4,6 +4,7 @@ import 'package:nightfall_project/base_components/pixel_components.dart';
 import 'package:nightfall_project/impostor_game/offline_db/category_service.dart';
 import 'package:nightfall_project/impostor_game/offline_db/player_service.dart';
 import 'package:nightfall_project/impostor_game/offline_db/words_service.dart';
+import 'dart:async';
 
 class PhaseThreeScreen extends StatefulWidget {
   final String votedPlayerId;
@@ -31,6 +32,8 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
   late Player _votedPlayer;
   late Player _realImpostor;
   bool _impostorWon = false;
+  String _typedVerdict = "";
+  Timer? _typewriterTimer;
 
   @override
   void initState() {
@@ -51,6 +54,33 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
         setState(() {
           _isRevealDone = true;
         });
+        _startTypewriter();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _typewriterTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startTypewriter() {
+    final fullText = _impostorWon
+        ? "THEY WERE INNOCENT!"
+        : "THEY WERE THE IMPOSTOR!";
+    int index = 0;
+
+    _typewriterTimer = Timer.periodic(const Duration(milliseconds: 50), (
+      timer,
+    ) {
+      if (index < fullText.length) {
+        setState(() {
+          _typedVerdict += fullText[index];
+        });
+        index++;
+      } else {
+        timer.cancel();
       }
     });
   }
@@ -147,7 +177,7 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
             const Icon(Icons.arrow_downward, color: Colors.white54, size: 32),
             const SizedBox(height: 24),
             Text(
-              _impostorWon ? "THEY WERE INNOCENT!" : "THEY WERE THE IMPOSTOR!",
+              _typedVerdict,
               style: GoogleFonts.vt323(
                 color: _impostorWon
                     ? const Color(0xFFFFBA08)

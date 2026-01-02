@@ -9,7 +9,7 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 102,
-    name: 'Tom i Jerry',
+    name: 'Jerry',
     categoryId: 3,
     hint: 'Beskrajna jurnjava mačke i miša',
   ),
@@ -33,7 +33,7 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 106,
-    name: 'Pikaču',
+    name: 'Pikachu',
     categoryId: 3,
     hint: 'Žuto biće koje baca struju',
   ),
@@ -57,13 +57,13 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 110,
-    name: 'Simpsoni',
+    name: 'Homer',
     categoryId: 3,
     hint: 'Žuta porodica iz Springfielda',
   ),
   Word(
     id: 111,
-    name: 'Kralj Lavov',
+    name: 'Simba',
     categoryId: 3,
     hint: 'Hakuna Matata i ponosna stijena',
   ),
@@ -147,7 +147,7 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 125,
-    name: 'Moćne Djevojčice',
+    name: 'Megamind',
     categoryId: 3,
     hint: 'Šećer, začin i sve lijepo uz hemiju X',
   ),
@@ -171,7 +171,7 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 129,
-    name: 'Dragon Ball',
+    name: 'Kenai',
     categoryId: 3,
     hint: 'Goku i potraga za sedam kugli',
   ),
@@ -195,7 +195,7 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 133,
-    name: 'Yu-Gi-Oh!',
+    name: 'Kaiba',
     categoryId: 3,
     hint: 'Vrijeme je za dvoboj kartama',
   ),
@@ -207,7 +207,7 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 135,
-    name: 'Dexterova Laboratorija',
+    name: 'Baxter Stockman',
     categoryId: 3,
     hint: 'Mali genije i njegova dosadna sestra Dee Dee',
   ),
@@ -219,13 +219,13 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 137,
-    name: 'Cow and Chicken',
+    name: 'Pocahontas',
     categoryId: 3,
     hint: 'Neobični brat i sestra, krava i pile',
   ),
   Word(
     id: 138,
-    name: 'Courage the Cowardly Dog',
+    name: 'Bitters',
     categoryId: 3,
     hint: 'Rozi pas koji spašava vlasnike od čudovišta',
   ),
@@ -261,13 +261,13 @@ final List<Word> crtaniWords = [
   ),
   Word(
     id: 144,
-    name: 'Pocahontas',
+    name: 'Moana',
     categoryId: 3,
     hint: 'Indijanska princeza i boje vjetra',
   ),
   Word(
     id: 145,
-    name: 'Hercules',
+    name: 'Olaf',
     categoryId: 3,
     hint: 'Sin boga koji mora dokazati da je heroj',
   ),

@@ -307,6 +307,7 @@ class _PhaseTwoScreenState extends State<PhaseTwoScreen> {
             child: PixelButton(
               label: "REVEAL IMPOSTOR",
               color: const Color(0xFFE63946),
+              soundPath: 'audio/gavel_hit.mp3',
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
