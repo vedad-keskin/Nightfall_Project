@@ -1,11 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
 import 'package:nightfall_project/impostor_game/categories_section/categories_screen.dart';
+import 'package:nightfall_project/impostor_game/game_flow/phase_one.dart';
 import 'package:nightfall_project/impostor_game/leaderboards/leaderboards_screen.dart';
 import 'package:nightfall_project/impostor_game/offline_db/category_service.dart';
 import 'package:nightfall_project/impostor_game/offline_db/game_settings_service.dart';
 import 'package:nightfall_project/impostor_game/offline_db/player_service.dart';
+import 'package:nightfall_project/impostor_game/offline_db/words_service.dart';
 import 'package:nightfall_project/impostor_game/players_section/players_screen.dart';
 
 class ImpostorGameLayout extends StatefulWidget {
@@ -67,6 +71,66 @@ class _ImpostorGameLayoutState extends State<ImpostorGameLayout> {
       setState(() {
         _hintsEnabled = newValue;
       });
+    }
+  }
+
+  final WordsService _wordsService = WordsService();
+
+  Future<void> _startGame() async {
+    final players = await _playerService.loadPlayers();
+    if (players.length < 3) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Need at least 3 players!')));
+      return;
+    }
+
+    final selectedCategoryIds = await _categoryService
+        .loadSelectedCategoryIds();
+    if (selectedCategoryIds.isEmpty) {
+      // Fallback if somehow empty, though service handles default
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('No categories selected!')));
+      return;
+    }
+
+    // 1. Pick Random Category from selected
+    final random = Random();
+    final randomCatId = selectedCategoryIds.elementAt(
+      random.nextInt(selectedCategoryIds.length),
+    );
+    final category = _categoryService.getAllCategories().firstWhere(
+      (c) => c.id == randomCatId,
+    );
+
+    // 2. Pick Random Word from that Category
+    final words = _wordsService.getWordsForCategory(randomCatId);
+    if (words.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selected category has no words!')),
+      );
+      return;
+    }
+    final word = words[random.nextInt(words.length)];
+
+    // 3. Pick Impostor
+    final impostorIndex = random.nextInt(players.length);
+    final impostorId = players[impostorIndex].id;
+
+    // 4. Navigate
+    if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PhaseOneScreen(
+            players: players,
+            category: category,
+            word: word,
+            impostorId: impostorId,
+            hintsEnabled: _hintsEnabled,
+          ),
+        ),
+      );
     }
   }
 
@@ -353,6 +417,24 @@ class _ImpostorGameLayoutState extends State<ImpostorGameLayout> {
                                                 ),
                                               ),
                                             ],
+                                          ),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      // GAME ON Button
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 8.0,
+                                        ),
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: 80,
+                                          child: PixelButton(
+                                            label: "GAME ON",
+                                            color: const Color(
+                                              0xFFE63946,
+                                            ), // Vibrant Red
+                                            onPressed: _startGame,
                                           ),
                                         ),
                                       ),
