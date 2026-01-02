@@ -17,6 +17,7 @@ class CategoryService {
   static final List<Category> _categories = [
     Category(id: 1, name: 'Lokacije'),
     Category(id: 2, name: 'Hrana'),
+    Category(id: 3, name: 'Crtani'),
   ];
 
   // --- Methods ---
