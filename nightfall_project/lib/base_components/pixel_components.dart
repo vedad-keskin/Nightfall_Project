@@ -20,33 +20,45 @@ class PixelDialog extends StatelessWidget {
       width: 300,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: accentColor,
-        border: Border.all(color: Colors.white, width: 4),
+        color: const Color(0xFF1B263B), // Dark medieval blue
+        border: Border.all(
+          color: const Color(0xFF778DA9), // Silvery blue-grey border
+          width: 4,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withOpacity(0.8),
             offset: const Offset(8, 8),
+            blurRadius: 0, // Hard pixel shadow
           ),
         ],
       ),
       child: Container(
         padding: const EdgeInsets.all(24),
-        color: color,
+        color: const Color(0xFF0D1B2A), // Deepest night blue
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               title,
               style: GoogleFonts.pressStart2p(
-                color: Colors.white,
+                color: const Color(0xFFE0E1DD), // Off-white/Silver text
                 fontSize: 27,
                 shadows: [
-                  const Shadow(color: Colors.black, offset: Offset(4, 4)),
+                  const Shadow(color: Color(0xFF000000), offset: Offset(3, 3)),
                 ],
               ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
-            PixelButton(label: 'PLAY NOW', color: accentColor),
+            PixelButton(
+              label: 'PLAY NOW',
+              // Use a rich dark accent interaction color, or keep dynamic if needed
+              color: const Color(0xFF415A77),
+              onPressed: () {
+                // Placeholder action if needed, or handled by parent
+              },
+            ),
           ],
         ),
       ),
@@ -88,7 +100,6 @@ class _PixelButtonState extends State<PixelButton> {
 
   Future<void> _playSound() async {
     try {
-      // Assumes assets/audio/click.mp3 exists or will exist
       await _audioPlayer.play(AssetSource('images/click.wav'));
     } catch (e) {
       debugPrint('Error playing sound: $e');
@@ -103,22 +114,33 @@ class _PixelButtonState extends State<PixelButton> {
     return GestureDetector(
       onTapDown: (_) {
         setState(() => _isPressed = true);
-        _playSound();
       },
       onTapUp: (_) {
         setState(() => _isPressed = false);
+        _playSound(); // Play sound on release
         widget.onPressed?.call();
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: Transform.translate(
-        offset: Offset(translate, translate),
+        offset: Offset(
+          0,
+          translate,
+        ), // Move ONLY vertically for a button press feel? Or x,y? Original was x,y. Let's keep x,y for pixel art feel or just y. Let's stick to original x,y for consistent 3D feel.
+        // Actually, for a "press" usually just Y or both if the shadow is diagonal. Shadow is diagonal (4,4), so shift (4,4) to "cover" the shadow.
         child: Container(
           decoration: BoxDecoration(
-            color: widget.color,
-            border: Border.all(color: Colors.white, width: 2),
+            color: _isPressed ? widget.color.withOpacity(0.8) : widget.color,
+            border: Border.all(
+              color: const Color(0xFFE0E1DD), // Silver border
+              width: 2,
+            ),
             boxShadow: [
               if (!_isPressed)
-                const BoxShadow(color: Colors.black, offset: Offset(4, 4)),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.6),
+                  offset: const Offset(4, 4),
+                  blurRadius: 0,
+                ),
             ],
           ),
           child: Padding(
@@ -129,6 +151,9 @@ class _PixelButtonState extends State<PixelButton> {
                 color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                shadows: [
+                  const Shadow(color: Colors.black, offset: Offset(1, 1)),
+                ],
               ),
             ),
           ),
