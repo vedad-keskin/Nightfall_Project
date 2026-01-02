@@ -106,7 +106,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                               Navigator.of(context).push(
                                 PageRouteBuilder(
                                   transitionDuration: const Duration(
-                                    seconds: 3,
+                                    seconds: 2,
                                   ),
                                   reverseTransitionDuration: const Duration(
                                     seconds: 1,
@@ -158,7 +158,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                               Navigator.of(context).push(
                                 PageRouteBuilder(
                                   transitionDuration: const Duration(
-                                    seconds: 3,
+                                    seconds: 2,
                                   ),
                                   reverseTransitionDuration: const Duration(
                                     seconds: 1,
@@ -199,7 +199,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     right: 16,
                     bottom: 16,
                     child: Text(
-                      'Nightfall Project v1.0.0',
+                      'Nightfall Project v1.0.1',
                       style: GoogleFonts.vt323(
                         color: Colors.white24,
                         fontSize: 14,
