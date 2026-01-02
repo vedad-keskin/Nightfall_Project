@@ -59,9 +59,18 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                     children: [
                       Text(
                         "SECRET ROLE",
+                        style: GoogleFonts.vt323(
+                          color: Colors.white70,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        player.name.toUpperCase(),
                         style: GoogleFonts.pressStart2p(
                           color: const Color(0xFFE0E1DD),
-                          fontSize: 14,
+                          fontSize: 18,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -74,15 +83,23 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                             });
                           },
                           child: TweenAnimationBuilder<double>(
-                            tween: Tween<double>(begin: 0, end: 0),
-                            duration: const Duration(milliseconds: 600),
+                            tween: Tween<double>(
+                              begin: 0,
+                              end: isRevealed ? 1.57 : 0, // 0 → 90°
+                            ),
+                            duration: const Duration(milliseconds: 800),
+                            curve: Curves.easeInOutCubic,
                             builder: (context, value, child) {
+                              final isBackVisible = value > 0.78; // ~45°
+
                               return Transform(
+                                alignment: Alignment.center,
                                 transform: Matrix4.identity()
                                   ..setEntry(3, 2, 0.001)
-                                  ..rotateY(0),
-                                alignment: Alignment.center,
-                                child: _buildCardFront(),
+                                  ..rotateY(value),
+                                child: isBackVisible
+                                    ? _buildCardBack(isImpostor)
+                                    : _buildCardFront(),
                               );
                             },
                           ),
@@ -93,7 +110,7 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                             begin: 1.57,
                             end: 0,
                           ), // 90 to 0 degrees
-                          duration: const Duration(milliseconds: 600),
+                          duration: const Duration(milliseconds: 800),
                           builder: (context, value, child) {
                             return Transform(
                               transform: Matrix4.identity()
@@ -105,19 +122,19 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                           },
                         ),
                       ],
-                      const SizedBox(height: 32),
-                      PixelButton(
-                        label: "UNDERSTOOD",
-                        color: const Color(0xFF415A77),
-                        onPressed: isRevealed
-                            ? () {
-                                setState(() {
-                                  _viewedPlayerIds.add(player.id);
-                                });
-                                Navigator.of(context).pop();
-                              }
-                            : null,
-                      ),
+                      if (isRevealed) ...[
+                        const SizedBox(height: 32),
+                        PixelButton(
+                          label: "UNDERSTOOD",
+                          color: const Color(0xFF415A77),
+                          onPressed: () {
+                            setState(() {
+                              _viewedPlayerIds.add(player.id);
+                            });
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -320,7 +337,7 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
               "IMPOSTOR",
               style: GoogleFonts.pressStart2p(
                 color: const Color(0xFFE63946), // Red
-                fontSize: 24,
+                fontSize: 20,
               ),
             ),
             const SizedBox(height: 16),
@@ -357,7 +374,7 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
               widget.word.name,
               style: GoogleFonts.pressStart2p(
                 color: const Color(0xFF4CC9F0), // Blue
-                fontSize: 20,
+                fontSize: 14,
               ),
               textAlign: TextAlign.center,
             ),
