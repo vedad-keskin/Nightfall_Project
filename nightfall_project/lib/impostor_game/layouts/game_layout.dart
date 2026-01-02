@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
+import 'package:nightfall_project/base_components/pixel_button_center_large.dart';
 import 'package:nightfall_project/impostor_game/categories_section/categories_screen.dart';
 import 'package:nightfall_project/impostor_game/game_flow/phase_one.dart';
 import 'package:nightfall_project/impostor_game/leaderboards/leaderboards_screen.dart';
@@ -426,16 +427,10 @@ class _ImpostorGameLayoutState extends State<ImpostorGameLayout> {
                                         padding: const EdgeInsets.only(
                                           bottom: 8.0,
                                         ),
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          height: 80,
-                                          child: PixelButton(
-                                            label: "GAME ON",
-                                            color: const Color(
-                                              0xFFE63946,
-                                            ), // Vibrant Red
-                                            onPressed: _startGame,
-                                          ),
+                                        child: PixelButtonCenterLarge(
+                                          label: "GAME ON",
+                                          color: const Color(0xFFE63946),
+                                          onPressed: _startGame,
                                         ),
                                       ),
                                     ],

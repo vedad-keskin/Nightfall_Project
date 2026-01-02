@@ -37,128 +37,93 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: const Color(0xFF778DA9),
-              border: Border.all(color: const Color(0xFF415A77), width: 4),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF0D1B2A),
-                border: Border.all(color: Colors.black, width: 4),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "SECRET ROLE",
-                    style: GoogleFonts.pressStart2p(
-                      color: const Color(0xFFE0E1DD),
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
+        bool isRevealed = false;
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF778DA9),
+                  border: Border.all(color: const Color(0xFF415A77), width: 4),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0D1B2A),
+                    border: Border.all(color: Colors.black, width: 4),
                   ),
-                  const SizedBox(height: 24),
-                  if (isImpostor) ...[
-                    Text(
-                      "YOU ARE THE",
-                      style: GoogleFonts.vt323(
-                        color: Colors.white70,
-                        fontSize: 24,
-                      ),
-                    ),
-                    Text(
-                      "IMPOSTOR",
-                      style: GoogleFonts.pressStart2p(
-                        color: const Color(0xFFE63946), // Red
-                        fontSize: 24,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "CATEGORY:",
-                      style: GoogleFonts.vt323(
-                        color: Colors.white54,
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      widget.category.name,
-                      style: GoogleFonts.vt323(
-                        color: Colors.white,
-                        fontSize: 28,
-                      ),
-                    ),
-                    if (widget.hintsEnabled) ...[
-                      const SizedBox(height: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
                       Text(
-                        "HINT:",
-                        style: GoogleFonts.vt323(
-                          color: Colors.white54,
-                          fontSize: 20,
-                        ),
-                      ),
-                      Text(
-                        widget.word.hint,
-                        style: GoogleFonts.vt323(
-                          color: const Color(0xFF95D5B2),
-                          fontSize: 24,
+                        "SECRET ROLE",
+                        style: GoogleFonts.pressStart2p(
+                          color: const Color(0xFFE0E1DD),
+                          fontSize: 14,
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 24),
+                      if (!isRevealed) ...[
+                        GestureDetector(
+                          onTap: () {
+                            setDialogState(() {
+                              isRevealed = true;
+                            });
+                          },
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0, end: 0),
+                            duration: const Duration(milliseconds: 600),
+                            builder: (context, value, child) {
+                              return Transform(
+                                transform: Matrix4.identity()
+                                  ..setEntry(3, 2, 0.001)
+                                  ..rotateY(0),
+                                alignment: Alignment.center,
+                                child: _buildCardFront(),
+                              );
+                            },
+                          ),
+                        ),
+                      ] else ...[
+                        TweenAnimationBuilder<double>(
+                          tween: Tween<double>(
+                            begin: 1.57,
+                            end: 0,
+                          ), // 90 to 0 degrees
+                          duration: const Duration(milliseconds: 600),
+                          builder: (context, value, child) {
+                            return Transform(
+                              transform: Matrix4.identity()
+                                ..setEntry(3, 2, 0.001)
+                                ..rotateY(value),
+                              alignment: Alignment.center,
+                              child: _buildCardBack(isImpostor),
+                            );
+                          },
+                        ),
+                      ],
+                      const SizedBox(height: 32),
+                      PixelButton(
+                        label: "UNDERSTOOD",
+                        color: const Color(0xFF415A77),
+                        onPressed: isRevealed
+                            ? () {
+                                setState(() {
+                                  _viewedPlayerIds.add(player.id);
+                                });
+                                Navigator.of(context).pop();
+                              }
+                            : null,
+                      ),
                     ],
-                  ] else ...[
-                    Text(
-                      "THE WORD IS:",
-                      style: GoogleFonts.vt323(
-                        color: Colors.white70,
-                        fontSize: 24,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      widget.word.name,
-                      style: GoogleFonts.pressStart2p(
-                        color: const Color(0xFF4CC9F0), // Blue
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "CATEGORY:",
-                      style: GoogleFonts.vt323(
-                        color: Colors.white54,
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      widget.category.name,
-                      style: GoogleFonts.vt323(
-                        color: Colors.white,
-                        fontSize: 28,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 32),
-                  PixelButton(
-                    label: "UNDERSTOOD",
-                    color: const Color(0xFF415A77),
-                    onPressed: () {
-                      setState(() {
-                        _viewedPlayerIds.add(player.id);
-                      });
-                      Navigator.of(context).pop();
-                    },
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -300,6 +265,112 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCardFront() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1B263B),
+        border: Border.all(color: const Color(0xFF415A77), width: 4),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.security, color: Color(0xFFE63946), size: 64),
+          const SizedBox(height: 16),
+          Text(
+            "TOP SECRET",
+            style: GoogleFonts.pressStart2p(color: Colors.white, fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "TAP TO FLIP",
+            style: GoogleFonts.vt323(color: Colors.white70, fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCardBack(bool isImpostor) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1B263B),
+        border: Border.all(
+          color: isImpostor ? const Color(0xFFE63946) : const Color(0xFF4CC9F0),
+          width: 4,
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isImpostor) ...[
+            Text(
+              "YOU ARE THE",
+              style: GoogleFonts.vt323(color: Colors.white70, fontSize: 24),
+            ),
+            Text(
+              "IMPOSTOR",
+              style: GoogleFonts.pressStart2p(
+                color: const Color(0xFFE63946), // Red
+                fontSize: 24,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "CATEGORY:",
+              style: GoogleFonts.vt323(color: Colors.white54, fontSize: 20),
+            ),
+            Text(
+              widget.category.name,
+              style: GoogleFonts.vt323(color: Colors.white, fontSize: 28),
+            ),
+            if (widget.hintsEnabled) ...[
+              const SizedBox(height: 16),
+              Text(
+                "HINT:",
+                style: GoogleFonts.vt323(color: Colors.white54, fontSize: 20),
+              ),
+              Text(
+                widget.word.hint,
+                style: GoogleFonts.vt323(
+                  color: const Color(0xFF95D5B2),
+                  fontSize: 24,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ] else ...[
+            Text(
+              "THE WORD IS:",
+              style: GoogleFonts.vt323(color: Colors.white70, fontSize: 24),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              widget.word.name,
+              style: GoogleFonts.pressStart2p(
+                color: const Color(0xFF4CC9F0), // Blue
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "CATEGORY:",
+              style: GoogleFonts.vt323(color: Colors.white54, fontSize: 20),
+            ),
+            Text(
+              widget.category.name,
+              style: GoogleFonts.vt323(color: Colors.white, fontSize: 28),
+            ),
+          ],
         ],
       ),
     );
