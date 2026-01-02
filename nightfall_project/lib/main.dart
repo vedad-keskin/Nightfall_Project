@@ -86,7 +86,8 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     top: 0,
                     bottom: 0,
                     width: width,
-                    child: Center(
+                    child: Align(
+                      alignment: const Alignment(0.0, -0.6), // Move up more
                       child: AnimatedOpacity(
                         duration: const Duration(milliseconds: 500),
                         opacity: _currentPage == 0 ? 1.0 : 0.0,
@@ -95,7 +96,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                           scale: _currentPage == 0 ? 1.0 : 0.8,
                           child: const PixelDialog(
                             title: 'MAFIA',
-                            color: Colors.black87,
+                            color: Colors.black54, // More transparent
                             accentColor: Colors.redAccent,
                           ),
                         ),
@@ -108,7 +109,8 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     top: 0,
                     bottom: 0,
                     width: width,
-                    child: Center(
+                    child: Align(
+                      alignment: const Alignment(0.0, -0.6), // Move up more
                       child: AnimatedOpacity(
                         duration: const Duration(milliseconds: 500),
                         opacity: _currentPage == 1 ? 1.0 : 0.0,
@@ -117,7 +119,12 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                           scale: _currentPage == 1 ? 1.0 : 0.8,
                           child: const PixelDialog(
                             title: 'IMPOSTOR',
-                            color: Colors.redAccent,
+                            color: Color.fromRGBO(
+                              255,
+                              82,
+                              82,
+                              0.7,
+                            ), // RedAccent with opacity
                             accentColor: Colors.black87,
                           ),
                         ),
@@ -133,4 +140,3 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
     );
   }
 }
-

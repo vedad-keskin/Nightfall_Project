@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class PixelDialog extends StatelessWidget {
   final String title;
@@ -71,6 +72,28 @@ class PixelButton extends StatefulWidget {
 
 class _PixelButtonState extends State<PixelButton> {
   bool _isPressed = false;
+  late AudioPlayer _audioPlayer;
+
+  @override
+  void initState() {
+    super.initState();
+    _audioPlayer = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _playSound() async {
+    try {
+      // Assumes assets/audio/click.mp3 exists or will exist
+      await _audioPlayer.play(AssetSource('images/click.wav'));
+    } catch (e) {
+      debugPrint('Error playing sound: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +101,10 @@ class _PixelButtonState extends State<PixelButton> {
     final double translate = _isPressed ? 4 : 0;
 
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapDown: (_) {
+        setState(() => _isPressed = true);
+        _playSound();
+      },
       onTapUp: (_) {
         setState(() => _isPressed = false);
         widget.onPressed?.call();
