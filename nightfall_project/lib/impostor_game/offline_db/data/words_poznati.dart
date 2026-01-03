@@ -47,7 +47,7 @@ final List<Word> poznatiWords = [
   Word(id: 244, name: 'LeBron James', categoryId: 4, hint: 'Kralj'),
   Word(id: 245, name: 'Eminem', categoryId: 4, hint: 'Rep'),
   Word(id: 246, name: 'Lewis Hamilton', categoryId: 4, hint: 'Pletenice'),
-  Word(id: 247, name: 'Rihanna', categoryId: 4, hint: 'Kišobran'),
+  Word(id: 247, name: 'Cleopatra', categoryId: 4, hint: 'Cezar'),
   Word(id: 248, name: 'Jackie Chan', categoryId: 4, hint: 'Borba'),
   Word(id: 249, name: 'Harry Potter', categoryId: 4, hint: 'Ožiljak'),
   Word(id: 250, name: 'Sherlock Holmes', categoryId: 4, hint: 'Lupa'),
