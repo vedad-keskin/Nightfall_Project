@@ -26,6 +26,7 @@ class CategoryService {
     Category(id: 9, name: 'Borci'),
     Category(id: 10, name: 'Brendovi'),
     Category(id: 11, name: 'Igre'),
+    Category(id: 12, name: 'Sportovi'),
   ];
 
   // --- Methods ---
