@@ -3,11 +3,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:nightfall_project/base_components/pixel_team_dialog.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
+import 'package:nightfall_project/base_components/pixel_language_switch.dart';
 import 'package:nightfall_project/impostor_game/layouts/game_layout.dart';
 import 'package:nightfall_project/mafia_game/layouts/game_layout.dart';
+import 'package:nightfall_project/services/language_service.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LanguageService(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -119,7 +127,9 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                           duration: const Duration(milliseconds: 500),
                           scale: _currentPage == 0 ? 1.0 : 0.8,
                           child: PixelDialog(
-                            title: 'MAFIA',
+                            title: context.watch<LanguageService>().translate(
+                              'mafia',
+                            ),
                             color: Colors.black54, // More transparent
                             accentColor: Colors.redAccent,
                             soundPath: 'audio/wolf_howl.mp3',
@@ -171,7 +181,9 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                           duration: const Duration(milliseconds: 500),
                           scale: _currentPage == 1 ? 1.0 : 0.8,
                           child: PixelDialog(
-                            title: 'IMPOSTOR',
+                            title: context.watch<LanguageService>().translate(
+                              'impostor',
+                            ),
                             color: const Color.fromRGBO(255, 82, 82, 0.7),
                             accentColor: Colors.black87,
                             soundPath: 'audio/mystery_mist.mp3',
@@ -214,6 +226,12 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                         ),
                       ),
                     ),
+                  ),
+                  // Language Switch
+                  const Positioned(
+                    right: 16,
+                    top: 16 + 32, // Offset for safe area or just below top
+                    child: PixelLanguageSwitch(),
                   ),
                   // Version Info
                   Positioned(

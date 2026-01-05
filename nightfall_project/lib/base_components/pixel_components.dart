@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:math';
 
 import 'package:nightfall_project/base_components/pixel_button.dart';
+import 'package:nightfall_project/services/language_service.dart';
+import 'package:provider/provider.dart';
 
 export 'pixel_button.dart';
 
@@ -96,7 +98,7 @@ class PixelDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 PixelButton(
-                  label: 'PLAY NOW',
+                  label: context.watch<LanguageService>().translate('play_now'),
                   color: const Color(0xFF415A77),
                   soundPath: soundPath,
                   onPressed: onPressed,
