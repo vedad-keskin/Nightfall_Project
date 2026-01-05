@@ -93,6 +93,34 @@ class LanguageService extends ChangeNotifier {
     'reset_button': 'RESET',
     'top_players_title': 'TOP PLAYERS',
     'no_players_found': 'No players found.',
+    'how_to_play': 'RULES',
+    'rules_impostor_title': 'HOW TO PLAY: IMPOSTOR',
+    'rules_impostor_content':
+        '1. Pass the device to each player so everyone can see their role and/or word.\n\n'
+        '2. Roles:\n'
+        '- One player is the IMPOSTOR.\n'
+        '- The rest are INNOCENTS.\n\n'
+        '3. Secret Word:\n'
+        '- INNOCENTS see the secret word.\n'
+        '- The IMPOSTOR only sees the category and, if enabled, a hint.\n'
+        '- Hints are recommended for groups of 5 or fewer players. For larger groups, playing without hints is usually more fun.\n\n'
+        '4. Taking Turns:\n'
+        '- Players take turns in a circle, starting from the player chosen first by the game.\n'
+        '- On your turn, say ONE word related to the secret word.\n'
+        '- Words that are part of the secret word are usually not allowed unless agreed on beforehand.\n'
+        '- If you don\'t know a word, you may Google it. The IMPOSTOR can also Google to mislead others.\n'
+        '- Repeating words is not allowed.\n\n'
+        '5. Voting:\n'
+        '- After the 2nd or 3rd round, discuss and vote on who the IMPOSTOR is.\n'
+        '- Voting can happen earlier if INNOCENTS are confident or if the IMPOSTOR gives themselves away.\n\n'
+        '6. Winning the Game:\n'
+        '- If the IMPOSTOR is caught, the INNOCENTS win.\n'
+        '- If an INNOCENT is voted out, the IMPOSTOR wins and earns a point.\n'
+        '- Points are tracked on the Leaderboard.\n\n'
+        '7. Have Fun!\n'
+        'Enjoy the game, be sneaky if you\'re the IMPOSTOR, and try to catch the IMPOSTOR if you\'re INNOCENT. Good luck!',
+    'rules_mafia_title': 'HOW TO PLAY: MAFIA',
+    'rules_mafia_content': 'Coming soon...',
   };
 
   static const Map<String, String> _bsTranslations = {
@@ -156,5 +184,33 @@ class LanguageService extends ChangeNotifier {
     'reset_button': 'RESETUJ',
     'top_players_title': 'NAJBOLJI IGRAČI',
     'no_players_found': 'Nema igrača.',
+    'how_to_play': 'PRAVILA',
+    'rules_impostor_title': 'PRAVILA: VARALICA',
+    'rules_impostor_content':
+        '1. Dodajte uređaj svakom igraču kako bi svi mogli vidjeti svoju ulogu i/ili riječ.\n\n'
+        '2. Uloge:\n'
+        '- Jedan igrač je VARALICA.\n'
+        '- Ostali su NEVINI.\n\n'
+        '3. Tajna riječ:\n'
+        '- NEVINI vide tajnu riječ.\n'
+        '- VARALICA vidi samo kategoriju i, ako je omogućeno, hintove.\n'
+        '- Hintovi se preporučuju za grupe od 5 ili manje igrača. Za veće grupe, igranje bez hintova je obično zabavnije.\n\n'
+        '4. Redoslijed:\n'
+        '- Igrači naizmjenično igraju u krugu, počevši od igrača kojeg igra odredi kao prvog.\n'
+        '- Na svom potezu recite JEDNU riječ povezanu s tajnom riječi.\n'
+        '- Riječi koje su dio tajne riječi obično nisu dozvoljene osim ako se unaprijed ne dogovori.\n'
+        '- Ako ne znate riječ, možete je potražiti na internetu. VARALICA također može pretraživati da bi zavarao druge.\n'
+        '- Ponavljanje riječi nije dozvoljeno.\n\n'
+        '5. Glasanje:\n'
+        '- Nakon 2. ili 3. runde, raspravite i glasajte ko je VARALICA.\n'
+        '- Glasanje se može obaviti i ranije ako NEVINI sigurno znaju ko je VARALICA ili ako se VARALICA preda.\n\n'
+        '6. Pobjeda:\n'
+        '- Ako je VARALICA uhvaćen, NEVINI pobjeđuju.\n'
+        '- Ako je NEVIN izbačen, VARALICA pobjeđuje i dobija bod.\n'
+        '- Bodovi se prate na Rang-listi.\n\n'
+        '7. Zabavite se!\n'
+        'Uživajte u igri, budite lukavi ako ste VARALICA i pokušajte uhvatiti VARALICU ako ste NEVINI. Sretno!',
+    'rules_mafia_title': 'PRAVILA: MAFIJA',
+    'rules_mafia_content': 'Uskoro dostupno...',
   };
 }

@@ -247,6 +247,81 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                 top: 40,
                 child: PixelLanguageSwitch(),
               ),
+              // How to Play Button (Static)
+              Positioned(
+                left: 20,
+                top: 40,
+                child: PixelRulesButton(
+                  onPressed: () {
+                    final isImpostor = _currentPage == 1;
+                    final lang = context.read<LanguageService>();
+
+                    showDialog(
+                      context: context,
+                      builder: (context) => Dialog(
+                        backgroundColor: Colors.transparent,
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF778DA9),
+                            border: Border.all(
+                              color: const Color(0xFF415A77),
+                              width: 4,
+                            ),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0D1B2A),
+                              border: Border.all(color: Colors.black, width: 4),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  lang.translate(
+                                    isImpostor
+                                        ? 'rules_impostor_title'
+                                        : 'rules_mafia_title',
+                                  ),
+                                  style: GoogleFonts.pressStart2p(
+                                    color: const Color(0xFFE0E1DD),
+                                    fontSize: 16,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 24),
+                                Flexible(
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      lang.translate(
+                                        isImpostor
+                                            ? 'rules_impostor_content'
+                                            : 'rules_mafia_content',
+                                      ),
+                                      style: GoogleFonts.vt323(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 32),
+                                PixelButton(
+                                  label: lang.translate('back'),
+                                  color: const Color(0xFF415A77),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
               // Version Info (Static)
               Positioned(
                 right: 16,
@@ -266,7 +341,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     _easterEggTimer?.cancel();
                   },
                   child: Text(
-                    'Nightfall Project v1.4.1',
+                    'Nightfall Project v1.5.0',
                     style: GoogleFonts.vt323(
                       color: Colors.white24,
                       fontSize: 14,
@@ -277,6 +352,94 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class PixelRulesButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  const PixelRulesButton({super.key, required this.onPressed});
+
+  @override
+  State<PixelRulesButton> createState() => _PixelRulesButtonState();
+}
+
+class _PixelRulesButtonState extends State<PixelRulesButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onPressed();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 50),
+        width: 100, // Matching language switch width
+        height: 50, // Matching language switch height
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.6),
+          boxShadow: [
+            if (!_isPressed)
+              BoxShadow(
+                color: Colors.black.withOpacity(0.4),
+                offset: const Offset(6, 6),
+                blurRadius: 0,
+              ),
+          ],
+        ),
+        padding: const EdgeInsets.all(4),
+        child: Container(
+          decoration: BoxDecoration(
+            color: _isPressed
+                ? const Color(0xFF415A77)
+                : const Color(0xFF1B263B),
+            border: Border.all(
+              color: _isPressed
+                  ? const Color(0xFF778DA9)
+                  : const Color(0xFF415A77),
+              width: 2,
+            ),
+          ),
+          child: Stack(
+            children: [
+              // Top Highlight Loophole Effect
+              if (!_isPressed)
+                Positioned(
+                  top: 2,
+                  left: 2,
+                  right: 2,
+                  height: 2,
+                  child: Container(color: Colors.white10),
+                ),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.help_center_outlined,
+                      color: Color(0xFFE0E1DD),
+                      size: 20,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      context.watch<LanguageService>().translate('how_to_play'),
+                      style: GoogleFonts.vt323(
+                        color: const Color(0xFFE0E1DD),
+                        fontSize: 18, // Reduced slightly to fit
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
