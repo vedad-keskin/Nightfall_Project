@@ -57,6 +57,13 @@ class PixelTeamDialog extends StatelessWidget {
                   'Iman-Bejana Keskin',
                   valueColor: Colors.white,
                 ),
+                const SizedBox(height: 20),
+                _buildCreditRow(
+                  'TESTER',
+                  'Amar Bešić',
+                  labelColor: const Color(0xFF06D6A0), // Emerald Green
+                  valueColor: Colors.white,
+                ),
                 const SizedBox(height: 32),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),

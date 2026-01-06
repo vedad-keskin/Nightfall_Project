@@ -232,9 +232,9 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
 
     List<Widget> list = [];
 
-    // Iterate through original players to find who was in this game
-    for (var player in widget.players) {
-      final role = widget.playerRoles[player.id];
+    // Iterate through ALL players who participated (from database), not just survivors
+    for (var dbPlayer in _appPlayersUpdated) {
+      final role = widget.playerRoles[dbPlayer.id];
       if (role != null && role.allianceId == winningAllianceId) {
         list.add(
           Container(
@@ -248,7 +248,7 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
             child: Row(
               children: [
                 Text(
-                  player.name,
+                  dbPlayer.name,
                   style: GoogleFonts.vt323(color: Colors.white, fontSize: 20),
                 ),
                 const Spacer(),

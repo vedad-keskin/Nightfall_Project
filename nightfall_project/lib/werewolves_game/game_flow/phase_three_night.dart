@@ -127,6 +127,19 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     }
   }
 
+  bool get _canProceed {
+    switch (_currentStep) {
+      case NightStep.werewolves:
+        return _targetKilledId != null; // Werewolves must kill someone
+      case NightStep.doctor:
+        return _targetHealedId != null; // Doctor must select someone
+      case NightStep.guard:
+        return true; // Guard auto-advances after inspection
+      case NightStep.plagueDoctor:
+        return _targetHealedId != null; // Plague Doctor must select someone
+    }
+  }
+
   void _handlePlayerTap(WerewolfPlayer player) {
     if (_currentStepIndex >= _nightSteps.length) return;
 
@@ -715,8 +728,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                     label: _currentStepIndex == _nightSteps.length - 1
                         ? 'END NIGHT'
                         : 'NEXT STEP',
-                    color: _stepColor,
-                    onPressed: _nextStep,
+                    color: _canProceed ? _stepColor : Colors.grey,
+                    onPressed: _canProceed ? _nextStep : null,
                   ),
                 ),
               ],
