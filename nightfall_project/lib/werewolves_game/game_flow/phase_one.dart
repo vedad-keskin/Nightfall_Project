@@ -105,9 +105,25 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
       _roleCounts.values.fold(0, (sum, count) => sum + count);
 
   bool get _isBalanceValid {
-    final werewolfCount = _roleCounts[2] ?? 0;
-    final vampireCount = _roleCounts[8] ?? 0;
-    return (werewolfCount + vampireCount) >= 1;
+    int werewolfAllianceCount = 0;
+    int otherAllianceCount = 0;
+
+    _roleCounts.forEach((roleId, count) {
+      final role = _roleService.getRoleById(roleId);
+      if (role != null) {
+        if (role.allianceId == 2) {
+          werewolfAllianceCount += count;
+        } else {
+          otherAllianceCount += count;
+        }
+      }
+    });
+
+    // Valid if:
+    // 1. At least one predator
+    // 2. Predators < Villagers + Specials
+    return werewolfAllianceCount >= 1 &&
+        werewolfAllianceCount < otherAllianceCount;
   }
 
   bool get _canProceed {
@@ -465,12 +481,29 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                               vertical: 6,
                             ),
                             color: Colors.black45,
-                            child: Text(
-                              'NEED AT LEAST ONE WEREWOLF OR VAMPIRE',
-                              style: GoogleFonts.vt323(
-                                color: Colors.greenAccent,
-                                fontSize: 20,
-                              ),
+                            child: Builder(
+                              builder: (context) {
+                                final werewolfCount =
+                                    (_roleCounts[2] ?? 0) +
+                                    (_roleCounts[8] ?? 0);
+                                if (werewolfCount < 1) {
+                                  return Text(
+                                    'NEED AT LEAST ONE WEREWOLF OR VAMPIRE',
+                                    style: GoogleFonts.vt323(
+                                      color: Colors.greenAccent,
+                                      fontSize: 20,
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    'TOO MANY WEREWOLVES / VAMPIRES',
+                                    style: GoogleFonts.vt323(
+                                      color: Colors.redAccent,
+                                      fontSize: 20,
+                                    ),
+                                  );
+                                }
+                              },
                             ),
                           ),
                         ),
