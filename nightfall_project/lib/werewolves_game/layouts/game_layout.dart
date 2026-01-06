@@ -4,6 +4,7 @@ import 'package:nightfall_project/base_components/pixel_components.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart';
 import 'package:nightfall_project/werewolves_game/players_section/players_screen.dart';
 import 'package:nightfall_project/werewolves_game/leaderboards/leaderboards_screen.dart';
+import 'package:nightfall_project/werewolves_game/roles/roles_screen.dart';
 import 'package:nightfall_project/services/language_service.dart';
 import 'package:provider/provider.dart';
 
@@ -179,6 +180,48 @@ class _WerewolfGameLayoutState extends State<WerewolfGameLayout> {
                                                   fontSize: 28,
                                                   fontWeight: FontWeight.bold,
                                                 ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      // Roles Section
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const WerewolfRolesScreen(),
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color(
+                                              0xFF1B263B,
+                                            ).withOpacity(0.8),
+                                            border: Border.all(
+                                              color: const Color(0xFF415A77),
+                                              width: 3,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.all(16),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'ROLES',
+                                                style: GoogleFonts.vt323(
+                                                  color: Colors.white70,
+                                                  fontSize: 28,
+                                                ),
+                                              ),
+                                              const Icon(
+                                                Icons.supervised_user_circle,
+                                                color: Colors.white,
+                                                size: 28,
                                               ),
                                             ],
                                           ),
