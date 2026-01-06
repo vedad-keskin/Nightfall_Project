@@ -4,6 +4,7 @@ import 'package:nightfall_project/base_components/pixel_components.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/alliance_service.dart';
+import 'phase_three_night.dart';
 import 'dart:math';
 
 class WerewolfPhaseTwoScreen extends StatefulWidget {
@@ -522,7 +523,14 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                           label: 'COMMENCE NIGHT',
                           color: const Color(0xFFE63946),
                           onPressed: () {
-                            // TODO: Navigate to Night Phase
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => WerewolfPhaseThreeScreen(
+                                  playerRoles: widget.playerRoles,
+                                  players: widget.players,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
