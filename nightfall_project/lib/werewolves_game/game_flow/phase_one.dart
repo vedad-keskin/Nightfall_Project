@@ -276,13 +276,30 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                             children: [
                               // Visual Content
                               Padding(
-                                padding: const EdgeInsets.all(12.0),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12.0,
+                                  vertical: 12.0,
+                                ),
                                 child: Row(
                                   children: [
+                                    // Subtle Minus Indicator (Integrated)
+                                    AnimatedOpacity(
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      opacity: isSelected ? 0.3 : 0.0,
+                                      child: const Icon(
+                                        Icons.remove,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+
                                     // Role Icon
                                     Container(
-                                      width: 70,
-                                      height: 70,
+                                      width: 65,
+                                      height: 65,
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                           color: isSelected
@@ -296,7 +313,7 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                         fit: BoxFit.cover,
                                       ),
                                     ),
-                                    const SizedBox(width: 16),
+                                    const SizedBox(width: 12),
 
                                     // Info
                                     Expanded(
@@ -312,7 +329,8 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                               color: isSelected
                                                   ? Colors.white
                                                   : Colors.white60,
-                                              fontSize: 14,
+                                              fontSize:
+                                                  12, // Slightly smaller to fit everything
                                             ),
                                           ),
                                           const SizedBox(height: 4),
@@ -328,7 +346,7 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                               color: isSelected
                                                   ? allianceColor
                                                   : Colors.white38,
-                                              fontSize: 18,
+                                              fontSize: 16,
                                             ),
                                           ),
                                         ],
@@ -338,8 +356,8 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                     // Count Display
                                     Container(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 8,
+                                        horizontal: 12,
+                                        vertical: 6,
                                       ),
                                       decoration: BoxDecoration(
                                         color: isSelected
@@ -357,15 +375,26 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                           color: isSelected
                                               ? Colors.white
                                               : Colors.white24,
-                                          fontSize: 24,
+                                          fontSize: 20,
                                         ),
+                                      ),
+                                    ),
+
+                                    const SizedBox(width: 8),
+                                    // Subtle Plus Indicator (Integrated)
+                                    Opacity(
+                                      opacity: 0.3,
+                                      child: const Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: 20,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
 
-                              // Interactive Areas
+                              // Interactive Areas (Huge invisible tap zones)
                               Row(
                                 children: [
                                   // Decrement Area (Left 40%)
@@ -375,17 +404,7 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                       behavior: HitTestBehavior.opaque,
                                       onTap: () =>
                                           _updateRoleCount(role.id, -1),
-                                      child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        padding: const EdgeInsets.only(left: 8),
-                                        child: isSelected
-                                            ? const Icon(
-                                                Icons.remove_circle_outline,
-                                                color: Colors.white24,
-                                                size: 20,
-                                              )
-                                            : null,
-                                      ),
+                                      child: const SizedBox.expand(),
                                     ),
                                   ),
                                   // Increment Area (Right 60%)
@@ -394,17 +413,7 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                     child: GestureDetector(
                                       behavior: HitTestBehavior.opaque,
                                       onTap: () => _updateRoleCount(role.id, 1),
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        padding: const EdgeInsets.only(
-                                          right: 8,
-                                        ),
-                                        child: const Icon(
-                                          Icons.add_circle_outline,
-                                          color: Colors.white24,
-                                          size: 20,
-                                        ),
-                                      ),
+                                      child: const SizedBox.expand(),
                                     ),
                                   ),
                                 ],
@@ -458,7 +467,7 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                             child: Text(
                               'NEED AT LEAST ONE WEREWOLF OR VAMPIRE',
                               style: GoogleFonts.vt323(
-                                color: Colors.redAccent,
+                                color: Colors.greenAccent,
                                 fontSize: 20,
                               ),
                             ),
@@ -469,7 +478,7 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                         child: PixelButton(
                           label: 'PROCEED',
                           color: _canProceed
-                              ? Colors.redAccent
+                              ? Colors.green
                               : const Color(0xFF415A77).withOpacity(0.5),
                           onPressed: _canProceed
                               ? () {
