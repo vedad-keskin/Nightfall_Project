@@ -50,25 +50,33 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
   void _calculateNightSteps() {
     _nightSteps = [];
-    final roles = widget.playerRoles.values.map((r) => r.id).toSet();
 
-    // 1. Werewolves/Vampire always wake up (unless all dead, but game usually ends then)
-    if (roles.contains(2) || roles.contains(8)) {
+    // Get role IDs only from alive players
+    final alivePlayerIds = widget.players.map((p) => p.id).toSet();
+    final aliveRoles = widget.playerRoles.entries
+        .where((entry) => alivePlayerIds.contains(entry.key))
+        .map((entry) => entry.value.id)
+        .toSet();
+
+    // 1. Werewolves/Vampire/Avenging Twin always wake up (unless all dead, but game usually ends then)
+    if (aliveRoles.contains(2) ||
+        aliveRoles.contains(7) ||
+        aliveRoles.contains(8)) {
       _nightSteps.add(NightStep.werewolves);
     }
 
-    // 2. Doctor
-    if (roles.contains(3)) {
+    // 2. Doctor (only if alive)
+    if (aliveRoles.contains(3)) {
       _nightSteps.add(NightStep.doctor);
     }
 
-    // 3. Guard
-    if (roles.contains(4)) {
+    // 3. Guard (only if alive)
+    if (aliveRoles.contains(4)) {
       _nightSteps.add(NightStep.guard);
     }
 
-    // 4. Plague Doctor
-    if (roles.contains(5)) {
+    // 4. Plague Doctor (only if alive)
+    if (aliveRoles.contains(5)) {
       _nightSteps.add(NightStep.plagueDoctor);
     }
 
