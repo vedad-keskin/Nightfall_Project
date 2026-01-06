@@ -235,75 +235,179 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                 // Roles List
                 Expanded(
                   child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     itemCount: _availableRoles.length,
                     itemBuilder: (context, index) {
                       final role = _availableRoles[index];
                       final count = _roleCounts[role.id] ?? 0;
-                      final alliance = _allianceService.getAllianceById(
-                        role.allianceId,
-                      );
+                      final isSelected = count > 0;
+                      final allianceColor = _getAllianceColor(role.allianceId);
 
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1B263B).withOpacity(0.8),
-                          border: Border.all(
-                            color: const Color(0xFF415A77),
-                            width: 2,
-                          ),
-                        ),
-                        child: ListTile(
-                          leading: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: _getAllianceColor(role.allianceId),
-                                width: 2,
-                              ),
+                      return AnimatedOpacity(
+                        duration: const Duration(milliseconds: 200),
+                        opacity: isSelected ? 1.0 : 0.4,
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          height: 100, // Fixed height for consistent tap areas
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? allianceColor.withOpacity(0.15)
+                                : const Color(0xFF1B263B).withOpacity(0.5),
+                            border: Border.all(
+                              color: isSelected
+                                  ? allianceColor
+                                  : const Color(0xFF415A77),
+                              width: 3,
                             ),
-                            child: Image.asset(
-                              role.imagePath,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          title: Text(
-                            role.name.toUpperCase(),
-                            style: GoogleFonts.pressStart2p(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                          subtitle: Text(
-                            alliance?.name.toUpperCase() ?? '',
-                            style: GoogleFonts.vt323(
-                              color: _getAllianceColor(role.allianceId),
-                              fontSize: 16,
-                            ),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _buildCounterButton(
-                                Icons.remove,
-                                () => _updateRoleCount(role.id, -1),
-                              ),
-                              Container(
-                                width: 40,
-                                child: Center(
-                                  child: Text(
-                                    '$count',
-                                    style: GoogleFonts.pressStart2p(
-                                      color: Colors.white,
-                                      fontSize: 16,
+                            boxShadow: isSelected
+                                ? [
+                                    BoxShadow(
+                                      color: allianceColor.withOpacity(0.3),
+                                      blurRadius: 10,
+                                      spreadRadius: -2,
                                     ),
-                                  ),
+                                  ]
+                                : [],
+                          ),
+                          child: Stack(
+                            children: [
+                              // Visual Content
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    // Role Icon
+                                    Container(
+                                      width: 70,
+                                      height: 70,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? Colors.white70
+                                              : Colors.white24,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Image.asset(
+                                        role.imagePath,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+
+                                    // Info
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            role.name.toUpperCase(),
+                                            style: GoogleFonts.pressStart2p(
+                                              color: isSelected
+                                                  ? Colors.white
+                                                  : Colors.white60,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            _allianceService
+                                                    .getAllianceById(
+                                                      role.allianceId,
+                                                    )
+                                                    ?.name
+                                                    .toUpperCase() ??
+                                                '',
+                                            style: GoogleFonts.vt323(
+                                              color: isSelected
+                                                  ? allianceColor
+                                                  : Colors.white38,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // Count Display
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? Colors.white10
+                                            : Colors.transparent,
+                                        border: Border.all(
+                                          color: isSelected
+                                              ? Colors.white24
+                                              : Colors.transparent,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        '$count',
+                                        style: GoogleFonts.pressStart2p(
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Colors.white24,
+                                          fontSize: 24,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              _buildCounterButton(
-                                Icons.add,
-                                () => _updateRoleCount(role.id, 1),
+
+                              // Interactive Areas
+                              Row(
+                                children: [
+                                  // Decrement Area (Left 40%)
+                                  Expanded(
+                                    flex: 4,
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () =>
+                                          _updateRoleCount(role.id, -1),
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        padding: const EdgeInsets.only(left: 8),
+                                        child: isSelected
+                                            ? const Icon(
+                                                Icons.remove_circle_outline,
+                                                color: Colors.white24,
+                                                size: 20,
+                                              )
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+                                  // Increment Area (Right 60%)
+                                  Expanded(
+                                    flex: 6,
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () => _updateRoleCount(role.id, 1),
+                                      child: Container(
+                                        alignment: Alignment.centerRight,
+                                        padding: const EdgeInsets.only(
+                                          right: 8,
+                                        ),
+                                        child: const Icon(
+                                          Icons.add_circle_outline,
+                                          color: Colors.white24,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -381,20 +485,6 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCounterButton(IconData icon, VoidCallback? onPressed) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: const Color(0xFF415A77),
-          border: Border.all(color: Colors.white24),
-        ),
-        child: Icon(icon, color: Colors.white, size: 20),
       ),
     );
   }
