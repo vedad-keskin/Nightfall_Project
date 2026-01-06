@@ -233,7 +233,9 @@ class _ImpostorGameLayoutState extends State<ImpostorGameLayout> {
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          languageService.translate('impostor'),
+                                          languageService.translate(
+                                            'impostor-game',
+                                          ),
                                           style: GoogleFonts.pressStart2p(
                                             color: const Color(0xFFE0E1DD),
                                             fontSize: 15,

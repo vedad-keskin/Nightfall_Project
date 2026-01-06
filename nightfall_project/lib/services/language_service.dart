@@ -35,6 +35,7 @@ class LanguageService extends ChangeNotifier {
   static const Map<String, String> _enTranslations = {
     'mafia': 'WEREWOLVES',
     'impostor': 'IMPOSTOR',
+    'impostor-game': 'IMPOSTOR GAME',
     'play_now': 'PLAY NOW',
     'back': 'BACK',
     'players_title': 'PLAYERS',
@@ -121,13 +122,52 @@ class LanguageService extends ChangeNotifier {
         '- Points are tracked on the Leaderboard.\n\n'
         '7. Have Fun!\n'
         'Enjoy the game, be sneaky if you\'re the IMPOSTOR, and try to catch the IMPOSTOR if you\'re INNOCENT. Good luck!',
-    'rules_mafia_title': 'HOW TO PLAY: MAFIA',
-    'rules_mafia_content': 'Coming soon...',
+    'rules_mafia_title': 'HOW TO PLAY: WEREWOLVES',
+    'rules_mafia_content':
+        '1. Setup:\n'
+        '- Pass the device to each player so they can secretly see their role.\n\n'
+        '2. Roles & Alliances:\n'
+        '- VILLAGE: Villagers, Doctor, Guard, Plague Doctor, Twins.\n'
+        '  Goal: Eliminate all Werewolves.\n'
+        '- WEREWOLVES: Werewolves, Vampire, Avenging Twin.\n'
+        '  Goal: Win when the number of Werewolves is equal to or greater than the number of Villagers.\n'
+        '- SPECIAL: Jester.\n'
+        '  Goal: Be hanged by the Village.\n\n'
+        '3. Night Phase:\n'
+        '- The game is played in rounds, starting with Night.\n'
+        '- Werewolves secretly choose one player to kill.\n'
+        '- Special roles perform their abilities.\n\n'
+        '4. Day Phase:\n'
+        '- The result of the Night is revealed.\n'
+        '- Dead players are removed from the game and may no longer speak.\n'
+        '- Players discuss openly and vote to hang one player.\n'
+        '- The player with the most votes is hanged.\n'
+        '- The Village is not required to hang a player each day.\n'
+        '- In case of a tie, no one is hanged.\n\n'
+        '5. Character Abilities:\n'
+        '- WEREWOLF: Chooses a victim each night together with other Werewolves.\n'
+        '- VILLAGER: Has no special ability; relies on discussion and voting.\n'
+        '- VAMPIRE: Awakens with the Werewolves but appears as a Villager when inspected.\n'
+        '- DOCTOR: Can protect one player each night from being killed. May protect himself, but cannot protect the same person two nights in a row.\n'
+        '- GUARD: Can inspect one player each night. The Narrator gives a hand sign:\n'
+        '  V = Villager, W = Werewolf.\n'
+        '  Jesters and Vampires receive the V sign. Only Werewolves and the Avenging Twin receive the W sign.\n'
+        '- PLAGUE DOCTOR: Can protect a player, but there is a small chance the target dies instead.\n'
+        '- TWINS: If one Twin is hanged, the other becomes a Werewolf.\n'
+        '  If one Twin is killed at night, the other remains a Villager.\n'
+        '- AVENGING TWIN: If their Twin dies, they become an Avenging Twin and wake up with the Werewolves from the next night forward.\n'
+        '- JESTER: Wins immediately only if hanged by the Village.\n\n'
+        '6. Winning:\n'
+        '- Village wins if all Werewolves are eliminated.\n'
+        '- Werewolves win if they equal or outnumber the Village.\n'
+        '- Jester wins instantly only if hanged.\n'
+        '- Points are awarded to the winning players based on role difficulty.\n',
   };
 
   static const Map<String, String> _bsTranslations = {
     'mafia': 'VUKOVI',
     'impostor': 'VARALICA',
+    'impostor-game': 'VARALICA',
     'play_now': 'ZAIGRAJ',
     'back': 'NAZAD',
     'players_title': 'IGRAČI',
@@ -214,7 +254,45 @@ class LanguageService extends ChangeNotifier {
         '- Bodovi se prate na Rang-listi.\n\n'
         '7. Zabavite se!\n'
         'Uživajte u igri, budite lukavi ako ste VARALICA i pokušajte uhvatiti VARALICU ako ste NEVINI. Sretno!',
-    'rules_mafia_title': 'PRAVILA: MAFIJA',
-    'rules_mafia_content': 'Uskoro dostupno...',
+    'rules_mafia_title': 'PRAVILA: VUKOVI',
+    'rules_mafia_content':
+        '1. Postavka:\n'
+        '- Proslijedite uređaj svakom igraču kako bi tajno vidio svoju ulogu.\n\n'
+        '2. Uloge i savezi:\n'
+        '- SELO: Seljani, Doktor, Stražar, Vrač, Blizanci.\n'
+        '  Cilj: Eliminisati sve Vukodlake.\n'
+        '- VUKODLACI: Vukodlaci, Vampir, Osvetnički blizanac.\n'
+        '  Cilj: Pobjeđuju kada je broj Vukodlaka jednak ili veći od broja Seljana.\n'
+        '- POSEBNA ULOGA: Luda.\n'
+        '  Cilj: Pobjeđuje kada je obješen od strane Sela.\n\n'
+        '3. Noćna faza:\n'
+        '- Igra se odvija u rundama koje započinju noću.\n'
+        '- Vukodlaci tajno biraju jednog igrača kojeg žele ubiti.\n'
+        '- Posebne uloge izvršavaju svoje sposobnosti.\n\n'
+        '4. Dnevna faza:\n'
+        '- Objavljuju se rezultati noći.\n'
+        '- Mrtvi igrači se uklanjaju iz igre i nemaju pravo govoriti nakon smrti.\n'
+        '- Preživjeli igrači otvoreno raspravljaju i glasaju za vješanje jednog igrača.\n'
+        '- Igrač sa najviše glasova biva obješen.\n'
+        '- Selo nije obavezno objesiti igrača svaki dan.\n'
+        '- U slučaju izjednačenja, niko ne biva obješen.\n\n'
+        '5. Sposobnosti likova:\n'
+        '- VUKODLAK: Zajedno s ostalim Vukodlacima svake noći bira žrtvu.\n'
+        '- SELJANIN: Nema posebnu sposobnost; oslanja se na raspravu i glasanje.\n'
+        '- VAMPIR: Budi se s Vukodlacima, ali se pri provjeri prikazuje kao Seljanin.\n'
+        '- DOKTOR: Može zaštititi jednog igrača svake noći od smrti. Može zaštititi sebe, ali ne može štititi istu osobu dvije noći zaredom.\n'
+        '- STRAŽAR: Može provjeriti jednog igrača svake noći. Narator mu daje znak rukom:\n'
+        '  V = Seljanin, W = Vukodlak.\n'
+        '  Luda i Vampir dobijaju znak V. Samo Vukodlaci i Osvetnički blizanac dobijaju znak W.\n'
+        '- VRAČ: Može zaštititi igrača, ali postoji mala šansa da meta umre umjesto da bude spašena.\n'
+        '- BLIZANCI: Ako jedan Blizanac bude obješen, drugi postaje Vukodlak.\n'
+        '  Ako jedan Blizanac bude ubijen tokom noći, drugi ostaje Seljanin.\n'
+        '- OSVETNIČKI BLIZANAC: Ako njegov Blizanac umre, postaje Osvetnički blizanac i od sljedeće noći se budi s Vukodlacima.\n'
+        '- LUDA: Pobjeđuje samo ako bude obješena od strane Sela.\n\n'
+        '6. Pobjeda:\n'
+        '- Selo pobjeđuje ako su svi Vukodlaci eliminisani.\n'
+        '- Vukodlaci pobjeđuju ako izjednače ili nadjačaju broj Seljana.\n'
+        '- Luda pobjeđuje samo ako bude obješen.\n'
+        '- Bodovi se dodjeljuju pobjednicima na osnovu težine uloge.\n',
   };
 }

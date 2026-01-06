@@ -74,7 +74,7 @@ class WerewolfRoleService {
     WerewolfRole(
       id: 7,
       name: 'Avenging Twin',
-      points: 4,
+      points: 3,
       allianceId: 2, // Werewolves
       description:
           'A twin fueled by vengeance. When their sibling is hanged by the village, they embrace the darkness and join the werewolves to hunt down those who killed their loved one.',
