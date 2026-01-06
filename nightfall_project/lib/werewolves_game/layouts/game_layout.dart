@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
+import 'package:nightfall_project/base_components/pixel_game_timer.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/timer_settings_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart';
 import 'package:nightfall_project/werewolves_game/players_section/players_screen.dart';
@@ -19,7 +20,7 @@ class WerewolfGameLayout extends StatefulWidget {
 
 class _WerewolfGameLayoutState extends State<WerewolfGameLayout> {
   int _playerCount = 0;
-  int _timerDuration = 300; // Default 5 minutes
+  TimerMode _timerMode = TimerMode.fiveMinutes; // Default
   final WerewolfPlayerService _playerService = WerewolfPlayerService();
   final TimerSettingsService _timerService = TimerSettingsService();
 
@@ -40,18 +41,51 @@ class _WerewolfGameLayoutState extends State<WerewolfGameLayout> {
   }
 
   Future<void> _loadTimerSetting() async {
-    final duration = await _timerService.getTimerDuration();
+    final modeString = await _timerService.getTimerMode();
+    TimerMode mode = TimerMode.fiveMinutes;
+
+    switch (modeString) {
+      case 'twoMinutes':
+        mode = TimerMode.twoMinutes;
+        break;
+      case 'fiveMinutes':
+        mode = TimerMode.fiveMinutes;
+        break;
+      case 'tenMinutes':
+        mode = TimerMode.tenMinutes;
+        break;
+      case 'thirtySecondsPerPlayer':
+        mode = TimerMode.thirtySecondsPerPlayer;
+        break;
+    }
+
     if (mounted) {
       setState(() {
-        _timerDuration = duration;
+        _timerMode = mode;
       });
     }
   }
 
-  Future<void> _setTimerDuration(int seconds) async {
-    await _timerService.setTimerDuration(seconds);
+  Future<void> _setTimerMode(TimerMode mode) async {
+    String modeString = 'fiveMinutes';
+    switch (mode) {
+      case TimerMode.twoMinutes:
+        modeString = 'twoMinutes';
+        break;
+      case TimerMode.fiveMinutes:
+        modeString = 'fiveMinutes';
+        break;
+      case TimerMode.tenMinutes:
+        modeString = 'tenMinutes';
+        break;
+      case TimerMode.thirtySecondsPerPlayer:
+        modeString = 'thirtySecondsPerPlayer';
+        break;
+    }
+
+    await _timerService.setTimerMode(modeString);
     setState(() {
-      _timerDuration = seconds;
+      _timerMode = mode;
     });
   }
 
@@ -155,267 +189,202 @@ class _WerewolfGameLayoutState extends State<WerewolfGameLayout> {
                               ),
                               // Main Game Content
                               Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    children: [
-                                      // Player Count Section
-                                      GestureDetector(
-                                        onTap: () async {
-                                          await Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const WerewolfPlayersScreen(),
-                                            ),
-                                          );
-                                          _loadPlayerCount();
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color(
-                                              0xFF1B263B,
-                                            ).withOpacity(0.8),
-                                            border: Border.all(
-                                              color: const Color(0xFF415A77),
-                                              width: 3,
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.all(16),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                languageService.translate(
-                                                  'players_title',
-                                                ),
-                                                style: GoogleFonts.vt323(
-                                                  color: Colors.white70,
-                                                  fontSize: 28,
-                                                ),
+                                child: SingleChildScrollView(
+                                  physics: const BouncingScrollPhysics(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      children: [
+                                        // Player Count Section
+                                        GestureDetector(
+                                          onTap: () async {
+                                            await Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const WerewolfPlayersScreen(),
                                               ),
-                                              Text(
-                                                '$_playerCount',
-                                                style: GoogleFonts.vt323(
-                                                  color: Colors.white,
-                                                  fontSize: 28,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      // Roles Section
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const WerewolfRolesScreen(),
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color(
-                                              0xFF1B263B,
-                                            ).withOpacity(0.8),
-                                            border: Border.all(
-                                              color: const Color(0xFF415A77),
-                                              width: 3,
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.all(16),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'ROLES',
-                                                style: GoogleFonts.vt323(
-                                                  color: Colors.white70,
-                                                  fontSize: 28,
-                                                ),
-                                              ),
-                                              Image.asset(
-                                                'assets/images/claw_icon.png',
-                                                width: 32,
-                                                height: 32,
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      // Leaderboards Section
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const WerewolfLeaderboardsScreen(),
-                                            ),
-                                          );
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color(
-                                              0xFF1B263B,
-                                            ).withOpacity(0.8),
-                                            border: Border.all(
-                                              color: const Color(0xFF415A77),
-                                              width: 3,
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.all(16),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                languageService.translate(
-                                                  'leaderboards_title',
-                                                ),
-                                                style: GoogleFonts.vt323(
-                                                  color: Colors.white70,
-                                                  fontSize: 28,
-                                                ),
-                                              ),
-                                              const Icon(
-                                                Icons.leaderboard,
-                                                color: Colors.white,
-                                                size: 28,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      // Timer Duration Selector
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFF1B263B,
-                                          ).withOpacity(0.8),
-                                          border: Border.all(
-                                            color: const Color(0xFF415A77),
-                                            width: 3,
-                                          ),
-                                        ),
-                                        padding: const EdgeInsets.all(16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'DAY TIMER',
-                                              style: GoogleFonts.vt323(
-                                                color: Colors.white70,
-                                                fontSize: 20,
+                                            );
+                                            _loadPlayerCount();
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(
+                                                0xFF1B263B,
+                                              ).withOpacity(0.8),
+                                              border: Border.all(
+                                                color: const Color(0xFF415A77),
+                                                width: 3,
                                               ),
                                             ),
-                                            const SizedBox(height: 12),
-                                            Row(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: TimerSettingsService.timerOptions.map((
-                                                duration,
-                                              ) {
-                                                final isSelected =
-                                                    _timerDuration == duration;
-                                                return Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 4,
-                                                        ),
-                                                    child: GestureDetector(
-                                                      onTap: () =>
-                                                          _setTimerDuration(
-                                                            duration,
-                                                          ),
-                                                      child: Container(
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              vertical: 8,
-                                                            ),
-                                                        decoration: BoxDecoration(
-                                                          color: isSelected
-                                                              ? const Color(
-                                                                  0xFFFCA311,
-                                                                )
-                                                              : Colors
-                                                                    .transparent,
-                                                          border: Border.all(
-                                                            color: isSelected
-                                                                ? const Color(
-                                                                    0xFFFCA311,
-                                                                  )
-                                                                : const Color(
-                                                                    0xFF415A77,
-                                                                  ),
-                                                            width: 2,
-                                                          ),
-                                                        ),
-                                                        child: Text(
-                                                          TimerSettingsService.formatDuration(
-                                                            duration,
-                                                          ),
-                                                          style: GoogleFonts.pressStart2p(
-                                                            color: isSelected
-                                                                ? Colors.black
-                                                                : Colors
-                                                                      .white54,
-                                                            fontSize: 10,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                        ),
-                                                      ),
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  languageService.translate(
+                                                    'players_title',
+                                                  ),
+                                                  style: GoogleFonts.vt323(
+                                                    color: Colors.white70,
+                                                    fontSize: 28,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '$_playerCount',
+                                                  style: GoogleFonts.vt323(
+                                                    color: Colors.white,
+                                                    fontSize: 28,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        // Roles Section
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const WerewolfRolesScreen(),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(
+                                                0xFF1B263B,
+                                              ).withOpacity(0.8),
+                                              border: Border.all(
+                                                color: const Color(0xFF415A77),
+                                                width: 3,
+                                              ),
+                                            ),
+                                            padding: const EdgeInsets.all(16),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'ROLES',
+                                                  style: GoogleFonts.vt323(
+                                                    color: Colors.white70,
+                                                    fontSize: 28,
+                                                  ),
+                                                ),
+                                                Image.asset(
+                                                  'assets/images/claw_icon.png',
+                                                  width: 32,
+                                                  height: 32,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        // Leaderboards Section
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const WerewolfLeaderboardsScreen(),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(
+                                                0xFF1B263B,
+                                              ).withOpacity(0.8),
+                                              border: Border.all(
+                                                color: const Color(0xFF415A77),
+                                                width: 3,
+                                              ),
+                                            ),
+                                            padding: const EdgeInsets.all(16),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  languageService.translate(
+                                                    'leaderboards_title',
+                                                  ),
+                                                  style: GoogleFonts.vt323(
+                                                    color: Colors.white70,
+                                                    fontSize: 28,
+                                                  ),
+                                                ),
+                                                const Icon(
+                                                  Icons.leaderboard,
+                                                  color: Colors.white,
+                                                  size: 28,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        // Timer Duration Selector
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color(
+                                              0xFF1B263B,
+                                            ).withOpacity(0.8),
+                                            border: Border.all(
+                                              color: const Color(0xFF415A77),
+                                              width: 3,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.all(16),
+                                          child: PixelGameTimer(
+                                            selectedMode: _timerMode,
+                                            playerCount: _playerCount,
+                                            onModeChanged: _setTimerMode,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 24),
+                                        PixelButton(
+                                          label: 'START GAME',
+                                          color: _playerCount >= 5
+                                              ? Colors.redAccent
+                                              : Colors.grey,
+                                          onPressed: _playerCount >= 5
+                                              ? () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const WerewolfPhaseOneScreen(),
                                                     ),
-                                                  ),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ],
+                                                  );
+                                                }
+                                              : null,
                                         ),
-                                      ),
-                                      const Spacer(),
-                                      PixelButton(
-                                        label: 'START GAME',
-                                        color: _playerCount >= 5
-                                            ? Colors.redAccent
-                                            : Colors.grey,
-                                        onPressed: _playerCount >= 5
-                                            ? () {
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const WerewolfPhaseOneScreen(),
-                                                  ),
-                                                );
-                                              }
-                                            : null,
-                                      ),
-                                      if (_playerCount < 5)
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 8.0,
-                                          ),
-                                          child: Text(
-                                            'NEED AT LEAST 5 PLAYERS',
-                                            style: GoogleFonts.vt323(
-                                              color: Colors.redAccent
-                                                  .withOpacity(0.7),
-                                              fontSize: 16,
+                                        if (_playerCount < 5)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 8.0,
+                                            ),
+                                            child: Text(
+                                              'NEED AT LEAST 5 PLAYERS',
+                                              style: GoogleFonts.vt323(
+                                                color: Colors.redAccent
+                                                    .withOpacity(0.7),
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      const SizedBox(height: 16),
-                                    ],
+                                        const SizedBox(height: 16),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

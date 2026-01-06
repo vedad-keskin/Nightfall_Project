@@ -44,7 +44,32 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
 
   Future<void> _loadTimerDuration() async {
     final timerService = TimerSettingsService();
-    final duration = await timerService.getTimerDuration();
+    final modeString = await timerService.getTimerMode();
+    int duration = 300; // Default 5 minutes
+
+    switch (modeString) {
+      case 'twoMinutes':
+        duration = 120;
+        break;
+      case 'fiveMinutes':
+        duration = 300;
+        break;
+      case 'tenMinutes':
+        duration = 600;
+        break;
+      case 'thirtySecondsPerPlayer':
+        // Calculate based on alive players or total players?
+        // Usually based on current survivors for dynamic pacing, or total for consistency.
+        // User said "30sec per player". Let's use current alive players (widget.players in phase 4 is survivors? No, wait)
+        // Earlier I discovered phase 4 receives filtered players list from phase 3?
+        // Phase 3 passes `players: widget.players` which is alive players.
+        // So widget.players.length is the count of alive players.
+        duration = 30 * widget.players.length;
+        // Ensure at least some minimum time? e.g. 60s
+        if (duration < 60) duration = 60;
+        break;
+    }
+
     if (mounted) {
       setState(() {
         _secondsRemaining = duration;
