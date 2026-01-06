@@ -182,7 +182,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     });
   }
 
-  void _performGuardCheck(WerewolfPlayer player) {
+  Future<void> _performGuardCheck(WerewolfPlayer player) async {
     final role = widget.playerRoles[player.id];
     bool isWerewolf = false;
 
@@ -194,9 +194,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       }
     }
 
-    showDialog(
+    await showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false, // Force them to press Close
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
@@ -232,6 +232,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         ),
       ),
     );
+
+    // Auto-advance after check
+    _nextStep();
   }
 
   // Specific state for distinct roles

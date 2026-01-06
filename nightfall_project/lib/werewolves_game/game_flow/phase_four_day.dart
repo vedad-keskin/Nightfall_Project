@@ -104,13 +104,36 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       nextDeadIds.add(_selectedForHangingId!);
     }
 
-    // 3. Check Win Conditions
+    // 3. Twin Transformation Logic
+    Map<String, WerewolfRole> updatedRoles = Map.from(widget.playerRoles);
+    if (_selectedForHangingId != null) {
+      final hangedRole = widget.playerRoles[_selectedForHangingId];
+      if (hangedRole?.id == 6) {
+        // Twin was hanged - find the other twin and transform them
+        for (final player in widget.players) {
+          if (player.id != _selectedForHangingId &&
+              !nextDeadIds.contains(player.id)) {
+            final playerRole = widget.playerRoles[player.id];
+            if (playerRole?.id == 6) {
+              // Found the other twin - transform to Avenging Twin
+              final avengingTwinRole = WerewolfRoleService().getRoleById(7);
+              if (avengingTwinRole != null) {
+                updatedRoles[player.id] = avengingTwinRole;
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    // 4. Check Win Conditions (using updated roles)
     int aliveWerewolves = 0;
     int aliveVillagers = 0;
 
     for (final player in widget.players) {
       if (!nextDeadIds.contains(player.id)) {
-        final role = widget.playerRoles[player.id];
+        final role = updatedRoles[player.id];
         if (role != null) {
           // Werewolf Alliance (2, 7, 8) count as "Bad"
           if (role.id == 2 || role.id == 7 || role.id == 8) {
@@ -127,11 +150,11 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       // Village Wins
       _navigateToGameEnd("The Village");
     } else if (aliveWerewolves >= aliveVillagers) {
-      // Werewolves Win
+      // Werewolves Win (including after Twin transformation)
       _navigateToGameEnd("The Werewolves");
     } else {
-      // Game Continues -> Night Phase
-      _navigateToNextNight(nextDeadIds);
+      // Game Continues -> Night Phase (pass updated roles)
+      _navigateToNextNight(nextDeadIds, updatedRoles);
     }
   }
 
@@ -147,11 +170,14 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
     );
   }
 
-  void _navigateToNextNight(List<String> nextDeadIds) {
+  void _navigateToNextNight(
+    List<String> nextDeadIds,
+    Map<String, WerewolfRole> updatedRoles,
+  ) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => WerewolfPhaseThreeScreen(
-          playerRoles: widget.playerRoles,
+          playerRoles: updatedRoles,
           // We pass ONLY the alive players to the next night phase?
           // Phase 3 expects a list of players. If we filter it, dead players are gone from the UI.
           // This matches the "Moderator View" requirement where they only see relevant info.
@@ -335,46 +361,44 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   color: const Color(0xFF1B263B), // Dark Footer
-                  child: Column(
+                  child: Row(
                     children: [
+                      // Timer on the left
                       Text(
                         _formattedTime,
                         style: GoogleFonts.vt323(
                           color: _secondsRemaining < 60
                               ? Colors.redAccent
                               : Colors.greenAccent,
-                          fontSize: 48,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: PixelButton(
-                              label: "SKIP VOTE",
-                              color: const Color(0xFF415A77),
-                              onPressed: () {
-                                _selectedForHangingId = null; // Ensure null
-                                _handleVote();
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: PixelButton(
-                              label: _selectedForHangingId == null
-                                  ? "SELECT"
-                                  : "CONFIRM",
-                              color: _selectedForHangingId == null
-                                  ? Colors.grey
-                                  : const Color(0xFFE63946),
-                              onPressed: _selectedForHangingId == null
-                                  ? null
-                                  : _handleVote,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(width: 16),
+                      // Buttons on the right
+                      Expanded(
+                        child: PixelButton(
+                          label: "SKIP VOTE",
+                          color: const Color(0xFF415A77),
+                          onPressed: () {
+                            _selectedForHangingId = null; // Ensure null
+                            _handleVote();
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: PixelButton(
+                          label: _selectedForHangingId == null
+                              ? "SELECT"
+                              : "CONFIRM",
+                          color: _selectedForHangingId == null
+                              ? Colors.grey
+                              : const Color(0xFFE63946),
+                          onPressed: _selectedForHangingId == null
+                              ? null
+                              : _handleVote,
+                        ),
                       ),
                     ],
                   ),

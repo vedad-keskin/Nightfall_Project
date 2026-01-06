@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:nightfall_project/base_components/pixel_components.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
+import 'package:nightfall_project/werewolves_game/layouts/game_layout.dart';
 
 class WerewolfPhaseFiveScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -204,9 +205,12 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
                         label: "BACK TO MENU",
                         color: const Color(0xFF415A77),
                         onPressed: () {
-                          Navigator.of(
-                            context,
-                          ).popUntil((route) => route.isFirst);
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => const WerewolfGameLayout(),
+                            ),
+                            (route) => route.isFirst,
+                          );
                         },
                       ),
                     ),
