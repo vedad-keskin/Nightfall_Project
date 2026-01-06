@@ -6,6 +6,7 @@ import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/alliance_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/game_settings_service.dart';
+import 'package:nightfall_project/werewolves_game/game_flow/phase_two.dart';
 
 class WerewolfPhaseOneScreen extends StatefulWidget {
   const WerewolfPhaseOneScreen({super.key});
@@ -481,8 +482,45 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                               ? Colors.green
                               : const Color(0xFF415A77).withOpacity(0.5),
                           onPressed: _canProceed
-                              ? () {
-                                  // TODO: Navigate to assign roles phase
+                              ? () async {
+                                  // 1. Load players
+                                  final players = await _playerService
+                                      .loadPlayers();
+
+                                  // 2. Flatten and shuffle roles
+                                  final List<int> flattenedRoleIds = [];
+                                  _roleCounts.forEach((roleId, count) {
+                                    for (int i = 0; i < count; i++) {
+                                      flattenedRoleIds.add(roleId);
+                                    }
+                                  });
+                                  flattenedRoleIds.shuffle();
+
+                                  // 3. Map players to roles
+                                  final Map<String, WerewolfRole> playerRoles =
+                                      {};
+                                  for (int i = 0; i < players.length; i++) {
+                                    final roleId = flattenedRoleIds[i];
+                                    final role = _roleService.getRoleById(
+                                      roleId,
+                                    );
+                                    if (role != null) {
+                                      playerRoles[players[i].id] = role;
+                                    }
+                                  }
+
+                                  // 4. Navigate to Phase Two
+                                  if (mounted) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            WerewolfPhaseTwoScreen(
+                                              players: players,
+                                              playerRoles: playerRoles,
+                                            ),
+                                      ),
+                                    );
+                                  }
                                 }
                               : null,
                         ),

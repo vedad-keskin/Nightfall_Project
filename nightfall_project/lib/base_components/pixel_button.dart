@@ -90,15 +90,18 @@ class _PixelButtonState extends State<PixelButton> {
               ),
               // Reduced horizontal padding from 24 to 12
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Text(
-                widget.label,
-                style: GoogleFonts.vt323(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  shadows: [
-                    const Shadow(color: Colors.black, offset: Offset(1, 1)),
-                  ],
+              child: Center(
+                child: Text(
+                  widget.label,
+                  style: GoogleFonts.vt323(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      const Shadow(color: Colors.black, offset: Offset(1, 1)),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
