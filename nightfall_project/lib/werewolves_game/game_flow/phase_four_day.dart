@@ -7,6 +7,8 @@ import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart
 import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
 import 'phase_five.dart';
 import 'phase_three_night.dart';
+import 'package:provider/provider.dart';
+import 'package:nightfall_project/services/language_service.dart';
 
 class WerewolfPhaseFourScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -124,7 +126,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       final role = widget.playerRoles[_selectedForHangingId];
       if (role?.id == 9) {
         // Jester Wins immediately if hanged
-        _navigateToGameEnd("The Jester");
+        _navigateToGameEnd("jester");
         return;
       }
     }
@@ -180,10 +182,10 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
 
     if (aliveWerewolves == 0) {
       // Village Wins
-      _navigateToGameEnd("The Village");
+      _navigateToGameEnd("village");
     } else if (aliveWerewolves >= aliveVillagers) {
       // Werewolves Win (including after Twin transformation)
-      _navigateToGameEnd("The Werewolves");
+      _navigateToGameEnd("werewolves");
     } else {
       // Game Continues -> Night Phase (pass updated roles)
       _navigateToNextNight(nextDeadIds, updatedRoles);
@@ -253,7 +255,9 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                   child: Column(
                     children: [
                       Text(
-                        "DAY PHASE",
+                        context.watch<LanguageService>().translate(
+                          'day_phase_title',
+                        ),
                         style: GoogleFonts.pressStart2p(
                           color: const Color(0xFFFCA311),
                           fontSize: 20,
@@ -262,7 +266,9 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "DISCUSS & VOTE",
+                        context.watch<LanguageService>().translate(
+                          'discuss_and_vote_instruction',
+                        ),
                         style: GoogleFonts.vt323(
                           color: Colors.white,
                           fontSize: 20,
@@ -359,7 +365,10 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                                     ),
                                     if (role != null)
                                       Text(
-                                        role.name.toUpperCase(),
+                                        context
+                                            .watch<LanguageService>()
+                                            .translate(role.translationKey)
+                                            .toUpperCase(),
                                         style: GoogleFonts.pressStart2p(
                                           color: _getRoleColor(role.id),
                                           fontSize: 8,
@@ -371,7 +380,9 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                                       ),
                                     if (isSelected)
                                       Text(
-                                        "HANG",
+                                        context
+                                            .watch<LanguageService>()
+                                            .translate('hang_button'),
                                         style: GoogleFonts.pressStart2p(
                                           color: Colors.redAccent,
                                           fontSize: 10,
@@ -434,7 +445,9 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                       // Buttons
                       Expanded(
                         child: PixelButton(
-                          label: "SKIP",
+                          label: context.watch<LanguageService>().translate(
+                            'skip_button',
+                          ),
                           color: const Color(0xFF415A77),
                           onPressed: () {
                             _selectedForHangingId = null;
@@ -444,11 +457,15 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        flex: 2,
+                        // flex: 2,
                         child: PixelButton(
                           label: _selectedForHangingId == null
-                              ? "SELECT"
-                              : "HANG",
+                              ? context.watch<LanguageService>().translate(
+                                  'select_button',
+                                )
+                              : context.watch<LanguageService>().translate(
+                                  'hang_button',
+                                ),
                           color: _selectedForHangingId == null
                               ? Colors.grey
                               : const Color(0xFFE63946),

@@ -6,6 +6,8 @@ import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart
 import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
 import 'package:nightfall_project/werewolves_game/layouts/game_layout.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
+import 'package:nightfall_project/services/language_service.dart';
 
 class WerewolfPhaseFiveScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -34,12 +36,10 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
 
   // Color scheme based on winner
   Color get _themeColor {
-    if (widget.winningTeam.contains('Werewolves'))
-      return const Color(0xFFE63946); // Red
-    if (widget.winningTeam.contains('Village'))
-      return const Color(0xFF52B788); // Green
-    if (widget.winningTeam.contains('Jester'))
-      return const Color(0xFF9D4EDD); // Purple
+    final team = widget.winningTeam.toLowerCase();
+    if (team.contains('werewolves')) return const Color(0xFFE63946); // Red
+    if (team.contains('village')) return const Color(0xFF52B788); // Green
+    if (team.contains('jester')) return const Color(0xFF9D4EDD); // Purple
     return Colors.white;
   }
 
@@ -54,11 +54,12 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
 
   Future<void> _playWinSound() async {
     String soundPath = "";
-    if (widget.winningTeam.contains('Werewolves')) {
+    final team = widget.winningTeam.toLowerCase();
+    if (team.contains('werewolves')) {
       soundPath = 'audio/werewolves/werewolf_win.mp3';
-    } else if (widget.winningTeam.contains('Village')) {
+    } else if (team.contains('village')) {
       soundPath = 'audio/werewolves/village_win.mp3';
-    } else if (widget.winningTeam.contains('Jester')) {
+    } else if (team.contains('jester')) {
       soundPath = 'audio/werewolves/jester_win.mp3';
     }
 
@@ -82,9 +83,10 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
   Future<void> _distributePoints() async {
     // 1. Determine Winning Alliance ID
     int winningAllianceId = -1;
-    if (widget.winningTeam.contains('Village')) winningAllianceId = 1;
-    if (widget.winningTeam.contains('Werewolves')) winningAllianceId = 2;
-    if (widget.winningTeam.contains('Jester')) winningAllianceId = 3;
+    final team = widget.winningTeam.toLowerCase();
+    if (team.contains('village')) winningAllianceId = 1;
+    if (team.contains('werewolves')) winningAllianceId = 2;
+    if (team.contains('jester')) winningAllianceId = 3;
 
     // 2. Load Current Players form DB (to get current points state)
     List<WerewolfPlayer> currentDbPlayers = await _playerService.loadPlayers();
@@ -118,8 +120,14 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
   }
 
   void _startTypewriter() {
-    // "THE VILLAGE WINS" etc.
-    final fullText = "${widget.winningTeam.toUpperCase()} WIN!";
+    final languageService = context.read<LanguageService>();
+    final teamName = languageService.translate(
+      'winning_team_${widget.winningTeam}',
+    );
+    final fullText = languageService
+        .translate('win_title')
+        .replaceAll('{team}', teamName)
+        .toUpperCase();
     int index = 0;
 
     _titleTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
@@ -156,7 +164,9 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
                 children: [
                   const SizedBox(height: 40),
                   Text(
-                    "GAME OVER",
+                    context.watch<LanguageService>().translate(
+                      'game_over_title',
+                    ),
                     style: GoogleFonts.vt323(
                       color: Colors.white70,
                       fontSize: 32,
@@ -210,7 +220,9 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
                   // Winners List & Points
                   if (_showWinners && _appPlayersUpdated.isNotEmpty) ...[
                     Text(
-                      "POINTS DISTRIBUTED",
+                      context.watch<LanguageService>().translate(
+                        'points_distributed_label',
+                      ),
                       style: GoogleFonts.vt323(
                         color: Colors.white,
                         fontSize: 24,
@@ -227,7 +239,9 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: PixelButton(
-                        label: "BACK TO MENU",
+                        label: context.watch<LanguageService>().translate(
+                          'back_to_menu',
+                        ),
                         color: const Color(0xFF415A77),
                         onPressed: () async {
                           await _winPlayer.stop();
@@ -255,9 +269,10 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
   List<Widget> _buildWinnersList() {
     // Determine Winning Alliance ID again for filter
     int winningAllianceId = -1;
-    if (widget.winningTeam.contains('Village')) winningAllianceId = 1;
-    if (widget.winningTeam.contains('Werewolves')) winningAllianceId = 2;
-    if (widget.winningTeam.contains('Jester')) winningAllianceId = 3;
+    final team = widget.winningTeam.toLowerCase();
+    if (team.contains('village')) winningAllianceId = 1;
+    if (team.contains('werewolves')) winningAllianceId = 2;
+    if (team.contains('jester')) winningAllianceId = 3;
 
     List<Widget> list = [];
 
@@ -298,7 +313,7 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
     if (list.isEmpty) {
       list.add(
         Text(
-          "No points awarded.",
+          context.watch<LanguageService>().translate('no_points_awarded_msg'),
           style: GoogleFonts.vt323(color: Colors.white54),
         ),
       );

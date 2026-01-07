@@ -6,6 +6,8 @@ import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
 import 'phase_four_day.dart';
 import 'phase_five.dart';
 import 'dart:math';
+import 'package:provider/provider.dart';
+import 'package:nightfall_project/services/language_service.dart';
 
 class WerewolfPhaseThreeScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -90,28 +92,30 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   NightStep get _currentStep => _nightSteps[_currentStepIndex];
 
   String get _stepTitle {
+    final languageService = context.read<LanguageService>();
     switch (_currentStep) {
       case NightStep.werewolves:
-        return 'WEREWOLVES & VAMPIRE';
+        return languageService.translate('step_werewolves_title');
       case NightStep.doctor:
-        return 'THE DOCTOR';
+        return languageService.translate('step_doctor_title');
       case NightStep.guard:
-        return 'THE GUARD';
+        return languageService.translate('step_guard_title');
       case NightStep.plagueDoctor:
-        return 'PLAGUE DOCTOR';
+        return languageService.translate('step_plague_doctor_title');
     }
   }
 
   String get _stepInstruction {
+    final languageService = context.read<LanguageService>();
     switch (_currentStep) {
       case NightStep.werewolves:
-        return 'SELECT A TARGET to ELIMINATE';
+        return languageService.translate('step_werewolves_instruction');
       case NightStep.doctor:
-        return 'SELECT A TARGET to HEAL';
+        return languageService.translate('step_doctor_instruction');
       case NightStep.guard:
-        return 'SELECT A TARGET to INSPECT';
+        return languageService.translate('step_guard_instruction');
       case NightStep.plagueDoctor:
-        return 'SELECT A TARGET (RISKY HEAL)';
+        return languageService.translate('step_plague_doctor_instruction');
     }
   }
 
@@ -245,7 +249,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
               ),
               const SizedBox(height: 16),
               PixelButton(
-                label: 'CLOSE',
+                label: context.watch<LanguageService>().translate(
+                  'close_button',
+                ),
                 color: const Color(0xFF415A77),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -318,7 +324,12 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       // Saved by Doctor?
       if (_doctorHealedId == _targetKilledId) {
         isSaved = true;
-        messages.add("The Doctor saved $killedName!");
+        messages.add(
+          context
+              .read<LanguageService>()
+              .translate('doctor_saved_msg')
+              .replaceAll('{name}', killedName),
+        );
       }
 
       // Saved by Plague Doctor? (67% chance)
@@ -328,11 +339,17 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           // 2/3 chance to HEAL
           isSaved = true;
           messages.add(
-            "The Plague Doctor treated $killedName... and they survived!",
+            context
+                .read<LanguageService>()
+                .translate('plague_doctor_saved_msg')
+                .replaceAll('{name}', killedName),
           );
         } else {
           messages.add(
-            "The Plague Doctor tried to help $killedName... but failed.",
+            context
+                .read<LanguageService>()
+                .translate('plague_doctor_failed_msg')
+                .replaceAll('{name}', killedName),
           );
         }
       }
@@ -354,7 +371,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
               .firstWhere((p) => p.id == _plagueDoctorTargetId)
               .name;
           messages.add(
-            "The Plague Doctor's 'treatment' was fatal to $victimName.",
+            context
+                .read<LanguageService>()
+                .translate('plague_doctor_killed_msg')
+                .replaceAll('{name}', victimName),
           );
         }
       }
@@ -371,7 +391,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           borderRadius: BorderRadius.circular(0),
         ),
         title: Text(
-          'DAWN BREAKS',
+          context.read<LanguageService>().translate('dawn_breaks_title'),
           style: GoogleFonts.pressStart2p(color: Colors.white, fontSize: 18),
           textAlign: TextAlign.center,
         ),
@@ -380,7 +400,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           children: [
             if (deadPlayerIds.isEmpty)
               Text(
-                "It was a peaceful night.\nNo one died.",
+                context.read<LanguageService>().translate('peaceful_night_msg'),
                 style: GoogleFonts.vt323(color: Colors.white, fontSize: 24),
                 textAlign: TextAlign.center,
               )
@@ -388,7 +408,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
               Column(
                 children: [
                   Text(
-                    "Tragedy has struck!",
+                    context.read<LanguageService>().translate(
+                      'tragedy_struck_msg',
+                    ),
                     style: GoogleFonts.vt323(
                       color: Colors.redAccent,
                       fontSize: 22,
@@ -402,7 +424,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Text(
-                        "${p.name.toUpperCase()} IS DEAD",
+                        context
+                            .read<LanguageService>()
+                            .translate('player_is_dead_label')
+                            .replaceAll('{name}', p.name.toUpperCase()),
                         style: GoogleFonts.pressStart2p(
                           color: Colors.red,
                           fontSize: 14,
@@ -432,7 +457,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             child: SizedBox(
               width: 200,
               child: PixelButton(
-                label: 'Start Day',
+                label: context.read<LanguageService>().translate(
+                  'start_day_button',
+                ),
                 color: Colors.orange,
                 onPressed: () {
                   Navigator.of(context).pop(); // Close Dialog
@@ -474,7 +501,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           builder: (context) => WerewolfPhaseFiveScreen(
             playerRoles: widget.playerRoles,
             players: widget.players,
-            winningTeam: "The Village",
+            winningTeam: 'village',
           ),
         ),
       );
@@ -485,7 +512,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           builder: (context) => WerewolfPhaseFiveScreen(
             playerRoles: widget.playerRoles,
             players: widget.players,
-            winningTeam: "The Werewolves",
+            winningTeam: 'werewolves',
           ),
         ),
       );
@@ -647,7 +674,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                           ),
                           if (role != null)
                             Text(
-                              role.name.toUpperCase(),
+                              context
+                                  .watch<LanguageService>()
+                                  .translate(role.translationKey)
+                                  .toUpperCase(),
                               style: GoogleFonts.pressStart2p(
                                 color: isDisabled
                                     ? Colors.white12
@@ -744,7 +774,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                     physics: const BouncingScrollPhysics(),
                     children: [
                       _buildAllianceSection(
-                        'THE PACK',
+                        context.watch<LanguageService>().translate(
+                          'the_pack_alliance_title',
+                        ),
                         const Color(0xFFE63946),
                         widget.players.where((p) {
                           final role = widget.playerRoles[p.id];
@@ -752,7 +784,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                         }).toList(),
                       ),
                       _buildAllianceSection(
-                        'THE VILLAGE',
+                        context.watch<LanguageService>().translate(
+                          'the_village_alliance_title',
+                        ),
                         const Color(0xFF4CC9F0),
                         widget.players.where((p) {
                           final role = widget.playerRoles[p.id];
@@ -760,7 +794,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                         }).toList(),
                       ),
                       _buildAllianceSection(
-                        'SPECIALS',
+                        context.watch<LanguageService>().translate(
+                          'specials_alliance_title',
+                        ),
                         const Color(0xFF9D4EDD), // Purple
                         widget.players.where((p) {
                           final role = widget.playerRoles[p.id];
@@ -776,8 +812,12 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: PixelButton(
                     label: _currentStepIndex == _nightSteps.length - 1
-                        ? 'END NIGHT'
-                        : 'NEXT STEP',
+                        ? context.watch<LanguageService>().translate(
+                            'end_night_button',
+                          )
+                        : context.watch<LanguageService>().translate(
+                            'next_step_button',
+                          ),
                     color: _canProceed ? _stepColor : Colors.grey,
                     onPressed: _canProceed ? _nextStep : null,
                   ),

@@ -6,6 +6,8 @@ import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/alliance_service.dart';
 import 'phase_three_night.dart';
 import 'dart:math';
+import 'package:provider/provider.dart';
+import 'package:nightfall_project/services/language_service.dart';
 
 class WerewolfPhaseTwoScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -60,7 +62,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                     children: [
                       if (!isRevealed) ...[
                         Text(
-                          'SECRET ROLE',
+                          context.watch<LanguageService>().translate(
+                            'secret_role',
+                          ),
                           style: GoogleFonts.vt323(
                             color: Colors.white70,
                             fontSize: 20,
@@ -119,7 +123,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                           child: SizedBox(
                             width: 200,
                             child: PixelButton(
-                              label: 'UNDERSTOOD',
+                              label: context.watch<LanguageService>().translate(
+                                'understood_button',
+                              ),
                               color: const Color(0xFF415A77),
                               onPressed: () {
                                 setState(() {
@@ -155,13 +161,13 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
           const Icon(Icons.security, color: Color(0xFFE63946), size: 64),
           const SizedBox(height: 16),
           Text(
-            'TOP SECRET',
+            context.watch<LanguageService>().translate('top_secret'),
             style: GoogleFonts.pressStart2p(color: Colors.white, fontSize: 16),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 12),
           Text(
-            'TAP TO REVEAL',
+            context.watch<LanguageService>().translate('tap_to_reveal'),
             style: GoogleFonts.vt323(color: Colors.white70, fontSize: 20),
             textAlign: TextAlign.center,
           ),
@@ -185,7 +191,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'ROLE DETAILS',
+                context.watch<LanguageService>().translate(
+                  'role_details_title',
+                ),
                 style: GoogleFonts.pressStart2p(
                   color: Colors.white,
                   fontSize: 16,
@@ -197,7 +205,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   child: Text(
-                    role.description,
+                    context.watch<LanguageService>().translate(
+                      role.descriptionKey,
+                    ),
                     style: GoogleFonts.vt323(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 20,
@@ -209,7 +219,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
               ),
               const SizedBox(height: 16),
               PixelButton(
-                label: 'CLOSE',
+                label: context.watch<LanguageService>().translate(
+                  'close_button',
+                ),
                 color: const Color(0xFFE63946),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -297,7 +309,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  'BOUND SOUL:',
+                                  context.watch<LanguageService>().translate(
+                                    'bound_soul_label',
+                                  ),
                                   style: GoogleFonts.pressStart2p(
                                     color: Colors.white,
                                     fontSize: 8,
@@ -336,7 +350,10 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                   children: [
                     // Header
                     Text(
-                      role.name.toUpperCase(),
+                      context
+                          .watch<LanguageService>()
+                          .translate(role.translationKey)
+                          .toUpperCase(),
                       style: GoogleFonts.pressStart2p(
                         color: Colors.white,
                         fontSize: 16, // Slightly smaller to be compacted
@@ -345,7 +362,12 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      alliance?.name.toUpperCase() ?? '',
+                      alliance != null
+                          ? context
+                                .watch<LanguageService>()
+                                .translate(alliance.translationKey)
+                                .toUpperCase()
+                          : '',
                       style: GoogleFonts.vt323(
                         color: allianceColor,
                         fontSize: 20, // Slightly smaller
@@ -432,14 +454,18 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                   child: Row(
                     children: [
                       PixelButton(
-                        label: 'BACK',
+                        label: context.watch<LanguageService>().translate(
+                          'back',
+                        ),
                         color: const Color(0xFF415A77),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 20),
                       Expanded(
                         child: Text(
-                          'ROLE DISCOVERY',
+                          context.watch<LanguageService>().translate(
+                            'role_discovery_title',
+                          ),
                           style: GoogleFonts.pressStart2p(
                             color: Colors.white,
                             fontSize: 18,
@@ -464,7 +490,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                     vertical: 8,
                   ),
                   child: Text(
-                    'PASS THE PHONE TO THE PLAYERS TO REVEAL THEIR ROLES',
+                    context.watch<LanguageService>().translate(
+                      'role_discovery_instruction',
+                    ),
                     style: GoogleFonts.vt323(
                       color: Colors.white60,
                       fontSize: 18,
@@ -565,7 +593,9 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: PixelButton(
-                          label: 'COMMENCE NIGHT',
+                          label: context.watch<LanguageService>().translate(
+                            'commence_night_button',
+                          ),
                           color: const Color(0xFFE63946),
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
