@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:nightfall_project/services/language_service.dart';
+import 'package:provider/provider.dart';
 import 'package:nightfall_project/base_components/pixel_components.dart';
 import 'package:nightfall_project/base_components/pixel_game_timer.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/timer_settings_service.dart';
@@ -8,8 +10,6 @@ import 'package:nightfall_project/werewolves_game/players_section/players_screen
 import 'package:nightfall_project/werewolves_game/leaderboards/leaderboards_screen.dart';
 import 'package:nightfall_project/werewolves_game/roles/roles_screen.dart';
 import 'package:nightfall_project/werewolves_game/game_flow/phase_one.dart';
-import 'package:nightfall_project/services/language_service.dart';
-import 'package:provider/provider.dart';
 
 class WerewolfGameLayout extends StatefulWidget {
   const WerewolfGameLayout({super.key});
@@ -153,20 +153,24 @@ class _WerewolfGameLayoutState extends State<WerewolfGameLayout> {
                                 child: Row(
                                   children: [
                                     PixelButton(
-                                      label: languageService.translate('back'),
+                                      label: context
+                                          .watch<LanguageService>()
+                                          .translate('back'),
                                       color: const Color(0xFF415A77),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
                                     ),
-                                    const SizedBox(width: 18),
+                                    const SizedBox(width: 20),
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          'WEREWOLF GAME',
+                                          context
+                                              .watch<LanguageService>()
+                                              .translate('werewolf_game'),
                                           style: GoogleFonts.pressStart2p(
                                             color: const Color(0xFFE0E1DD),
-                                            fontSize: 15,
+                                            fontSize: 16,
                                             shadows: [
                                               const Shadow(
                                                 color: Colors.black,
@@ -271,7 +275,9 @@ class _WerewolfGameLayoutState extends State<WerewolfGameLayout> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  'ROLES',
+                                                  languageService.translate(
+                                                    'roles_title',
+                                                  ),
                                                   style: GoogleFonts.vt323(
                                                     color: Colors.white70,
                                                     fontSize: 28,

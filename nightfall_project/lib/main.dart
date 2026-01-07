@@ -114,7 +114,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      // Left Side - Mafia
+                      // Left Side - Werewolves
                       Positioned(
                         left: 0,
                         top: 0,
@@ -131,7 +131,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                               child: PixelDialog(
                                 title: context
                                     .watch<LanguageService>()
-                                    .translate('mafia'),
+                                    .translate('werewolves'),
                                 color: Colors.black54, // More transparent
                                 accentColor: Colors.redAccent,
                                 titleFontSize: 19,
@@ -284,7 +284,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                                   lang.translate(
                                     isImpostor
                                         ? 'rules_impostor_title'
-                                        : 'rules_mafia_title',
+                                        : 'rules_werewolves_title',
                                   ),
                                   style: GoogleFonts.pressStart2p(
                                     color: const Color(0xFFE0E1DD),
@@ -299,7 +299,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                                       lang.translate(
                                         isImpostor
                                             ? 'rules_impostor_content'
-                                            : 'rules_mafia_content',
+                                            : 'rules_werewolves_content',
                                       ),
                                       style: GoogleFonts.vt323(
                                         color: Colors.white,

@@ -5,6 +5,8 @@ class WerewolfRole {
   final int allianceId;
   final String description;
   final String imagePath;
+  final String translationKey;
+  final String descriptionKey;
 
   WerewolfRole({
     required this.id,
@@ -13,6 +15,8 @@ class WerewolfRole {
     required this.allianceId,
     required this.description,
     required this.imagePath,
+    required this.translationKey,
+    required this.descriptionKey,
   });
 }
 
@@ -25,6 +29,8 @@ class WerewolfRoleService {
       allianceId: 1, // Villagers
       description: 'A simple townsperson trying to survive the night.',
       imagePath: 'assets/images/werewolves/Villager.png',
+      translationKey: 'villager_name',
+      descriptionKey: 'villager_desc',
     ),
     WerewolfRole(
       id: 2,
@@ -34,6 +40,8 @@ class WerewolfRoleService {
       description:
           'A fierce predator hungry for villagers. Each night, they can kill one player. Wins if they outnumber the village.',
       imagePath: 'assets/images/werewolves/Werewolf.png',
+      translationKey: 'werewolf_name',
+      descriptionKey: 'werewolf_desc',
     ),
     WerewolfRole(
       id: 3,
@@ -43,6 +51,8 @@ class WerewolfRoleService {
       description:
           'A dedicated healer. Each night, she can save one person from being attacked that night.',
       imagePath: 'assets/images/werewolves/Doctor.png',
+      translationKey: 'doctor_name',
+      descriptionKey: 'doctor_desc',
     ),
     WerewolfRole(
       id: 4,
@@ -52,6 +62,8 @@ class WerewolfRoleService {
       description:
           'A vigilant protector. Each night, he can inspect one player.',
       imagePath: 'assets/images/werewolves/Guard.png',
+      translationKey: 'guard_name',
+      descriptionKey: 'guard_desc',
     ),
     WerewolfRole(
       id: 5,
@@ -61,6 +73,8 @@ class WerewolfRoleService {
       description:
           'A mysterious healer. Each night, he can save one player but also has a small chance to kill him.',
       imagePath: 'assets/images/werewolves/Plague Doctor.png',
+      translationKey: 'plague_doctor_name',
+      descriptionKey: 'plague_doctor_desc',
     ),
     WerewolfRole(
       id: 6,
@@ -70,6 +84,8 @@ class WerewolfRoleService {
       description:
           'Two souls bound together. If one is hanged by the village, the other turns into a werewolf. if one is killed by a werewolf, the other remains a villager.',
       imagePath: 'assets/images/werewolves/Twins.png',
+      translationKey: 'twins_name',
+      descriptionKey: 'twins_desc',
     ),
     WerewolfRole(
       id: 7,
@@ -79,6 +95,8 @@ class WerewolfRoleService {
       description:
           'A twin fueled by vengeance. When their sibling is hanged by the village, they embrace the darkness and join the werewolves to hunt down those who killed their loved one.',
       imagePath: 'assets/images/werewolves/Avenging Twin.png',
+      translationKey: 'avenging_twin_name',
+      descriptionKey: 'avenging_twin_desc',
     ),
     WerewolfRole(
       id: 8,
@@ -88,6 +106,8 @@ class WerewolfRoleService {
       description:
           'A dark creature of the night. Awakens and kills with the werewolves each night, but remains undetected by the Guard.',
       imagePath: 'assets/images/werewolves/Vampire.png',
+      translationKey: 'vampire_name',
+      descriptionKey: 'vampire_desc',
     ),
     WerewolfRole(
       id: 9,
@@ -97,6 +117,8 @@ class WerewolfRoleService {
       description:
           'A silly trickster. Wants to be hanged by the village to claim victory.',
       imagePath: 'assets/images/werewolves/Jester.png',
+      translationKey: 'jester_name',
+      descriptionKey: 'jester_desc',
     ),
   ];
 

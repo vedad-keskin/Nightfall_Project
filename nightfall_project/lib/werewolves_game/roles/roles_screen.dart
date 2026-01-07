@@ -76,7 +76,7 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
                       Expanded(
                         child: Center(
                           child: Text(
-                            'ROLES',
+                            languageService.translate('roles_title'),
                             style: GoogleFonts.pressStart2p(
                               color: const Color(0xFFE0E1DD),
                               fontSize: 24,
@@ -185,7 +185,7 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
                 ),
 
                 Text(
-                  'TAP CARD TO FLIP',
+                  languageService.translate('tap_to_flip_card'),
                   style: GoogleFonts.vt323(color: Colors.white38, fontSize: 20),
                 ),
                 const SizedBox(height: 16),
@@ -227,7 +227,10 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
                 ),
               ),
               child: Text(
-                role.name.toUpperCase(),
+                context
+                    .watch<LanguageService>()
+                    .translate(role.translationKey)
+                    .toUpperCase(),
                 style: GoogleFonts.pressStart2p(
                   color: Colors.white,
                   fontSize: 16,
@@ -265,7 +268,10 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
           children: [
             const SizedBox(height: 10),
             Text(
-              role.name.toUpperCase(),
+              context
+                  .watch<LanguageService>()
+                  .translate(role.translationKey)
+                  .toUpperCase(),
               style: GoogleFonts.pressStart2p(
                 color: const Color(0xFFE0E1DD),
                 fontSize: 18,
@@ -285,14 +291,19 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
                   children: [
                     // Alliance
                     Text(
-                      'ALLIANCE',
+                      context.watch<LanguageService>().translate(
+                        'alliance_label',
+                      ),
                       style: GoogleFonts.vt323(
                         color: Colors.white54,
                         fontSize: 20,
                       ),
                     ),
                     Text(
-                      alliance?.name.toUpperCase() ?? 'UNKNOWN',
+                      context
+                          .watch<LanguageService>()
+                          .translate(alliance?.translationKey ?? 'UNKNOWN')
+                          .toUpperCase(),
                       style: GoogleFonts.vt323(
                         color: _getAllianceColor(role.allianceId),
                         fontSize: 28,
@@ -304,7 +315,9 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
 
                     // Description
                     Text(
-                      role.description,
+                      context.watch<LanguageService>().translate(
+                        role.descriptionKey,
+                      ),
                       style: GoogleFonts.vt323(
                         color: Colors.white,
                         fontSize: 22,
@@ -334,7 +347,10 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
                   const Icon(Icons.star, color: Colors.amber, size: 24),
                   const SizedBox(width: 8),
                   Text(
-                    'WIN: ${role.points} PTS',
+                    context
+                        .watch<LanguageService>()
+                        .translate('win_pts_label')
+                        .replaceAll('{points}', role.points.toString()),
                     style: GoogleFonts.pressStart2p(
                       color: Colors.amber,
                       fontSize: 12,

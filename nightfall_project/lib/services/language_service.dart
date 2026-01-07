@@ -33,7 +33,7 @@ class LanguageService extends ChangeNotifier {
   }
 
   static const Map<String, String> _enTranslations = {
-    'mafia': 'WEREWOLVES',
+    'werewolves': 'WEREWOLVES',
     'impostor': 'IMPOSTOR',
     'impostor-game': 'IMPOSTOR GAME',
     'play_now': 'PLAY NOW',
@@ -122,32 +122,31 @@ class LanguageService extends ChangeNotifier {
         '- Points are tracked on the Leaderboard.\n\n'
         '7. Have Fun!\n'
         'Enjoy the game, be sneaky if you\'re the IMPOSTOR, and try to catch the IMPOSTOR if you\'re INNOCENT. Good luck!',
-    'rules_mafia_title': 'HOW TO PLAY: WEREWOLVES',
-    'rules_mafia_content':
-        '1. Setup:\n'
-        '- Pass the device to each player so they can secretly see their role.\n\n'
-        '2. Roles & Alliances:\n'
-        '- VILLAGE: Villagers, Doctor, Guard, Plague Doctor, Twins.\n'
-        '  Goal: Eliminate all Werewolves.\n'
-        '- WEREWOLVES: Werewolves, Vampire, Avenging Twin.\n'
-        '  Goal: Win when the number of Werewolves is equal to or greater than the number of Villagers.\n'
-        '- SPECIAL: Jester.\n'
-        '  Goal: Be hanged by the Village.\n\n'
-        '3. Night Phase:\n'
-        '- The game is played in rounds, starting with Night.\n'
-        '- Werewolves secretly choose one player to kill.\n'
-        '- Special roles perform their abilities.\n\n'
-        '4. Day Phase:\n'
-        '- The result of the Night is revealed.\n'
-        '- Dead players are removed from the game and may no longer speak.\n'
-        '- Players discuss openly and vote to hang one player.\n'
+    'rules_werewolves_title': 'HOW TO PLAY: WEREWOLVES',
+    'rules_werewolves_content':
+        '1. Pass the device to each player so everyone can see their role.\n\n'
+        '2. Setup:\n'
+        '- The game requires a Narrator who manages the transitions and reads instructions from the app.\n'
+        '- Players are divided into two main alliances: THE VILLAGE and THE WEREWOLVES.\n'
+        '- There may also be unique special roles.\n\n'
+        '3. Alliances and Goals:\n'
+        '- VILLAGE: Goal is to find and eliminate all werewolves. They win if all werewolves are dead.\n'
+        '- WEREWOLVES: Goal is to outnumber the villagers. They win if they achieve a 1:1 or better ratio with villagers.\n'
+        '- JESTER (Neutral): Wins ONLY if they are voted out by the village during the Day Phase.\n\n'
+        '4. The Night Phase:\n'
+        '- Everyone closes their eyes.\n'
+        '- The Narrator calls specific roles to wake up and perform their actions via the app (e.g., werewolves choosing a victim, doctor saving someone).\n\n'
+        '5. The Day Phase:\n'
+        '- The Narrator announces who was killed during the Night (if anyone).\n'
+        '- Dead players must remain silent and cannot vote.\n'
+        '- Discussion: Surviving players discuss who they think the werewolves are.\n'
         '- A timer for the duration of the day can be set when creating the game.\n'
         '  It does not force the vote or skip it; it only serves as a reminder for the Narrator\n'
         '  that discussion time is over and that he should prompt players to vote or skip the voting.\n'
-        '- The player with the most votes is hanged.\n'
+        '- Voting: Players can vote to hang a suspect. The player with the most votes is eliminated.\n'
         '- The Village is not required to hang a player each day.\n'
         '- In case of a tie, no one is hanged.\n\n'
-        '5. Character Abilities:\n'
+        '6. Character Abilities:\n'
         '- WEREWOLF: Chooses a victim each night together with other Werewolves.\n'
         '- VILLAGER: Has no special ability; relies on discussion and voting.\n'
         '- VAMPIRE: Awakens with the Werewolves but appears as a Villager when inspected.\n'
@@ -160,15 +159,55 @@ class LanguageService extends ChangeNotifier {
         '  If one Twin is killed at night, the other remains a Villager.\n'
         '- AVENGING TWIN: If their Twin dies, they become an Avenging Twin and wake up with the Werewolves from the next night forward.\n'
         '- JESTER: Wins immediately only if hanged by the Village.\n\n'
-        '6. Winning:\n'
-        '- Village wins if all Werewolves are eliminated.\n'
-        '- Werewolves win if they equal or outnumber the Village.\n'
-        '- Jester wins instantly only if hanged.\n'
-        '- Points are awarded to the winning players based on role difficulty.\n',
+        '7. Scoring:\n'
+        '- Points are awarded to members of the winning alliance at the end of the game.\n'
+        '- Different roles grant different amounts of points depending on their difficulty.\n\n'
+        'Enjoy the mystery and deception. Good luck!',
+    'werewolf_game': 'WEREWOLVES GAME',
+    'roles_title': 'ROLES',
+    'pts': 'pts',
+    'alliance_label': 'ALLIANCE',
+    'win_pts_label': 'WIN: {points} PTS',
+    'tap_to_flip_card': 'TAP CARD TO FLIP',
+    'villager_name': 'Villager',
+    'villager_desc': 'A simple townsperson trying to survive the night.',
+    'werewolf_name': 'Werewolf',
+    'werewolf_desc':
+        'A fierce predator hungry for villagers. Each night, they can kill one player. Wins if they outnumber the village.',
+    'doctor_name': 'Doctor',
+    'doctor_desc':
+        'A dedicated healer. Each night, she can save one person from being attacked that night.',
+    'guard_name': 'Guard',
+    'guard_desc':
+        'A vigilant protector. Each night, he can inspect one player.',
+    'plague_doctor_name': 'Plague Doctor',
+    'plague_doctor_desc':
+        'A mysterious healer. Each night, he can save one player but also has a small chance to kill him.',
+    'twins_name': 'Twins',
+    'twins_desc':
+        'Two souls bound together. If one is hanged by the village, the other becomes an Avenging Twin. If one is killed by a werewolf, the other remains a villager.',
+    'avenging_twin_name': 'Avenging Twin',
+    'avenging_twin_desc':
+        'A twin fueled by vengeance. When their sibling is hanged by the village, they embrace the darkness and join the werewolves.',
+    'vampire_name': 'Vampire',
+    'vampire_desc':
+        'A dark creature of the night. Awakens and kills with the werewolves each night, but remains undetected by the Guard.',
+    'jester_name': 'Jester',
+    'jester_desc':
+        'A silly trickster. Wants to be hanged by the village to claim victory.',
+    'villagers_alliance_name': 'Villagers',
+    'villagers_alliance_desc':
+        'The peaceful inhabitants of the village. Their goal is to find and eliminate all werewolves.',
+    'werewolves_alliance_name': 'Werewolves',
+    'werewolves_alliance_desc':
+        'The predators of the night. Their goal is to outnumber the villagers to take over the town.',
+    'jester_alliance_name': 'Jester',
+    'jester_alliance_desc':
+        'A chaotic soul who wins only if they are voted out by the village during the day.',
   };
 
   static const Map<String, String> _bsTranslations = {
-    'mafia': 'VUKOVI',
+    'werewolves': 'VUKOVI',
     'impostor': 'VARALICA',
     'impostor-game': 'VARALICA',
     'play_now': 'ZAIGRAJ',
@@ -257,32 +296,31 @@ class LanguageService extends ChangeNotifier {
         '- Bodovi se prate na Rang-listi.\n\n'
         '7. Zabavite se!\n'
         'Uživajte u igri, budite lukavi ako ste VARALICA i pokušajte uhvatiti VARALICU ako ste NEVINI. Sretno!',
-    'rules_mafia_title': 'PRAVILA: VUKOVI',
-    'rules_mafia_content':
-        '1. Postavka:\n'
-        '- Proslijedite uređaj svakom igraču kako bi tajno vidio svoju ulogu.\n\n'
-        '2. Uloge i savezi:\n'
-        '- SELO: Seljani, Doktor, Stražar, Vrač, Blizanci.\n'
-        '  Cilj: Eliminisati sve Vukodlake.\n'
-        '- VUKODLACI: Vukodlaci, Vampir, Osvetnički blizanac.\n'
-        '  Cilj: Pobjeđuju kada je broj Vukodlaka jednak ili veći od broja Seljana.\n'
-        '- POSEBNA ULOGA: Luda.\n'
-        '  Cilj: Pobjeđuje kada je obješen od strane Sela.\n\n'
-        '3. Noćna faza:\n'
-        '- Igra se odvija u rundama koje započinju noću.\n'
-        '- Vukodlaci tajno biraju jednog igrača kojeg žele ubiti.\n'
-        '- Posebne uloge izvršavaju svoje sposobnosti.\n\n'
-        '4. Dnevna faza:\n'
-        '- Objavljuju se rezultati noći.\n'
-        '- Mrtvi igrači se uklanjaju iz igre i nemaju pravo govoriti nakon smrti.\n'
-        '- Preživjeli igrači otvoreno raspravljaju i glasaju za vješanje jednog igrača.\n'
+    'rules_werewolves_title': 'PRAVILA: VUKOVI',
+    'rules_werewolves_content':
+        '1. Proslijedite uređaj svakom igraču kako bi svi mogli vidjeti svoju ulogu.\n\n'
+        '2. Postavka:\n'
+        '- Igra zahtijeva Naratora koji upravlja prijelazima i čita upute iz aplikacije.\n'
+        '- Igrači su podijeljeni u dva glavna saveza: SELO i VUKOVI.\n'
+        '- Mogu postojati i jedinstvene posebne uloge.\n\n'
+        '3. Savezi i ciljevi:\n'
+        '- SELO: Cilj je pronaći i eliminisati sve vukove. Pobjeđuju ako su svi vukovi mrtvi.\n'
+        '- VUKOVI: Cilj je nadmašiti broj seljana. Pobjeđuju ako postignu omjer 1:1 ili bolji sa seljanima.\n'
+        '- JESTER (Neutralni): Pobjeđuje SAMO ako bude izglasan od strane sela tokom dnevne faze.\n\n'
+        '4. Noćna faza:\n'
+        '- Svi zatvaraju oči.\n'
+        '- Narator poziva određene uloge da se probude i izvrše svoje radnje putem aplikacije (npr. vukovi biraju žrtvu, doktor spašava nekoga).\n\n'
+        '5. Dnevna faza:\n'
+        '- Narator objavljuje ko je ubijen tokom noći (if anyone).\n'
+        '- Mrtvi igrači moraju šutjeti i ne mogu glasati.\n'
+        '- Rasprava: Preživjeli igrači raspravljaju o tome ko su vukovi.\n'
         '- Može se postaviti tajmer za trajanje dnevne faze prilikom kreiranja igre.\n'
         '  Tajmer ne prisiljava glasanje niti njegovo preskakanje; služi samo kao podsjetnik\n'
         '  Naratoru da je vrijeme za raspravu isteklo i da treba potaknuti igrače da glasaju ili preskoče glasanje.\n'
-        '- Igrač sa najviše glasova biva obješen.\n'
+        '- Glasanje: Igrači mogu glasati za vješanje sumnjivca. Igrač sa najviše glasova se eliminiše.\n'
         '- Selo nije obavezno objesiti igrača svaki dan.\n'
         '- U slučaju izjednačenja, niko ne biva obješen.\n\n'
-        '5. Sposobnosti likova:\n'
+        '6. Sposobnosti likova:\n'
         '- VUKODLAK: Zajedno s ostalim Vukodlacima svake noći bira žrtvu.\n'
         '- SELJANIN: Nema posebnu sposobnost; oslanja se na raspravu i glasanje.\n'
         '- VAMPIR: Budi se s Vukodlacima, ali se pri provjeri prikazuje kao Seljanin.\n'
@@ -295,10 +333,49 @@ class LanguageService extends ChangeNotifier {
         '  Ako jedan Blizanac bude ubijen tokom noći, drugi ostaje Seljanin.\n'
         '- OSVETNIČKI BLIZANAC: Ako njegov Blizanac umre, postaje Osvetnički blizanac i od sljedeće noći se budi s Vukodlacima.\n'
         '- LUDA: Pobjeđuje samo ako bude obješena od strane Sela.\n\n'
-        '6. Pobjeda:\n'
-        '- Selo pobjeđuje ako su svi Vukodlaci eliminisani.\n'
-        '- Vukodlaci pobjeđuju ako izjednače ili nadjačaju broj Seljana.\n'
-        '- Luda pobjeđuje samo ako bude obješen.\n'
-        '- Bodovi se dodjeljuju pobjednicima na osnovu težine uloge.\n',
+        '7. Bodovanje:\n'
+        '- Bodovi se dodjeljuju članovima pobjedničkog saveza na kraju igre.\n'
+        '- Različite uloge daju različite iznose bodova ovisno o njihovoj težini.\n\n'
+        'Uživajte u misteriji i obmani. Sretno!',
+    'werewolf_game': 'IGRA VUKOVA',
+    'roles_title': 'ULOGE',
+    'pts': 'bod',
+    'alliance_label': 'SAVEZ',
+    'win_pts_label': 'POBJEDA: {points} BOD',
+    'tap_to_flip_card': 'DODIRNI KARTU ZA OKRETANJE',
+    'villager_name': 'Seljak',
+    'villager_desc': 'Obični mještanin koji pokušava preživjeti noć.',
+    'werewolf_name': 'Vuk',
+    'werewolf_desc':
+        'Žestoki grabežljivac gladan seljana. Svake noći mogu ubiti jednog igrača. Pobjeđuju ako nadmaše selo.',
+    'doctor_name': 'Doktor',
+    'doctor_desc':
+        'Posvećeni iscjelitelj. Svake noći može spasiti jednu osobu od napada te noći.',
+    'guard_name': 'Stražar',
+    'guard_desc': 'Budni zaštitnik. Svake noći može provjeriti jednog igrača.',
+    'plague_doctor_name': 'Kužni doktor',
+    'plague_doctor_desc':
+        'Misteriozni iscjelitelj. Svake noći može spasiti jednog igrača, ali ima i malu šansu da ga ubije.',
+    'twins_name': 'Blizanci',
+    'twins_desc':
+        'Dvije duše povezane zajedno. Ako sela objesi jednog, drugi se pretvara u vuka. Ako vukovi ubiju jednog, drugi ostaje seljak.',
+    'avenging_twin_name': 'Osvetoljubivi blizanac',
+    'avenging_twin_desc':
+        'Blizanac vođen osvetom. Kada im selo objesi brata/sestru, oni prihvaćaju tamu i pridružuju se vukovima.',
+    'vampire_name': 'Vampir',
+    'vampire_desc':
+        'Mračno stvorenje noći. Budi se i ubija s vukovima svake noći, ali ostaje neotkriven od strane Stražara.',
+    'jester_name': 'Luda',
+    'jester_desc':
+        'Smiješni šaljivdžija. Želi da ga selo objesi kako bi proglasio pobjedu.',
+    'villagers_alliance_name': 'Seljani',
+    'villagers_alliance_desc':
+        'Mirni stanovnici sela. Njihov cilj je pronaći i eliminisati sve vukove.',
+    'werewolves_alliance_name': 'Vukovi',
+    'werewolves_alliance_desc':
+        'Grabežljivci noći. Njihov cilj je nadmašiti broj seljana kako bi preuzeli grad.',
+    'jester_alliance_name': 'Luda',
+    'jester_alliance_desc':
+        'Haočna duša koja pobjeđuje samo ako bude izglasana od strane sela tokom dana.',
   };
 }
