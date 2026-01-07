@@ -524,6 +524,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             playerRoles: widget.playerRoles,
             players: widget.players,
             deadPlayerIds: deadPlayerIds,
+            lastHealedId: _doctorHealedId,
+            lastPlagueTargetId: _plagueDoctorTargetId,
           ),
         ),
       );
