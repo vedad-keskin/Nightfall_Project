@@ -335,7 +335,7 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
 
             // Fixed Win Points at bottom
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(4),

@@ -133,7 +133,7 @@ const Map<String, String> bsTranslations = {
   'roles_title': 'ULOGE',
   'pts': 'bod',
   'alliance_label': 'SAVEZ',
-  'win_pts_label': 'POBJEDA: {points} BOD',
+  'win_pts_label': 'WIN: {points} BOD',
   'tap_to_flip_card': 'DODIRNI KARTU ZA OKRETANJE',
   'villager_name': 'Seljak',
   'villager_desc': 'Obični mještanin koji pokušava preživjeti noć.',
