@@ -41,6 +41,34 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+   applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                output.outputFileName = "nightfall v${variant.versionName}.apk"
+            }
+
+        // Copy the renamed APK to the flutter-apk directory after the build
+        variant.assembleProvider.configure {
+            doLast {
+                variant.outputs
+                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+                    .forEach { output ->
+                        val buildDir = layout.buildDirectory.get().asFile
+                        val flutterApkDir = File(buildDir, "outputs/flutter-apk")
+                        
+                        copy {
+                            from(output.outputFile)
+                            into(flutterApkDir)
+                        }
+                        println("Copied ${output.outputFileName} to $flutterApkDir")
+                    }
+            }
+        }
+    }
+
 }
 
 flutter {
