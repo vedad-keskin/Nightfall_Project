@@ -32,6 +32,28 @@ class _PlayersScreenState extends State<PlayersScreen> {
 
   Future<void> _addPlayer() async {
     if (_nameController.text.trim().isEmpty) return;
+
+    // Check for duplicate names (case-insensitive)
+    final newName = _nameController.text.trim().toLowerCase();
+    final isDuplicate = _players.any(
+      (player) => player.name.toLowerCase() == newName,
+    );
+
+    if (isDuplicate) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Player "${_nameController.text.trim()}" already exists!',
+              style: GoogleFonts.vt323(fontSize: 20),
+            ),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      return;
+    }
+
     try {
       final updated = await _playerService.addPlayer(
         _players,
