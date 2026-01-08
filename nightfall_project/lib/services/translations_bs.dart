@@ -168,6 +168,11 @@ const Map<String, String> bsTranslations = {
       'Hrabri ratnik. Ima oklop koji ga štiti od prvog smrtonosnog napada. Umire samo ako bude napadnut drugi put.',
   'knight_armor_msg': 'Vitezov oklop ga je zaštitio! (-1 Život)',
   'knight_overwhelmed_msg': 'Vitez je bio savladan višestrukim napadima!',
+  'puppet_master_name': 'Gospodar Lutaka',
+  'puppet_master_desc':
+      'Mistični posmatrač. Transformiše se u ulogu prve osobe koju selo objesi.',
+  'puppet_master_transforming': 'GOSPODAR LUTAKA EVOLUIRA...',
+  'puppet_master_new_role': 'NOVI {role} SE PRIDRUŽIO GRADU!',
   'villagers_alliance_name': 'Seljani',
   'villagers_alliance_desc':
       'Mirni stanovnici sela. Njihov cilj je pronaći i eliminisati sve vukove.',

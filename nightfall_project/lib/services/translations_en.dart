@@ -168,6 +168,11 @@ const Map<String, String> enTranslations = {
       'A brave warrior. He has armor that protects him from the first lethal attack. He only dies if attacked a second time.',
   'knight_armor_msg': "The Knight's armor protected him! (-1 Life)",
   'knight_overwhelmed_msg': "The Knight was overwhelmed by multiple attacks!",
+  'puppet_master_name': 'Puppet Master',
+  'puppet_master_desc':
+      'A mysterious observer. Transforms into the role of the first person who gets hanged by the village.',
+  'puppet_master_transforming': 'THE PUPPET MASTER IS EVOLVING...',
+  'puppet_master_new_role': 'THE NEW {role} HAS JOINED THE TOWN!',
   'villagers_alliance_name': 'Villagers',
   'villagers_alliance_desc':
       'The peaceful inhabitants of the village. Their goal is to find and eliminate all werewolves.',

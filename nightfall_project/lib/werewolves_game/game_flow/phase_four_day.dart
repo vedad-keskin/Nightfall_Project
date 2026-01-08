@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:nightfall_project/services/language_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
+import 'package:nightfall_project/base_components/puppet_master_transformation.dart';
 
 class WerewolfPhaseFourScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -119,16 +120,20 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
         return const Color(0xFF06D6A0); // Toxic/Emerald Green
       case 4: // Guard
         return const Color(0xFFFFD166); // Yellow
+      case 10: // Drunk
+        return const Color(0xFFCD9777); // Brown/Beer
       case 11: // Knight
         return const Color(0xFF9E2A2B); // Dark Red
       case 9: // Jester
         return const Color(0xFF9D4EDD); // Purple
+      case 12: // Puppet Master
+        return const Color(0xFF7209B7); // Indigo/Deep Purple
       default:
         return Colors.white; // Villager etc.
     }
   }
 
-  void _handleVote() {
+  void _handleVote() async {
     // 1. Jester Check (Specific Win Condition)
     if (_selectedForHangingId != null) {
       final role = widget.playerRoles[_selectedForHangingId];
@@ -141,23 +146,52 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
 
     // 2. Update Dead List
     List<String> nextDeadIds = List.from(widget.deadPlayerIds);
-
     if (_selectedForHangingId != null) {
       nextDeadIds.add(_selectedForHangingId!);
     }
 
-    // 3. Twin Transformation Logic
+    // 3. Transformation Logic (Puppet Master & Twins)
     Map<String, WerewolfRole> updatedRoles = Map.from(widget.playerRoles);
+    Map<String, int> updatedKnightLives = Map.from(widget.knightLives ?? {});
+
     if (_selectedForHangingId != null) {
       final hangedRole = widget.playerRoles[_selectedForHangingId];
+
+      // Puppet Master Transformation
+      String? puppetMasterId;
+      for (final player in widget.players) {
+        if (!nextDeadIds.contains(player.id) &&
+            widget.playerRoles[player.id]?.id == 12) {
+          puppetMasterId = player.id;
+          break;
+        }
+      }
+
+      if (puppetMasterId != null && hangedRole != null) {
+        // Show transformation screen
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => PuppetMasterTransformationDialog(
+            playerName: widget.players
+                .firstWhere((p) => p.id == puppetMasterId)
+                .name,
+            targetRole: hangedRole,
+          ),
+        );
+        updatedRoles[puppetMasterId] = hangedRole;
+        if (hangedRole.id == 11) {
+          updatedKnightLives[puppetMasterId] = 2;
+        }
+      }
+
+      // Twin Transformation
       if (hangedRole?.id == 6) {
-        // Twin was hanged - find the other twin and transform them
         for (final player in widget.players) {
           if (player.id != _selectedForHangingId &&
               !nextDeadIds.contains(player.id)) {
             final playerRole = widget.playerRoles[player.id];
             if (playerRole?.id == 6) {
-              // Found the other twin - transform to Avenging Twin
               final avengingTwinRole = WerewolfRoleService().getRoleById(7);
               if (avengingTwinRole != null) {
                 updatedRoles[player.id] = avengingTwinRole;
@@ -209,7 +243,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
               break;
             }
             // Knight with 2 lives (11) can survive a hit
-            if (role.id == 11 && (widget.knightLives?[player.id] ?? 0) >= 2) {
+            if (role.id == 11 && (updatedKnightLives[player.id] ?? 0) >= 2) {
               canPreventCasualty = true;
               break;
             }
@@ -222,11 +256,11 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
         _navigateToGameEnd("werewolves", updatedRoles);
       } else {
         // Possible to block the kill - Game Continues to Night
-        _navigateToNextNight(nextDeadIds, updatedRoles);
+        _navigateToNextNight(nextDeadIds, updatedRoles, updatedKnightLives);
       }
     } else {
       // Game Continues -> Night Phase
-      _navigateToNextNight(nextDeadIds, updatedRoles);
+      _navigateToNextNight(nextDeadIds, updatedRoles, updatedKnightLives);
     }
   }
 
@@ -248,6 +282,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
   void _navigateToNextNight(
     List<String> nextDeadIds,
     Map<String, WerewolfRole> updatedRoles,
+    Map<String, int> updatedKnightLives,
   ) async {
     // Play night transition sound if not muted
     final isMuted = context.read<SoundSettingsService>().isMuted;
@@ -274,7 +309,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                 .toList(),
             lastHealedId: widget.lastHealedId,
             lastPlagueTargetId: widget.lastPlagueTargetId,
-            knightLives: widget.knightLives,
+            knightLives: updatedKnightLives,
           ),
         ),
       );

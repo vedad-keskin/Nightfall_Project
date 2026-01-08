@@ -142,6 +142,17 @@ class WerewolfRoleService {
       translationKey: 'knight_name',
       descriptionKey: 'knight_desc',
     ),
+    WerewolfRole(
+      id: 12,
+      name: 'Puppet Master',
+      points: 0,
+      allianceId: 3, // Specials
+      description:
+          'A mysterious observer. Transforms into the role of the first person who gets hanged by the village.',
+      imagePath: 'assets/images/werewolves/Puppet Master.png',
+      translationKey: 'puppet_master_name',
+      descriptionKey: 'puppet_master_desc',
+    ),
   ];
 
   List<WerewolfRole> getRoles() => _roles;
