@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'package:nightfall_project/base_components/pixel_team_dialog.dart';
 import 'package:nightfall_project/base_components/pixel_dialog.dart';
-import 'package:nightfall_project/base_components/pixel_button.dart';
+
+import 'package:nightfall_project/base_components/pixel_rules_dialog.dart';
 import 'package:nightfall_project/base_components/pixel_language_switch.dart';
 import 'package:nightfall_project/impostor_game/layouts/game_layout.dart';
 import 'package:nightfall_project/werewolves_game/layouts/game_layout.dart';
@@ -264,74 +265,11 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     PixelRulesButton(
                       onPressed: () {
                         final isImpostor = _currentPage == 1;
-                        final lang = context.read<LanguageService>();
-
+                        // lang not needed here as PixelRulesDialog handles it
                         showDialog(
                           context: context,
-                          builder: (context) => Dialog(
-                            backgroundColor: Colors.transparent,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF778DA9),
-                                border: Border.all(
-                                  color: const Color(0xFF415A77),
-                                  width: 4,
-                                ),
-                              ),
-                              child: Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF0D1B2A),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 4,
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      lang.translate(
-                                        isImpostor
-                                            ? 'rules_impostor_title'
-                                            : 'rules_werewolves_title',
-                                      ),
-                                      style: GoogleFonts.pressStart2p(
-                                        color: const Color(0xFFE0E1DD),
-                                        fontSize: 16,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Flexible(
-                                      child: SingleChildScrollView(
-                                        child: Text(
-                                          lang.translate(
-                                            isImpostor
-                                                ? 'rules_impostor_content'
-                                                : 'rules_werewolves_content',
-                                          ),
-                                          style: GoogleFonts.vt323(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 32),
-                                    PixelButton(
-                                      label: lang.translate('back'),
-                                      color: const Color(0xFF415A77),
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                          builder: (context) =>
+                              PixelRulesDialog(isImpostor: isImpostor),
                         );
                       },
                     ),
