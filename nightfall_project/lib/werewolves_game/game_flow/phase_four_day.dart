@@ -134,7 +134,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       final role = widget.playerRoles[_selectedForHangingId];
       if (role?.id == 9) {
         // Jester Wins immediately if hanged
-        _navigateToGameEnd("specials", widget.playerRoles);
+        _navigateToGameEnd("jester", widget.playerRoles);
         return;
       }
     }

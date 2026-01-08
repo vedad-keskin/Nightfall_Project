@@ -41,6 +41,7 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
     final team = widget.winningTeam.toLowerCase();
     if (team.contains('werewolves')) return const Color(0xFFE63946); // Red
     if (team.contains('village')) return const Color(0xFF52B788); // Green
+    if (team.contains('jester')) return const Color(0xFF9D4EDD); // Purple
     if (team.contains('specials')) return const Color(0xFF9D4EDD); // Purple
     return Colors.white;
   }
@@ -63,6 +64,8 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
       soundPath = 'audio/werewolves/werewolf_win.mp3';
     } else if (team.contains('village')) {
       soundPath = 'audio/werewolves/village_win.mp3';
+    } else if (team.contains('jester')) {
+      soundPath = 'audio/werewolves/jester_win.mp3';
     } else if (team.contains('specials')) {
       soundPath = 'audio/werewolves/jester_win.mp3';
     }
@@ -100,8 +103,18 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
       // Find role in this game session
       final role = widget.playerRoles[dbPlayer.id];
       if (role != null) {
-        // Check if player's role belongs to winning alliance
-        if (role.allianceId == winningAllianceId) {
+        // Special logic for Jester (individual win)
+        if (team.contains('jester')) {
+          if (role.id == 9) {
+            return WerewolfPlayer(
+              id: dbPlayer.id,
+              name: dbPlayer.name,
+              points: dbPlayer.points + role.points,
+            );
+          }
+        }
+        // Alliance logic for standard teams
+        else if (role.allianceId == winningAllianceId) {
           // Award points based on Role's point value
           return WerewolfPlayer(
             id: dbPlayer.id,
@@ -283,7 +296,16 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
     // Iterate through ALL players who participated (from database), not just survivors
     for (var dbPlayer in _appPlayersUpdated) {
       final role = widget.playerRoles[dbPlayer.id];
-      if (role != null && role.allianceId == winningAllianceId) {
+      if (role == null) continue;
+
+      bool isWinner = false;
+      if (team.contains('jester')) {
+        if (role.id == 9) isWinner = true;
+      } else if (role.allianceId == winningAllianceId) {
+        isWinner = true;
+      }
+
+      if (isWinner) {
         list.add(
           Container(
             margin: const EdgeInsets.only(bottom: 8),

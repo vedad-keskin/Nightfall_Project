@@ -225,6 +225,7 @@ const Map<String, String> bsTranslations = {
   'winning_team_village': 'SELO',
   'winning_team_werewolves': 'VUKOVI',
   'winning_team_specials': 'SPECIJALCI',
+  'winning_team_jester': 'LUDA',
   'game_over_title': 'KRAJ IGRE',
   'points_distributed_label': 'BODOVI DODIJELJENI',
   'no_points_awarded_msg': 'Nema dodijeljenih bodova.',
