@@ -138,12 +138,8 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
 
   void _startTypewriter() {
     final languageService = context.read<LanguageService>();
-    final teamName = languageService.translate(
-      'winning_team_${widget.winningTeam}',
-    );
     final fullText = languageService
-        .translate('win_title')
-        .replaceAll('{team}', teamName)
+        .translate('win_title_${widget.winningTeam}')
         .toUpperCase();
     int index = 0;
 
