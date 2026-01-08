@@ -88,12 +88,14 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "GUARD // CHECK",
+                    lang.translate('royal_guard_check'),
                     style: GoogleFonts.vt323(color: primaryColor, fontSize: 18),
                   ),
                   if (_stage < 2)
                     Text(
-                      _stage == 0 ? "APPROACHING..." : "SEARCHING...",
+                      _stage == 0
+                          ? lang.translate('approaching')
+                          : lang.translate('searching'),
                       style: GoogleFonts.pressStart2p(
                         color: primaryColor,
                         fontSize: 10,
@@ -149,7 +151,7 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                         const SizedBox(height: 8),
                         if (_stage < 2)
                           Text(
-                            "LOOKING FOR THE MARK...",
+                            lang.translate('looking_for_mark'),
                             style: GoogleFonts.vt323(
                               color: primaryColor,
                               fontSize: 16,
@@ -221,8 +223,8 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                                     // Modified text as requested
                                     Text(
                                       isThreat
-                                          ? "MONSTER\nFOUND"
-                                          : "CITIZEN\nCLEARED",
+                                          ? lang.translate('monster_found')
+                                          : lang.translate('citizen_cleared'),
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.pressStart2p(
                                         color: primaryColor,
@@ -234,8 +236,10 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                                     // Added W and V symbols and modified subject text
                                     Text(
                                       isThreat
-                                          ? "Target is a WEREWOLF"
-                                          : "Target is a VILLAGER",
+                                          ? lang.translate('target_is_werewolf')
+                                          : lang.translate(
+                                              'target_is_villager',
+                                            ),
                                       style: GoogleFonts.vt323(
                                         color: Colors.white,
                                         fontSize: 18,
@@ -276,7 +280,7 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
               child: PixelButton(
                 label: _stage == 2
                     ? lang.translate('close_button')
-                    : "PROCESSING...",
+                    : lang.translate('processing'),
                 color: _stage == 2 ? const Color(0xFF415A77) : Colors.grey,
                 onPressed: _stage == 2 ? widget.onClose : null,
               ),

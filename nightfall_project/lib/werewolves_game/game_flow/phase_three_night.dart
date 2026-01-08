@@ -852,7 +852,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                           )
                         : (_currentStep == NightStep.guard &&
                               _guardTargetId != null)
-                        ? "INVESTIGATE"
+                        ? context.watch<LanguageService>().translate(
+                            'investigate_button',
+                          ) 
                         : context.watch<LanguageService>().translate(
                             'next_step_button',
                           ),
