@@ -38,7 +38,7 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
       if (mounted) setState(() => _stage = 1);
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         _scanController.stop();
         setState(() => _stage = 2);
@@ -88,12 +88,12 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "IGS-2026 // CHECK",
+                    "GUARD // CHECK",
                     style: GoogleFonts.vt323(color: primaryColor, fontSize: 18),
                   ),
                   if (_stage < 2)
                     Text(
-                      _stage == 0 ? "INIT..." : "SCANNING...",
+                      _stage == 0 ? "APPROACHING..." : "SEARCHING...",
                       style: GoogleFonts.pressStart2p(
                         color: primaryColor,
                         fontSize: 10,
@@ -149,7 +149,7 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                         const SizedBox(height: 8),
                         if (_stage < 2)
                           Text(
-                            "ANALYZING BIOMETRICS...",
+                            "LOOKING FOR THE MARK...",
                             style: GoogleFonts.vt323(
                               color: primaryColor,
                               fontSize: 16,
@@ -221,8 +221,8 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                                     // Modified text as requested
                                     Text(
                                       isThreat
-                                          ? "THREAT\nDETECTED"
-                                          : "IDENTITY\nVERIFIED",
+                                          ? "MONSTER\nFOUND"
+                                          : "CITIZEN\nCLEARED",
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.pressStart2p(
                                         color: primaryColor,
@@ -234,8 +234,8 @@ class _GuardScannerDialogState extends State<GuardScannerDialog>
                                     // Added W and V symbols and modified subject text
                                     Text(
                                       isThreat
-                                          ? "Subject is a WEREWOLF"
-                                          : "Subject is a VILLAGER",
+                                          ? "Target is a WEREWOLF"
+                                          : "Target is a VILLAGER",
                                       style: GoogleFonts.vt323(
                                         color: Colors.white,
                                         fontSize: 18,

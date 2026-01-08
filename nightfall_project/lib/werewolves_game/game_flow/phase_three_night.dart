@@ -48,6 +48,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   // Night State
   String? _targetKilledId;
   String? _targetHealedId;
+  String? _guardTargetId;
 
   // Ambient night sound player
   late AudioPlayer _ambientPlayer;
@@ -172,7 +173,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       case NightStep.doctor:
         return _targetHealedId != null; // Doctor must select someone
       case NightStep.guard:
-        return true; // Guard auto-advances after inspection
+        // Guard must select someone OR proceed if they want to skip (handled by null check in nextStep)
+        // But if they selected someone, we allow proceed (which becomes Investigate)
+        // If they didn't select, we allow proceed (which becomes Skip/Next)
+        return true;
       case NightStep.plagueDoctor:
         return _targetHealedId != null; // Plague Doctor must select someone
     }
@@ -221,8 +225,12 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             return;
           }
 
-          // Instant check logic
-          _performGuardCheck(player);
+          // Toggle selection. Only one can be selected.
+          if (_guardTargetId == player.id) {
+            _guardTargetId = null;
+          } else {
+            _guardTargetId = player.id;
+          }
           break;
 
         case NightStep.plagueDoctor:
@@ -264,6 +272,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     );
 
     // Auto-advance after check
+    _guardTargetId = null;
     _nextStep();
   }
 
@@ -272,6 +281,13 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   String? _plagueDoctorTargetId;
 
   void _nextStep() {
+    // Trigger Guard Check if target selected (Prioritize this even if it's the last step)
+    if (_currentStep == NightStep.guard && _guardTargetId != null) {
+      final player = widget.players.firstWhere((p) => p.id == _guardTargetId);
+      _performGuardCheck(player);
+      return; // Stop here, perform check will call next step after dialog
+    }
+
     if (_currentStepIndex < _nightSteps.length - 1) {
       // Force selection logic could go here, but for now we allow skipping (e.g., if no one is selected)
 
@@ -294,6 +310,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       if (finishedStep == NightStep.plagueDoctor) {
         _plagueDoctorTargetId = _targetHealedId;
         _targetHealedId = null;
+      }
+      if (finishedStep == NightStep.guard) {
+        _guardTargetId = null;
       }
     } else {
       // End of Night - Capture last step's action
@@ -612,6 +631,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             }
 
             if (_currentStep == NightStep.guard) {
+              if (_guardTargetId == player.id) isSelected = true;
               // Disable Self
               if (role?.id == 4) isDisabled = true;
             }
@@ -830,6 +850,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                         ? context.watch<LanguageService>().translate(
                             'end_night_button',
                           )
+                        : (_currentStep == NightStep.guard &&
+                              _guardTargetId != null)
+                        ? "INVESTIGATE"
                         : context.watch<LanguageService>().translate(
                             'next_step_button',
                           ),
