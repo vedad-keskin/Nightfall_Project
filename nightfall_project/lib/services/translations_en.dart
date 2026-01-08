@@ -173,6 +173,9 @@ const Map<String, String> enTranslations = {
       'A mysterious observer. Transforms into the role of the first person who gets hanged by the village.',
   'puppet_master_transforming': 'THE PUPPET MASTER IS EVOLVING...',
   'puppet_master_new_role': 'THE NEW {role} HAS JOINED THE TOWN!',
+  'puppet_master_ritual': 'ANCIENT RITUAL IN PROGRESS',
+  'puppet_master_unleash': 'UNLEASH PUPPETS',
+  'puppet_master_evolving': '--- EVOLVING ---',
   'villagers_alliance_name': 'Villagers',
   'villagers_alliance_desc':
       'The peaceful inhabitants of the village. Their goal is to find and eliminate all werewolves.',

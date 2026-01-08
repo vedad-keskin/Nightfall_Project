@@ -317,7 +317,9 @@ class _PuppetMasterTransformationDialogState
                               ],
                             ),
                             child: PixelButton(
-                              label: "UNLEASH PUPPETS",
+                              label: lang
+                                  .translate('puppet_master_unleash')
+                                  .toUpperCase(),
                               color: const Color(0xFF7209B7),
                               onPressed: _beginTransformation,
                             ),
@@ -383,7 +385,7 @@ class _PuppetMasterTransformationDialogState
               ),
               const SizedBox(height: 8),
               Text(
-                "ANCIENT RITUAL IN PROGRESS",
+                lang.translate('puppet_master_ritual').toUpperCase(),
                 style: GoogleFonts.vt323(
                   color: Colors.white38,
                   fontSize: 16,
