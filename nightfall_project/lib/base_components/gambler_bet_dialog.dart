@@ -219,15 +219,6 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                 color: isSelected ? color : const Color(0xFF415A77),
                 width: isSelected ? 3 : 2,
               ),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: color.withOpacity(0.3 + _glowController.value * 0.3),
-                        blurRadius: 15 + _glowController.value * 10,
-                        spreadRadius: 2,
-                      ),
-                    ]
-                  : [],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -303,41 +294,26 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
       backgroundColor: Colors.transparent,
       child: Container(
         width: 340,
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
+          color: const Color(0xFF0D1B2A),
+          border: Border.all(
+            color: const Color(0xFFD4AF37), // Gold trim
+            width: 3,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.4),
-              offset: const Offset(8, 8),
+              color: Colors.black.withOpacity(0.6),
+              offset: const Offset(6, 6),
               blurRadius: 0,
             ),
           ],
         ),
-        padding: const EdgeInsets.all(4),
         child: Container(
           decoration: BoxDecoration(
-            // Aged parchment / gambling table feel
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFF2D1810), // Dark wood
-                const Color(0xFF1A0F0A), // Darker wood
-                const Color(0xFF2D1810),
-              ],
-            ),
-            border: Border.all(
-              color: const Color(0xFFD4AF37), // Gold trim
-              width: 3,
-            ),
+            border: Border.all(color: const Color(0xFF415A77), width: 2),
           ),
-          padding: const EdgeInsets.all(4),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF0D1B2A).withOpacity(0.95),
-              border: Border.all(color: const Color(0xFF415A77), width: 2),
-            ),
-            padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -426,8 +402,7 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildOrnateHeader() {
