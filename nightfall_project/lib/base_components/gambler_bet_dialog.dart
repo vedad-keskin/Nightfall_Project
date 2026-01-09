@@ -49,7 +49,6 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
   late AnimationController _diceController;
   late AnimationController _glowController;
   late AnimationController _pulseController;
-  late AnimationController _particleController;
   late AnimationController _confirmationController;
   late AnimationController _runeController;
 
@@ -67,13 +66,10 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
   double _dice1BouncePhase = 0;
   double _dice2BouncePhase = 0;
 
-  // Floating particles
-  final List<_GoldParticle> _particles = [];
-
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.8);
+    _pageController = PageController(viewportFraction: 0.85);
 
     // Randomize dice animation offsets
     _dice1RotationOffset = _random.nextDouble() * pi;
@@ -82,7 +78,6 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
     _dice2BouncePhase = _random.nextDouble() * pi + pi / 3;
 
     _initializeAnimations();
-    _generateParticles();
   }
 
   void _initializeAnimations() {
@@ -123,39 +118,20 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
       vsync: this,
     )..repeat(reverse: true);
 
-    // Particles floating
-    _particleController = AnimationController(
-      duration: const Duration(seconds: 10),
-      vsync: this,
-    )..repeat();
-
     // Confirmation explosion
     _confirmationController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
 
-    // Mystical runes rotation
+    // Card rune rotation
     _runeController = AnimationController(
-      duration: const Duration(seconds: 20),
+      duration: const Duration(seconds: 8),
       vsync: this,
     )..repeat();
 
     // Start entrance animation
     _entranceController.forward();
-  }
-
-  void _generateParticles() {
-    for (int i = 0; i < 15; i++) {
-      _particles.add(_GoldParticle(
-        x: _random.nextDouble(),
-        y: _random.nextDouble(),
-        size: _random.nextDouble() * 4 + 2,
-        speed: _random.nextDouble() * 0.5 + 0.2,
-        delay: _random.nextDouble(),
-        type: _random.nextInt(3),
-      ));
-    }
   }
 
   void _onDiceRoll() {
@@ -174,7 +150,6 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
     _diceController.dispose();
     _glowController.dispose();
     _pulseController.dispose();
-    _particleController.dispose();
     _confirmationController.dispose();
     _runeController.dispose();
     super.dispose();
@@ -271,177 +246,8 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
             opacity: _entranceFade.value.clamp(0.0, 1.0),
             child: Dialog(
               backgroundColor: Colors.transparent,
-              insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  // Mystical rune circle background
-                  _buildRuneCircle(),
-
-                  // Main dialog content
-                  _buildMainContent(lang),
-
-                  // Floating gold particles
-                  ..._buildParticles(),
-
-                  // Corner decorations
-                  _buildCornerDecorations(),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildRuneCircle() {
-    return IgnorePointer(
-      child: ClipRect(
-        child: AnimatedBuilder(
-          animation: _runeController,
-          builder: (context, child) {
-            return Transform.rotate(
-              angle: _runeController.value * 2 * pi,
-              child: SizedBox(
-                width: 340,
-                height: 400,
-                child: CustomPaint(
-                  painter: _RuneCirclePainter(
-                    progress: _glowController.value,
-                    color: const Color(0xFFD4AF37).withOpacity(0.08),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildParticles() {
-    return _particles.map((particle) {
-      return AnimatedBuilder(
-        animation: _particleController,
-        builder: (context, child) {
-          final progress = (_particleController.value + particle.delay) % 1.0;
-          final y = (1 - progress) * 1.0; // Keep within bounds
-          final wobble = sin(progress * pi * 4 + particle.x * 10) * 0.02;
-
-          // Only show particles in the visible area
-          if (y < 0 || y > 0.85) return const SizedBox.shrink();
-
-          return Positioned(
-            left: (particle.x + wobble) * 300,
-            top: y * 400,
-            child: Opacity(
-              opacity: (sin(progress * pi) * 0.6).clamp(0.0, 1.0),
-              child: _buildParticleWidget(particle),
-            ),
-          );
-        },
-      );
-    }).toList();
-  }
-
-  Widget _buildParticleWidget(_GoldParticle particle) {
-    switch (particle.type) {
-      case 0: // Coin
-        return Container(
-          width: particle.size * 2,
-          height: particle.size * 2,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: RadialGradient(
-              colors: [
-                const Color(0xFFFFD700).withOpacity(0.8),
-                const Color(0xFFD4AF37).withOpacity(0.6),
-                const Color(0xFF8B6914).withOpacity(0.4),
-              ],
-            ),
-          ),
-        );
-      case 1: // Sparkle
-        return Icon(
-          Icons.auto_awesome,
-          size: particle.size * 1.5,
-          color: const Color(0xFFD4AF37).withOpacity(0.5),
-        );
-      default: // Gem
-        return Transform.rotate(
-          angle: pi / 4,
-          child: Container(
-            width: particle.size,
-            height: particle.size,
-            decoration: BoxDecoration(
-              color: const Color(0xFFD4AF37).withOpacity(0.6),
-            ),
-          ),
-        );
-    }
-  }
-
-  Widget _buildCornerDecorations() {
-    return Stack(
-      children: [
-        Positioned(top: -15, left: -15, child: _buildCornerPiece(0)),
-        Positioned(top: -15, right: -15, child: _buildCornerPiece(1)),
-        Positioned(bottom: -15, left: -15, child: _buildCornerPiece(2)),
-        Positioned(bottom: -15, right: -15, child: _buildCornerPiece(3)),
-      ],
-    );
-  }
-
-  Widget _buildCornerPiece(int corner) {
-    return AnimatedBuilder(
-      animation: _pulseController,
-      builder: (context, child) {
-        return Transform.rotate(
-          angle: corner * pi / 2,
-          child: Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  color: Color.lerp(
-                    const Color(0xFFD4AF37),
-                    const Color(0xFFFFD700),
-                    _pulseController.value,
-                  )!,
-                  width: 3,
-                ),
-                left: BorderSide(
-                  color: Color.lerp(
-                    const Color(0xFFD4AF37),
-                    const Color(0xFFFFD700),
-                    _pulseController.value,
-                  )!,
-                  width: 3,
-                ),
-              ),
-            ),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD4AF37),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFD4AF37)
-                          .withOpacity(0.3 + _pulseController.value * 0.4),
-                      blurRadius: 5 + _pulseController.value * 5,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-              ),
+              insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: _buildMainContent(lang),
             ),
           ),
         );
@@ -451,69 +257,37 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
 
   Widget _buildMainContent(LanguageService lang) {
     return Container(
-      width: 340,
+      constraints: const BoxConstraints(maxWidth: 400),
       decoration: BoxDecoration(
         color: const Color(0xFF0D1B2A),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: const Color(0xFF415A77),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.7),
-            offset: const Offset(6, 6),
+            color: Colors.black.withOpacity(0.6),
+            offset: const Offset(4, 4),
             blurRadius: 0,
           ),
         ],
       ),
-      child: Stack(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildHeader(lang),
-                const SizedBox(height: 12),
-                _buildDiceSection(),
-                const SizedBox(height: 16),
-                if (!_betConfirmed) ...[
-                  _buildCarousel(),
-                  const SizedBox(height: 16),
-                  _buildConfirmButton(),
-                ] else
-                  _buildConfirmedBetDisplay(),
-              ],
-            ),
-          ),
-          _buildCandlelightOverlay(),
+          _buildHeader(lang),
+          const SizedBox(height: 16),
+          _buildDiceSection(),
+          const SizedBox(height: 20),
+          if (!_betConfirmed) ...[
+            _buildCarousel(),
+            const SizedBox(height: 20),
+            _buildConfirmButton(),
+          ] else
+            _buildConfirmedBetDisplay(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCandlelightOverlay() {
-    return Positioned.fill(
-      child: AnimatedBuilder(
-        animation: _pulseController,
-        builder: (context, child) {
-          return IgnorePointer(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.topCenter,
-                  radius: 1.5,
-                  colors: [
-                    Colors.orange
-                        .withOpacity(0.03 + _pulseController.value * 0.02),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
       ),
     );
   }
@@ -855,7 +629,7 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
     return Column(
       children: [
         SizedBox(
-          height: 185,
+          height: 200,
           child: PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -949,25 +723,23 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
             duration: const Duration(milliseconds: 300),
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              clipBehavior: Clip.hardEdge,
-              decoration: const BoxDecoration(),
               child: Stack(
                 alignment: Alignment.center,
-                clipBehavior: Clip.none,
                 children: [
+                  // Spinning rune circle behind the card
                   if (isCurrent)
                     Transform.rotate(
                       angle: _runeController.value * 2 * pi,
                       child: CustomPaint(
-                        size: const Size(160, 160),
+                        size: const Size(180, 180),
                         painter: _CardRunePainter(
-                          color: color.withOpacity(0.15 + _glowController.value * 0.08),
+                          color: color.withOpacity(0.2 + _glowController.value * 0.1),
                         ),
                       ),
                     ),
+                  // Card content
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -994,6 +766,7 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // Icon
                         Container(
                           width: 60,
                           height: 60,
@@ -1017,17 +790,21 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                           child: Icon(
                             _getBetIcon(bet),
                             color: isSelected ? Colors.white : color,
-                            size: 32,
+                            size: 30,
                           ),
                         ),
                         const SizedBox(height: 10),
+                        // Alliance name
                         Text(
                           _getBetLabel(bet),
                           style: GoogleFonts.pressStart2p(
-                              color: Colors.white, fontSize: 10),
+                            color: Colors.white,
+                            fontSize: 10,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
+                        // Reward badge
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 5),
@@ -1035,12 +812,16 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                             color: Colors.amber.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                                color: Colors.amber.withOpacity(0.6), width: 1),
+                              color: Colors.amber.withOpacity(0.6),
+                              width: 1,
+                            ),
                           ),
                           child: Text(
                             _getBetReward(bet),
                             style: GoogleFonts.pressStart2p(
-                                color: Colors.amber, fontSize: 10),
+                              color: Colors.amber,
+                              fontSize: 10,
+                            ),
                           ),
                         ),
                       ],
@@ -1246,55 +1027,7 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
   }
 }
 
-class _GoldParticle {
-  final double x, y, size, speed, delay;
-  final int type;
-  _GoldParticle(
-      {required this.x,
-      required this.y,
-      required this.size,
-      required this.speed,
-      required this.delay,
-      required this.type});
-}
-
-class _RuneCirclePainter extends CustomPainter {
-  final double progress;
-  final Color color;
-  _RuneCirclePainter({required this.progress, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width * 0.6;
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    for (int i = 0; i < 3; i++) {
-      canvas.drawCircle(center, radius - i * 20, paint);
-    }
-
-    final symbolPaint = Paint()
-      ..color = color.withOpacity(0.5 + progress * 0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    for (int i = 0; i < 8; i++) {
-      final angle = i * pi / 4;
-      final x = center.dx + cos(angle) * (radius - 10);
-      final y = center.dy + sin(angle) * (radius - 10);
-      canvas.drawLine(Offset(x - 5, y - 5), Offset(x + 5, y + 5), symbolPaint);
-      canvas.drawLine(Offset(x + 5, y - 5), Offset(x - 5, y + 5), symbolPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _RuneCirclePainter oldDelegate) =>
-      oldDelegate.progress != progress;
-}
-
+// Custom painter for spinning rune circle behind cards
 class _CardRunePainter extends CustomPainter {
   final Color color;
   _CardRunePainter({required this.color});
@@ -1308,9 +1041,11 @@ class _CardRunePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
+    // Draw concentric circles
     canvas.drawCircle(center, radius, paint);
     canvas.drawCircle(center, radius * 0.75, paint);
 
+    // Draw connecting lines and diamond markers
     for (int i = 0; i < 8; i++) {
       final angle = i * pi / 4;
       final x1 = center.dx + cos(angle) * (radius - 5);
@@ -1319,11 +1054,16 @@ class _CardRunePainter extends CustomPainter {
       final y2 = center.dy + sin(angle) * (radius * 0.75 + 5);
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), paint);
 
+      // Diamond marker at outer edge
       final path = Path()
-        ..moveTo(center.dx + cos(angle) * radius, center.dy + sin(angle) * radius - 4)
-        ..lineTo(center.dx + cos(angle) * radius + 3, center.dy + sin(angle) * radius)
-        ..lineTo(center.dx + cos(angle) * radius, center.dy + sin(angle) * radius + 4)
-        ..lineTo(center.dx + cos(angle) * radius - 3, center.dy + sin(angle) * radius)
+        ..moveTo(center.dx + cos(angle) * radius,
+            center.dy + sin(angle) * radius - 4)
+        ..lineTo(center.dx + cos(angle) * radius + 3,
+            center.dy + sin(angle) * radius)
+        ..lineTo(center.dx + cos(angle) * radius,
+            center.dy + sin(angle) * radius + 4)
+        ..lineTo(center.dx + cos(angle) * radius - 3,
+            center.dy + sin(angle) * radius)
         ..close();
       canvas.drawPath(path, paint..style = PaintingStyle.fill);
       paint.style = PaintingStyle.stroke;
