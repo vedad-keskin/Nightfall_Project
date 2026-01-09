@@ -175,6 +175,17 @@ class WerewolfRoleService {
       translationKey: 'infected_name',
       descriptionKey: 'infected_desc',
     ),
+    WerewolfRole(
+      id: 15,
+      name: 'Gambler',
+      points: 0, // Points are determined by bet outcome: +1 Village, +2 Werewolves, +3 Specials
+      allianceId: 3, // Specials
+      description:
+          'A cunning risk-taker who bets on fate. On the first night, they secretly choose which alliance they believe will win. If correct, they share in the victory points. Behaves as a normal villager otherwise.',
+      imagePath: 'assets/images/werewolves/Gambler.png',
+      translationKey: 'gambler_name',
+      descriptionKey: 'gambler_desc',
+    ),
   ];
 
   List<WerewolfRole> getRoles() => _roles;

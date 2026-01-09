@@ -14,6 +14,7 @@ import 'package:nightfall_project/services/language_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
 import 'package:nightfall_project/base_components/puppet_master_transformation.dart';
+import 'package:nightfall_project/base_components/gambler_bet_dialog.dart';
 
 class WerewolfPhaseFourScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -25,6 +26,9 @@ class WerewolfPhaseFourScreen extends StatefulWidget {
   final String? lastPlagueTargetId;
   final Map<String, int>? knightLives;
 
+  // Gambler's bet from first night
+  final GamblerBet? gamblerBet;
+
   const WerewolfPhaseFourScreen({
     super.key,
     required this.playerRoles,
@@ -33,6 +37,7 @@ class WerewolfPhaseFourScreen extends StatefulWidget {
     this.lastHealedId,
     this.lastPlagueTargetId,
     this.knightLives,
+    this.gamblerBet,
   });
 
   @override
@@ -134,6 +139,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
         return const Color(0xFF6B4226); // Executioner-like Brown/Dark
       case 14: // Infected
         return const Color(0xFF8E9B97); // Sickly Green-Grey
+      case 15: // Gambler
+        return const Color(0xFFD4AF37); // Gold
       default:
         return Colors.white; // Villager etc.
     }
@@ -339,6 +346,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
           playerRoles: playerRoles,
           players: widget.players,
           winningTeam: winningTeam,
+          gamblerBet: widget.gamblerBet,
         ),
       ),
     );
@@ -371,6 +379,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
             lastHealedId: widget.lastHealedId,
             lastPlagueTargetId: widget.lastPlagueTargetId,
             knightLives: updatedKnightLives,
+            isFirstNight: false,
+            gamblerBet: widget.gamblerBet,
           ),
         ),
       );

@@ -10,17 +10,20 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
 import 'package:nightfall_project/services/language_service.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
+import 'package:nightfall_project/base_components/gambler_bet_dialog.dart';
 
 class WerewolfPhaseFiveScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
   final List<WerewolfPlayer> players;
   final String winningTeam; // 'The Werewolves', 'The Village', 'The Jester'
+  final GamblerBet? gamblerBet;
 
   const WerewolfPhaseFiveScreen({
     super.key,
     required this.playerRoles,
     required this.players,
     required this.winningTeam,
+    this.gamblerBet,
   });
 
   @override
@@ -35,6 +38,10 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
   bool _showWinners = false;
   List<WerewolfPlayer> _appPlayersUpdated = [];
   late AudioPlayer _winPlayer;
+
+  // Gambler tracking
+  bool _gamblerWonBet = false;
+  int _gamblerBonusPoints = 0;
 
   // Color scheme based on winner
   Color get _themeColor {
@@ -95,38 +102,75 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
     if (team.contains('werewolves')) winningAllianceId = 2;
     if (team.contains('specials')) winningAllianceId = 3;
 
-    // 2. Load Current Players form DB (to get current points state)
+    // 2. Check if Gambler won their bet
+    bool gamblerWonBet = false;
+    int gamblerBonusPoints = 0;
+    if (widget.gamblerBet != null) {
+      switch (widget.gamblerBet!) {
+        case GamblerBet.village:
+          if (team.contains('village')) {
+            gamblerWonBet = true;
+            gamblerBonusPoints = 1;
+          }
+          break;
+        case GamblerBet.werewolves:
+          if (team.contains('werewolves')) {
+            gamblerWonBet = true;
+            gamblerBonusPoints = 2;
+          }
+          break;
+        case GamblerBet.specials:
+          if (team.contains('jester') || team.contains('specials')) {
+            gamblerWonBet = true;
+            gamblerBonusPoints = 3;
+          }
+          break;
+      }
+    }
+
+    // Track if gambler won for UI display
+    _gamblerWonBet = gamblerWonBet;
+    _gamblerBonusPoints = gamblerBonusPoints;
+
+    // 3. Load Current Players from DB (to get current points state)
     List<WerewolfPlayer> currentDbPlayers = await _playerService.loadPlayers();
 
-    // 3. Update Points
+    // 4. Update Points
     List<WerewolfPlayer> updatedList = currentDbPlayers.map((dbPlayer) {
       // Find role in this game session
       final role = widget.playerRoles[dbPlayer.id];
       if (role != null) {
+        int pointsToAdd = 0;
+
         // Special logic for Jester (individual win)
         if (team.contains('jester')) {
           if (role.id == 9) {
-            return WerewolfPlayer(
-              id: dbPlayer.id,
-              name: dbPlayer.name,
-              points: dbPlayer.points + role.points,
-            );
+            pointsToAdd = role.points;
           }
         }
         // Alliance logic for standard teams
         else if (role.allianceId == winningAllianceId) {
           // Award points based on Role's point value
+          pointsToAdd = role.points;
+        }
+
+        // Gambler bonus points (Gambler role ID: 15)
+        if (role.id == 15 && gamblerWonBet) {
+          pointsToAdd += gamblerBonusPoints;
+        }
+
+        if (pointsToAdd > 0) {
           return WerewolfPlayer(
             id: dbPlayer.id,
             name: dbPlayer.name,
-            points: dbPlayer.points + role.points,
+            points: dbPlayer.points + pointsToAdd,
           );
         }
       }
       return dbPlayer;
     }).toList();
 
-    // 4. Save to DB
+    // 5. Save to DB
     await _playerService.savePlayers(updatedList);
 
     if (mounted) {
@@ -295,33 +339,80 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
       if (role == null) continue;
 
       bool isWinner = false;
+      int pointsAwarded = 0;
+
       if (team.contains('jester')) {
-        if (role.id == 9) isWinner = true;
+        if (role.id == 9) {
+          isWinner = true;
+          pointsAwarded = role.points;
+        }
       } else if (role.allianceId == winningAllianceId) {
         isWinner = true;
+        pointsAwarded = role.points;
       }
 
-      if (isWinner) {
+      // Gambler bonus (role ID 15)
+      bool isGamblerWinner = false;
+      if (role.id == 15 && _gamblerWonBet) {
+        isGamblerWinner = true;
+        pointsAwarded = _gamblerBonusPoints;
+      }
+
+      if (isWinner || isGamblerWinner) {
         list.add(
           Container(
             margin: const EdgeInsets.only(bottom: 8),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              border: Border.all(color: Colors.white12),
+              color: isGamblerWinner && !isWinner
+                  ? const Color(0xFFD4AF37).withOpacity(0.1)
+                  : Colors.white.withOpacity(0.05),
+              border: Border.all(
+                color: isGamblerWinner && !isWinner
+                    ? const Color(0xFFD4AF37).withOpacity(0.5)
+                    : Colors.white12,
+              ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               children: [
-                Text(
-                  dbPlayer.name,
-                  style: GoogleFonts.vt323(color: Colors.white, fontSize: 20),
+                if (isGamblerWinner)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Icon(
+                      Icons.casino,
+                      color: const Color(0xFFD4AF37),
+                      size: 18,
+                    ),
+                  ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        dbPlayer.name,
+                        style:
+                            GoogleFonts.vt323(color: Colors.white, fontSize: 20),
+                      ),
+                      if (isGamblerWinner)
+                        Text(
+                          context
+                              .watch<LanguageService>()
+                              .translate('gambler_won_bet'),
+                          style: GoogleFonts.vt323(
+                            color: const Color(0xFFD4AF37),
+                            fontSize: 14,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
                 Text(
-                  "+${role.points} PTS",
+                  "+$pointsAwarded PTS",
                   style: GoogleFonts.pressStart2p(
-                    color: Colors.amber,
+                    color: isGamblerWinner
+                        ? const Color(0xFFD4AF37)
+                        : Colors.amber,
                     fontSize: 12,
                   ),
                 ),

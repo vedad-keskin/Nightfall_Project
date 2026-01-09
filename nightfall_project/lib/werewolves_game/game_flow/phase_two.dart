@@ -595,7 +595,7 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                       ignoring: !allViewed,
                       child: SizedBox(
                         width: double.infinity,
-                        child: PixelButton(
+                          child: PixelButton(
                           label: context.watch<LanguageService>().translate(
                             'commence_night_button',
                           ),
@@ -626,6 +626,7 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                                       WerewolfPhaseThreeScreen(
                                         playerRoles: widget.playerRoles,
                                         players: widget.players,
+                                        isFirstNight: true,
                                       ),
                                 ),
                               );

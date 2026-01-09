@@ -149,7 +149,12 @@ const Map<String, String> enTranslations = {
       'When the first hanging of the game occurs, the Puppet Master transforms into the role of the hanged player.\n'
       'The hanged player is eliminated normally.\n'
       'If the Puppet Master is killed, nothing special happens.\n'
-      'Exception: If the Jester is hanged, the Jester wins immediately and no Puppet Master transformation occurs.\n\n'
+      'Exception: If the Jester is hanged, the Jester wins immediately and no Puppet Master transformation occurs.\n'
+      'GAMBLER: A cunning risk-taker who bets on fate.\n'
+      'On the first night only, the Gambler is woken first and secretly chooses which alliance they believe will win.\n'
+      'After placing their bet, they behave as a normal Villager for the rest of the game with no special powers.\n'
+      'If the Gambler\'s chosen alliance wins, they earn bonus points: +1 for Village, +2 for Werewolves, +3 for Specials (Jester).\n'
+      'The Gambler appears as a Villager when inspected by the Guard.\n\n'
       '7. Scoring:\n'
       'Points are awarded to members of the winning alliance at the end of the game.\n'
       'Different roles grant different amounts of points depending on their difficulty.\n'
@@ -295,4 +300,21 @@ const Map<String, String> enTranslations = {
       'A villager carrying a hidden sickness. If a healer treats them successfully, the healer gets infected and dies.',
   'infected_healer_msg':
       'An infection spread while treating {name}! The healer has DIED!',
+  'gambler_name': 'Gambler',
+  'gambler_desc':
+      'A cunning risk-taker who bets on fate. On the first night, they secretly choose which alliance they believe will win. If correct, they share in the victory points. Behaves as a normal villager otherwise.',
+  'step_gambler_title': 'THE GAMBLER',
+  'step_gambler_instruction': 'PLACE YOUR BET ON THE WINNING ALLIANCE',
+  'gambler_bet_title': 'PLACE YOUR BET',
+  'gambler_bet_subtitle': 'Choose who you think will win...',
+  'gambler_bet_village': 'THE VILLAGE',
+  'gambler_bet_werewolves': 'THE PACK',
+  'gambler_bet_specials': 'THE SPECIALS',
+  'gambler_village_reward': '+1 POINT',
+  'gambler_werewolves_reward': '+2 POINTS',
+  'gambler_specials_reward': '+3 POINTS',
+  'gambler_confirm_bet': 'CONFIRM BET',
+  'gambler_roll_dice': 'ROLL THE DICE',
+  'gambler_fate_sealed': 'YOUR FATE IS SEALED',
+  'gambler_won_bet': 'THE GAMBLER WON THE BET!',
 };

@@ -13,6 +13,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
 import 'package:nightfall_project/base_components/guard_scanner_dialog.dart';
 import 'package:nightfall_project/base_components/pixel_heart.dart';
+import 'package:nightfall_project/base_components/gambler_bet_dialog.dart';
 
 class WerewolfPhaseThreeScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -23,6 +24,11 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
   final String? lastPlagueTargetId;
   final Map<String, int>? knightLives;
 
+  // First night flag for Gambler
+  final bool isFirstNight;
+  // Gambler's bet (passed through if already made)
+  final GamblerBet? gamblerBet;
+
   const WerewolfPhaseThreeScreen({
     super.key,
     required this.playerRoles,
@@ -30,6 +36,8 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
     this.lastHealedId,
     this.lastPlagueTargetId,
     this.knightLives,
+    this.isFirstNight = false,
+    this.gamblerBet,
   });
 
   @override
@@ -38,6 +46,7 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
 }
 
 enum NightStep {
+  gambler, // First night only - Gambler places bet
   werewolves, // Includes Vampire
   doctor,
   guard,
@@ -54,6 +63,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   String? _guardTargetId;
   late Map<String, int> _knightLives;
 
+  // Gambler state
+  GamblerBet? _gamblerBet;
+  bool _gamblerBetMade = false;
+
   // Ambient night sound player
   late AudioPlayer _ambientPlayer;
 
@@ -61,6 +74,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   void initState() {
     super.initState();
     _ambientPlayer = AudioPlayer();
+
+    // Initialize Gambler bet from widget (if passed from previous state)
+    _gamblerBet = widget.gamblerBet;
+    _gamblerBetMade = widget.gamblerBet != null;
+
     _calculateNightSteps();
     _playAmbientNightSounds();
 
@@ -74,6 +92,13 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           // Knight ID
           _knightLives[playerId] = 2; // Starts with 2 lives
         }
+      });
+    }
+
+    // Show Gambler dialog on first night if it's the first step
+    if (_nightSteps.isNotEmpty && _nightSteps.first == NightStep.gambler) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showGamblerBetDialog();
       });
     }
   }
@@ -112,6 +137,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         .map((entry) => entry.value.id)
         .toSet();
 
+    // 0. Gambler (only on first night, only if alive and bet not yet made)
+    if (widget.isFirstNight && !_gamblerBetMade && aliveRoles.contains(15)) {
+      _nightSteps.add(NightStep.gambler);
+    }
+
     // 1. Werewolves/Vampire/Avenging Twin always wake up (unless all dead, but game usually ends then)
     if (aliveRoles.contains(2) ||
         aliveRoles.contains(7) ||
@@ -140,11 +170,48 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     }
   }
 
+  void _showGamblerBetDialog() {
+    // Find the Gambler player
+    String? gamblerPlayerId;
+    String gamblerPlayerName = '';
+    for (final entry in widget.playerRoles.entries) {
+      if (entry.value.id == 15) {
+        gamblerPlayerId = entry.key;
+        final player = widget.players.firstWhere(
+          (p) => p.id == gamblerPlayerId,
+          orElse: () => WerewolfPlayer(id: '', name: 'Gambler'),
+        );
+        gamblerPlayerName = player.name;
+        break;
+      }
+    }
+
+    if (gamblerPlayerId == null) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => GamblerBetDialog(
+        playerName: gamblerPlayerName,
+        onBetConfirmed: (bet) {
+          Navigator.of(context).pop();
+          setState(() {
+            _gamblerBet = bet;
+            _gamblerBetMade = true;
+          });
+          _nextStep();
+        },
+      ),
+    );
+  }
+
   NightStep get _currentStep => _nightSteps[_currentStepIndex];
 
   String get _stepTitle {
     final languageService = context.read<LanguageService>();
     switch (_currentStep) {
+      case NightStep.gambler:
+        return languageService.translate('step_gambler_title');
       case NightStep.werewolves:
         return languageService.translate('step_werewolves_title');
       case NightStep.doctor:
@@ -159,6 +226,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   String get _stepInstruction {
     final languageService = context.read<LanguageService>();
     switch (_currentStep) {
+      case NightStep.gambler:
+        return languageService.translate('step_gambler_instruction');
       case NightStep.werewolves:
         return languageService.translate('step_werewolves_instruction');
       case NightStep.doctor:
@@ -172,6 +241,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
   Color get _stepColor {
     switch (_currentStep) {
+      case NightStep.gambler:
+        return const Color(0xFFD4AF37); // Gold
       case NightStep.werewolves:
         return const Color(0xFFE63946); // Red
       case NightStep.doctor:
@@ -185,6 +256,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
   bool get _canProceed {
     switch (_currentStep) {
+      case NightStep.gambler:
+        return _gamblerBetMade; // Gambler must make a bet (handled by dialog)
       case NightStep.werewolves:
         return _targetKilledId != null; // Werewolves must kill someone
       case NightStep.doctor:
@@ -207,6 +280,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
     setState(() {
       switch (_currentStep) {
+        case NightStep.gambler:
+          // Gambler step doesn't use player selection - handled by dialog
+          return;
+
         case NightStep.werewolves:
           // Restriction: Cannot kill Werewolf Alliance
           if (targetRole.allianceId == 2) {
@@ -643,6 +720,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             playerRoles: widget.playerRoles,
             players: widget.players,
             winningTeam: 'village',
+            gamblerBet: _gamblerBet,
           ),
         ),
       );
@@ -654,6 +732,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             playerRoles: widget.playerRoles,
             players: widget.players,
             winningTeam: 'werewolves',
+            gamblerBet: _gamblerBet,
           ),
         ),
       );
@@ -668,6 +747,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             lastHealedId: _doctorHealedId,
             lastPlagueTargetId: _plagueDoctorTargetId,
             knightLives: _knightLives,
+            gamblerBet: _gamblerBet,
           ),
         ),
       );
@@ -947,6 +1027,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return const Color(0xFF6B4226); // Executioner-like Brown/Dark
       case 14: // Infected
         return const Color(0xFF8E9B97); // Sickly Green-Grey
+      case 15: // Gambler
+        return const Color(0xFFD4AF37); // Gold
       default:
         return Colors.white; // Villager etc.
     }
@@ -954,6 +1036,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
   String? _getActionIcon() {
     switch (_currentStep) {
+      case NightStep.gambler:
+        return null; // Gambler doesn't have an action icon (uses dialog)
       case NightStep.werewolves:
         return 'assets/images/werewolf_kill.png';
       case NightStep.doctor:

@@ -150,7 +150,12 @@ const Map<String, String> bsTranslations = {
       'Kada se dogodi prvo vješanje u igri, Lutkar se transformiše u ulogu igrača koji je obješen.\n'
       'Obješen igrač je eliminisan normalno.\n'
       'Ako Lutkar bude ubijen, ništa se posebno ne dešava.\n'
-      'Izuzetak: Ako je Luda obješena, Luda pobjeđuje odmah i transformacija Lutkara se ne dešava.\n\n'
+      'Izuzetak: Ako je Luda obješena, Luda pobjeđuje odmah i transformacija Lutkara se ne dešava.\n'
+      'KOCKAR: Lukavi rizičar koji se kladi na sudbinu.\n'
+      'Samo prve noći, Kockar se budi prvi i tajno bira za koji savez misli da će pobijediti.\n'
+      'Nakon klađenja, ponaša se kao običan Seljak ostatak igre bez posebnih moći.\n'
+      'Ako Kockarov odabrani savez pobijedi, on osvaja bonus bodove: +1 za Selo, +2 za Vukove, +3 za Posebne (Luda).\n'
+      'Kockar se pojavljuje kao Seljak kada ga Stražar pregleda.\n\n'
       '7. Bodovanje:\n'
       'Bodovi se dodjeljuju članovima pobjedničkog saveza na kraju igre.\n'
       'Različite uloge daju različit broj bodova u zavisnosti od njihove težine.\n'
@@ -294,4 +299,21 @@ const Map<String, String> bsTranslations = {
       'Seljak koji nosi skrivenu bolest. Ako ga doktor uspješno liječi, doktor se zarazi i umire.',
   'infected_healer_msg':
       'Infekcija se proširila tokom liječenja {name}! Iscjelitelj je UMRO!',
+  'gambler_name': 'Kockar',
+  'gambler_desc':
+      'Lukavi rizičar koji se kladi na sudbinu. Prve noći, tajno bira za koji savez misli da će pobijediti. Ako pogodi, dijeli bodove sa pobjednicima. Inače se ponaša kao običan seljak.',
+  'step_gambler_title': 'KOCKAR',
+  'step_gambler_instruction': 'ODREDI SVOJU OKLADU NA POBJEDNIČKI SAVEZ',
+  'gambler_bet_title': 'POSTAVI OKLADU',
+  'gambler_bet_subtitle': 'Odaberi ko će po tebi pobijediti...',
+  'gambler_bet_village': 'SELO',
+  'gambler_bet_werewolves': 'ČOPOR',
+  'gambler_bet_specials': 'POSEBNI',
+  'gambler_village_reward': '+1 BOD',
+  'gambler_werewolves_reward': '+2 BODA',
+  'gambler_specials_reward': '+3 BODA',
+  'gambler_confirm_bet': 'POTVRDI OKLADU',
+  'gambler_roll_dice': 'BACI KOCKICE',
+  'gambler_fate_sealed': 'SUDBINA JE ZAPEČAĆENA',
+  'gambler_won_bet': 'KOCKAR JE DOBIO OKLADU!',
 };
