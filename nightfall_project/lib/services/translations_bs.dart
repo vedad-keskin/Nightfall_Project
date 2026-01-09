@@ -270,6 +270,7 @@ const Map<String, String> bsTranslations = {
   'hang_button': 'OBJESI',
   'skip_button': 'PRESKOČI',
   'select_button': 'ODABERI',
+  'votes_needed_label': 'GLASOVA POTREBNO ZA VJEŠANJE:',
   'royal_guard_check': 'STRAŽAR // PROVJERA',
   'approaching': 'ŠUNJANJE...',
   'searching': 'PRETRAGA...',

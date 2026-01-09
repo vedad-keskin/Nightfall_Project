@@ -271,6 +271,7 @@ const Map<String, String> enTranslations = {
   'hang_button': 'HANG',
   'skip_button': 'SKIP',
   'select_button': 'SELECT',
+  'votes_needed_label': 'VOTES NEEDED FOR HANGING:',
   'royal_guard_check': 'ROYAL GUARD // CHECK',
   'approaching': 'APPROACHING...',
   'searching': 'SEARCHING...',

@@ -309,7 +309,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     _easterEggTimer?.cancel();
                   },
                   child: Text(
-                    'Nightfall Project v3.3.3',
+                    'Nightfall Project v3.3.4',
                     style: GoogleFonts.vt323(
                       color: Colors.white24,
                       fontSize: 14,

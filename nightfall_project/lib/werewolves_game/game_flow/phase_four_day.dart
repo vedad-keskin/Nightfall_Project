@@ -366,6 +366,43 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border.all(
+                            color: const Color(0xFFFCA311).withOpacity(0.5),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              context.watch<LanguageService>().translate(
+                                'votes_needed_label',
+                              ),
+                              style: GoogleFonts.pressStart2p(
+                                color: Colors.white70,
+                                fontSize: 9,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '${(alivePlayers.length / 2).floor() + 1}',
+                              style: GoogleFonts.pressStart2p(
+                                color: const Color(0xFFFCA311),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
