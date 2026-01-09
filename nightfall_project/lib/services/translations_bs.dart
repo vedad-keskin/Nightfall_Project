@@ -289,9 +289,9 @@ const Map<String, String> bsTranslations = {
       'Dželat je obješen! On vodi nekoga sa sobom. Odaberi žrtvu.',
   'confirm_button': 'POTVRDI',
   'execute_button': 'POGUBI',
-  'infected_name': 'Zaraženi',
+  'infected_name': 'Zaražena',
   'infected_desc':
-      'Seljak koji nosi skrivenu bolest. Ako ga iscjelitelj uspješno liječi, iscjelitelj se zarazi i umire.',
+      'Seljak koji nosi skrivenu bolest. Ako ga doktor uspješno liječi, doktor se zarazi i umire.',
   'infected_healer_msg':
       'Infekcija se proširila tokom liječenja {name}! Iscjelitelj je UMRO!',
 };
