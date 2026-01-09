@@ -945,6 +945,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return const Color(0xFF7209B7); // Indigo/Deep Purple
       case 13: // Executioner
         return const Color(0xFF6B4226); // Executioner-like Brown/Dark
+      case 14: // Infected
+        return const Color(0xFF8E9B97); // Sickly Green-Grey
       default:
         return Colors.white; // Villager etc.
     }
