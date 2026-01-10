@@ -135,7 +135,7 @@ const Map<String, String> enTranslations = {
       'Cannot protect the same player on two consecutive nights.\n'
       'TWINS: If one Twin is hanged during the Day Phase, the other immediately becomes a Werewolf.\n'
       'If one Twin is killed during the Night Phase, the other remains a Villager.\n'
-      'AVENGING TWIN: If their Twin dies, they transform into an Avenging Twin.\n'
+      'AVENGING TWIN: If their Twin is hanged, they transform into an Avenging Twin.\n'
       'From the next night onward, they awaken and act with the Werewolves.\n'
       'JESTER: Wins instantly and alone if eliminated by Village vote during the Day Phase.\n'
       'DRUNK: Has no special ability and behaves as a normal Villager.\n'
