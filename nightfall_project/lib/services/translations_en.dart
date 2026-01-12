@@ -146,6 +146,7 @@ const Map<String, String> enTranslations = {
       'If both attacks happen on the same night, the Knight dies immediately.\n'
       'Second life: Can be killed by Werewolves or a Plague Doctor accidental kill.\n'
       'The second life can be saved by either the Doctor or the Plague Doctor.\n'
+      'Hanging kills him immediately.\n'
       'PUPPET MASTER: Starts the game as a normal Villager.\n'
       'When the first hanging of the game occurs, the Puppet Master transforms into the role of the hanged player.\n'
       'The hanged player is eliminated normally.\n'

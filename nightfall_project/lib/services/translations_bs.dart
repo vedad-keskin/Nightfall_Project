@@ -147,6 +147,7 @@ const Map<String, String> bsTranslations = {
       'Ako se oba napada dogode iste noći, Vitez odmah umire.\n'
       'Drugi život: Može biti ubijen od strane Vukova ili Vrača.\n'
       'Drugi život može spasiti Doktor ili Vrač.\n'
+      'Vješanje po danu ga ubija bez obzira na broj života.\n'
       'LUTKAR: Započinje igru kao obični Seljanin.\n'
       'Kada se dogodi prvo vješanje u igri, Lutkar preuzima ulogu obješenog igrača.\n'
       'Obješeni igrač se eliminiše na uobičajen način.\n'
