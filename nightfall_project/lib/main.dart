@@ -309,7 +309,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     _easterEggTimer?.cancel();
                   },
                   child: Text(
-                    'Nightfall Project v3.6.6',
+                    'Nightfall Project v3.6.7',
                     style: GoogleFonts.vt323(
                       color: Colors.white24,
                       fontSize: 14,
@@ -354,14 +354,27 @@ class PixelRulesButton extends StatefulWidget {
 
 class _PixelRulesButtonState extends State<PixelRulesButton> {
   bool _isPressed = false;
+  DateTime? _pressStartTime;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        widget.onPressed();
+      onTapDown: (_) => setState(() {
+        _isPressed = true;
+        _pressStartTime = DateTime.now();
+      }),
+      onTapUp: (_) async {
+        final pressDuration = DateTime.now().difference(_pressStartTime!);
+        const minPressDuration = Duration(milliseconds: 100);
+
+        if (pressDuration < minPressDuration) {
+          await Future.delayed(minPressDuration - pressDuration);
+        }
+
+        if (mounted) {
+          setState(() => _isPressed = false);
+          widget.onPressed();
+        }
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedContainer(

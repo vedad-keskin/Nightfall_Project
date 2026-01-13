@@ -24,6 +24,7 @@ class PixelButton extends StatefulWidget {
 
 class _PixelButtonState extends State<PixelButton> {
   bool _isPressed = false;
+  DateTime? _pressStartTime;
   late AudioPlayer _audioPlayer;
 
   @override
@@ -58,12 +59,24 @@ class _PixelButtonState extends State<PixelButton> {
 
     return GestureDetector(
       onTapDown: (_) {
-        setState(() => _isPressed = true);
+        setState(() {
+          _isPressed = true;
+          _pressStartTime = DateTime.now();
+        });
       },
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        _playSound(); // Play sound on release
-        widget.onPressed?.call();
+      onTapUp: (_) async {
+        final pressDuration = DateTime.now().difference(_pressStartTime!);
+        const minPressDuration = Duration(milliseconds: 100);
+
+        if (pressDuration < minPressDuration) {
+          await Future.delayed(minPressDuration - pressDuration);
+        }
+
+        if (mounted) {
+          setState(() => _isPressed = false);
+          _playSound(); // Play sound on release
+          widget.onPressed?.call();
+        }
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: Transform.translate(

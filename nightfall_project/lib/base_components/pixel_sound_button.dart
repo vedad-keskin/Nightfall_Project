@@ -11,16 +11,29 @@ class PixelSoundButton extends StatefulWidget {
 
 class _PixelSoundButtonState extends State<PixelSoundButton> {
   bool _isPressed = false;
+  DateTime? _pressStartTime;
 
   @override
   Widget build(BuildContext context) {
     final soundSettings = context.watch<SoundSettingsService>();
 
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
-      onTapUp: (_) {
-        setState(() => _isPressed = false);
-        soundSettings.toggleMute();
+      onTapDown: (_) => setState(() {
+        _isPressed = true;
+        _pressStartTime = DateTime.now();
+      }),
+      onTapUp: (_) async {
+        final pressDuration = DateTime.now().difference(_pressStartTime!);
+        const minPressDuration = Duration(milliseconds: 100);
+
+        if (pressDuration < minPressDuration) {
+          await Future.delayed(minPressDuration - pressDuration);
+        }
+
+        if (mounted) {
+          setState(() => _isPressed = false);
+          soundSettings.toggleMute();
+        }
       },
       onTapCancel: () => setState(() => _isPressed = false),
       child: AnimatedContainer(
