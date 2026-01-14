@@ -211,7 +211,7 @@ const Map<String, String> bsTranslations = {
   'puppet_master_desc':
       'Mistični posmatrač. Transformiše se u ulogu prve osobe koju selo objesi.',
   'puppet_master_transforming': 'LUTKAR EVOLUIRA...',
-  'puppet_master_new_role': 'NOVI {role} SE PRIDRUŽIO GRADU!',
+  'puppet_master_new_role': 'Novi {role} se pridružio selu!',
   'puppet_master_gambler_bet_info':
       'Prvobitni Kockar se kladio da će {alliance} savez pobijediti. Naslijedili ste ovu opkladu!',
   'puppet_master_ritual': 'DREVNI RITUAL U TOKU',
@@ -260,7 +260,7 @@ const Map<String, String> bsTranslations = {
   'dawn_breaks_title': 'SVIĆE ZORA',
   'peaceful_night_msg': 'Bila je mirna noć.\nNiko nije umro.',
   'tragedy_struck_msg': 'Tragedija se dogodila!',
-  'player_is_dead_label': '{name} JE MRTAV/A',
+  'player_is_dead_label': '{name} JE MRTAV/VA',
   'start_day_button': 'ZAPOČNI DAN',
   'the_pack_alliance_title': 'VUKOVI',
   'the_village_alliance_title': 'SELO',
@@ -270,6 +270,8 @@ const Map<String, String> bsTranslations = {
   'plague_doctor_failed_msg':
       'Vrač je pokušao pomoći igraču {name}... ali nije uspio.',
   'plague_doctor_killed_msg': 'Vračev tretman je bio fatalan za igrača {name}.',
+  'plague_doctor_self_killed_msg':
+      'Vračev tretman na samom sebi je bio fatalan!',
   'plague_doctor_treated_msg': 'Vrač je liječio igrača {name}.',
   'win_title_village': 'SELO POBJEĐUJE!',
   'win_title_werewolves': 'VUKOVI POBJEĐUJU!',

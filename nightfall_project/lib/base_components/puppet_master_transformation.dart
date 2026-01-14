@@ -101,7 +101,7 @@ class _PuppetMasterTransformationDialogState
     String roleName = lang.translate(widget.targetRole.translationKey);
     String text2 = lang
         .translate('puppet_master_new_role')
-        .replaceAll('{role}', roleName);
+        .replaceAll('{role}', roleName.toUpperCase());
     await _type(text2);
 
     // Puppet Master Edge Case: Gambler Bet

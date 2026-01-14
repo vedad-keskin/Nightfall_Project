@@ -520,11 +520,15 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             );
           } else {
             deadPlayerIds.add(playerId);
-            messages.add(
-              lang
-                  .translate('plague_doctor_killed_msg')
-                  .replaceAll('{name}', player.name),
-            );
+            if (role.id == 5) {
+              messages.add(lang.translate('plague_doctor_self_killed_msg'));
+            } else {
+              messages.add(
+                lang
+                    .translate('plague_doctor_killed_msg')
+                    .replaceAll('{name}', player.name),
+              );
+            }
           }
         }
 
