@@ -219,12 +219,12 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
     }
   }
 
-  IconData _getBetIcon(GamblerBet bet) {
+  dynamic _getBetIcon(GamblerBet bet) {
     switch (bet) {
       case GamblerBet.village:
         return Icons.home;
       case GamblerBet.werewolves:
-        return Icons.pets;
+        return 'assets/images/claw_icon.png';
       case GamblerBet.specials:
         return Icons.auto_awesome;
     }
@@ -817,11 +817,20 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                                   ]
                                 : [],
                           ),
-                          child: Icon(
-                            _getBetIcon(bet),
-                            color: isSelected ? Colors.white : color,
-                            size: 40,
-                          ),
+                          child: _getBetIcon(bet) is IconData
+                              ? Icon(
+                                  _getBetIcon(bet) as IconData,
+                                  color: isSelected ? Colors.white : color,
+                                  size: 40,
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Image.asset(
+                                    _getBetIcon(bet) as String,
+                                    color: isSelected ? Colors.white : color,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
                         ),
                         const SizedBox(height: 10),
                         // Alliance name
@@ -1002,11 +1011,20 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                               scale: value,
                               child: Transform.rotate(
                                 angle: (1 - value) * pi,
-                                child: Icon(
-                                  _getBetIcon(_selectedBet),
-                                  color: Colors.white,
-                                  size: 48,
-                                ),
+                                child: _getBetIcon(_selectedBet) is IconData
+                                    ? Icon(
+                                        _getBetIcon(_selectedBet) as IconData,
+                                        color: Colors.white,
+                                        size: 48,
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Image.asset(
+                                          _getBetIcon(_selectedBet) as String,
+                                          color: Colors.white,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
                               ),
                             );
                           },

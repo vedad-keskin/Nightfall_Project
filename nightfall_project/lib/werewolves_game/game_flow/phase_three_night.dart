@@ -455,11 +455,19 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           }
           // No regeneration - if he wasn't hit, he stays at 2 lives even if doctors "healed" him.
         } else if (currentLives == 1) {
-          // Rule: Hit by both on 1 life -> Instant death
+          // Rule: Hit by both on 1 life -> Can be SAVED by Doctor
           if (hitByWerewolves && hitByPlagueAccident) {
-            deadPlayerIds.add(playerId);
-            _knightLives[playerId] = 0;
-            messages.add(lang.translate('knight_overwhelmed_msg'));
+            if (savedByDoctor) {
+              messages.add(
+                lang
+                    .translate('doctor_saved_msg')
+                    .replaceAll('{name}', player.name),
+              );
+            } else {
+              deadPlayerIds.add(playerId);
+              _knightLives[playerId] = 0;
+              messages.add(lang.translate('knight_overwhelmed_msg'));
+            }
           }
           // Rule: Hit by one on 1 life -> Can be SAVED, but not REGENERATED
           else if (hitByWerewolves || hitByPlagueAccident) {
@@ -496,8 +504,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         }
       } else {
         // NON-KNIGHT standard logic
+        bool alreadySavedByDoctor = false;
+
         if (hitByWerewolves) {
           if (savedByDoctor) {
+            alreadySavedByDoctor = true;
             messages.add(
               lang
                   .translate('doctor_saved_msg')
@@ -521,11 +532,13 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         if (hitByPlagueAccident && !deadPlayerIds.contains(playerId)) {
           // Doctor can save from Plague accident
           if (savedByDoctor) {
-            messages.add(
-              lang
-                  .translate('doctor_saved_msg')
-                  .replaceAll('{name}', player.name),
-            );
+            if (!alreadySavedByDoctor) {
+              messages.add(
+                lang
+                    .translate('doctor_saved_msg')
+                    .replaceAll('{name}', player.name),
+              );
+            }
           } else {
             deadPlayerIds.add(playerId);
             if (role.id == 5) {

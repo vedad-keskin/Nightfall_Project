@@ -210,7 +210,7 @@ const Map<String, String> enTranslations = {
   'puppet_master_desc':
       'A mysterious observer. Transforms into the role of the first person who gets hanged by the village.',
   'puppet_master_transforming': 'THE PUPPET MASTER IS EVOLVING...',
-  'puppet_master_new_role': 'The new {role} has joined the town!',
+  'puppet_master_new_role': 'The new {role} has joined the village!',
   'puppet_master_gambler_bet_info':
       'The original Gambler bet that the {alliance} alliance would win. You have inherited this bet!',
   'puppet_master_ritual': 'ANCIENT RITUAL IN PROGRESS',
