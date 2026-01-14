@@ -263,7 +263,7 @@ const Map<String, String> bsTranslations = {
   'tragedy_struck_msg': 'Tragedija se dogodila!',
   'player_is_dead_label': '{name} JE MRTAV/A',
   'start_day_button': 'ZAPOČNI DAN',
-  'the_pack_alliance_title': 'ČOPOR',
+  'the_pack_alliance_title': 'VUKOVI',
   'the_village_alliance_title': 'SELO',
   'specials_alliance_title': 'POSEBNI',
   'doctor_saved_msg': 'Doktor je spasio igrača {name}!',

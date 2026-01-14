@@ -298,25 +298,36 @@ class _PuppetMasterTransformationDialogState
                   const Spacer(),
 
                   // Bottom Dialogue Box
-                  Container(
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.85),
                       border: Border.all(
-                        color: const Color(0xFF7209B7),
-                        width: 3,
+                        color:
+                            _stage == 2 &&
+                                widget.targetRole.id == 15 &&
+                                widget.gamblerBet != null
+                            ? const Color(0xFFFFD700) // Gold for Gambler reveal
+                            : const Color(0xFF7209B7),
+                        width: 4,
                       ),
-                      borderRadius: BorderRadius.circular(
-                        4,
-                      ), // Sharp medieval corners
+                      borderRadius: BorderRadius.circular(0),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF7209B7).withOpacity(0.2),
-                          blurRadius: 15,
+                          color:
+                              (_stage == 2 &&
+                                          widget.targetRole.id == 15 &&
+                                          widget.gamblerBet != null
+                                      ? const Color(0xFFFFD700)
+                                      : const Color(0xFF7209B7))
+                                  .withOpacity(0.3),
+                          blurRadius: 20,
+                          spreadRadius: 5,
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(28),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -325,7 +336,7 @@ class _PuppetMasterTransformationDialogState
                             lang.translate('puppet_master_desc'),
                             style: GoogleFonts.vt323(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 22,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -352,10 +363,21 @@ class _PuppetMasterTransformationDialogState
                         ] else ...[
                           Text(
                             _typedText,
-                            style: GoogleFonts.vt323(
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
+                            style:
+                                _typedText.contains(
+                                      lang.translate('gambler_name'),
+                                    ) ||
+                                    _typedText.contains(' inherited') ||
+                                    _typedText.contains('Naslijedili')
+                                ? GoogleFonts.pressStart2p(
+                                    color: const Color(0xFFFFD700),
+                                    fontSize: 14,
+                                    height: 1.6,
+                                  )
+                                : GoogleFonts.vt323(
+                                    color: Colors.white,
+                                    fontSize: 26,
+                                  ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 24),
@@ -366,7 +388,11 @@ class _PuppetMasterTransformationDialogState
                                 label: lang
                                     .translate('proceed_button')
                                     .toUpperCase(),
-                                color: const Color(0xFF7209B7),
+                                color:
+                                    widget.targetRole.id == 15 &&
+                                        widget.gamblerBet != null
+                                    ? const Color(0xFFB8860B)
+                                    : const Color(0xFF7209B7),
                                 onPressed: () => Navigator.of(context).pop(),
                               ),
                             )
