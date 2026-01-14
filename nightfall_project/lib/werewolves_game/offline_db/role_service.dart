@@ -170,7 +170,7 @@ class WerewolfRoleService {
       points: 1,
       allianceId: 1, // Villagers
       description:
-          'A simple villager but carrying a hidden disease. If the Doctor heals them, the Doctor gets infected and dies. If the werewolves target them at night while they have a vampire in their team, the vampire gets infected and dies.',
+          'A simple villager but carrying a hidden disease. If the Doctor heals them, the Doctor gets infected and dies. If the werewolves target her at night while they have a vampire in their team, the vampire gets infected and dies too.',
       imagePath: 'assets/images/werewolves/Infected.png',
       translationKey: 'infected_name',
       descriptionKey: 'infected_desc',
