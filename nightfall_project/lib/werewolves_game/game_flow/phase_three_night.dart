@@ -22,8 +22,8 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
   final String? lastHealedId;
   final String? lastPlagueTargetId;
   final Map<String, int>? knightLives;
-
-  // First night flag for Gambler
+  // Night/Day counting
+  final int nightNumber;
   final bool isFirstNight;
   // Gambler's bet (passed through if already made)
   final GamblerBet? gamblerBet;
@@ -37,6 +37,7 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
     this.knightLives,
     this.isFirstNight = false,
     this.gamblerBet,
+    this.nightNumber = 1,
   });
 
   @override
@@ -813,6 +814,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             lastPlagueTargetId: _plagueDoctorTargetId,
             knightLives: _knightLives,
             gamblerBet: _gamblerBet,
+            dayNumber: widget.nightNumber,
           ),
         ),
       );
@@ -1137,19 +1139,34 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                   child: Column(
                     children: [
                       Text(
-                        _stepTitle,
+                        context
+                            .watch<LanguageService>()
+                            .translate('night_phase_title')
+                            .replaceAll(
+                              '{number}',
+                              widget.nightNumber.toString(),
+                            ),
                         style: GoogleFonts.pressStart2p(
                           color: _stepColor,
-                          fontSize: 20,
+                          fontSize: 18,
                         ),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _stepInstruction,
+                        _stepTitle,
                         style: GoogleFonts.vt323(
                           color: Colors.white,
                           fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _stepInstruction,
+                        style: GoogleFonts.vt323(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 18,
                         ),
                         textAlign: TextAlign.center,
                       ),

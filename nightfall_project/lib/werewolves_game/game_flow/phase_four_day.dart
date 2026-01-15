@@ -28,6 +28,8 @@ class WerewolfPhaseFourScreen extends StatefulWidget {
   // Gambler's bet from first night
   final GamblerBet? gamblerBet;
 
+  final int dayNumber;
+
   const WerewolfPhaseFourScreen({
     super.key,
     required this.playerRoles,
@@ -37,6 +39,7 @@ class WerewolfPhaseFourScreen extends StatefulWidget {
     this.lastPlagueTargetId,
     this.knightLives,
     this.gamblerBet,
+    this.dayNumber = 1,
   });
 
   @override
@@ -379,6 +382,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
             knightLives: updatedKnightLives,
             isFirstNight: false,
             gamblerBet: widget.gamblerBet,
+            nightNumber: widget.dayNumber + 1,
           ),
         ),
       );
@@ -415,11 +419,17 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
                   child: Column(
                     children: [
                       Text(
-                        context.watch<LanguageService>().translate(
-                          _isRetaliationPhase
-                              ? 'executioner_retaliation_title'
-                              : 'day_phase_title',
-                        ),
+                        context
+                            .watch<LanguageService>()
+                            .translate(
+                              _isRetaliationPhase
+                                  ? 'executioner_retaliation_title'
+                                  : 'day_phase_title',
+                            )
+                            .replaceAll(
+                              '{number}',
+                              widget.dayNumber.toString(),
+                            ),
                         style: GoogleFonts.pressStart2p(
                           color: _isRetaliationPhase
                               ? const Color(0xFFE63946)

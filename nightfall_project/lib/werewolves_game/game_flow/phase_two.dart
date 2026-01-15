@@ -620,6 +620,7 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                                         playerRoles: widget.playerRoles,
                                         players: widget.players,
                                         isFirstNight: true,
+                                        nightNumber: 1,
                                       ),
                                 ),
                               );
