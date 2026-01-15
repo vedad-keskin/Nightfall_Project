@@ -47,14 +47,18 @@ class PixelTeamDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 _buildCreditRow(
-                  'DESIGN & ART',
+                  'GAME DESIGN',
                   'Nidal Keskin',
-                  labelColor: const Color(0xFFF72585), // Neon Pink
                   valueColor: Colors.white,
+                  labelColor: const Color(
+                    0xFF9B5DE5,
+                  ), // Vivid Lavender / Creative Purple
                 ),
+                const SizedBox(height: 20),
                 _buildCreditRow(
-                  '',
+                  'ART DESIGN',
                   'Iman-Bejana Keskin',
+                  labelColor: const Color(0xFFF72585), // Neon Pink
                   valueColor: Colors.white,
                 ),
                 const SizedBox(height: 20),
