@@ -276,6 +276,11 @@ const Map<String, String> bsTranslations = {
       'Vračev tretman na samom sebi je bio fatalan!',
   'plague_doctor_treated_msg': 'Vrač je liječio igrača {name}.',
   'plague_doctor_self_treated_msg': 'Vrač je liječio samog sebe.',
+  'doctor_saved_from_plague_msg':
+      'Doktor je spasio igrača {name} od fatalnog Vračevog tretmana!',
+  'doctor_saved_from_both_msg':
+      'Doktor je spasio igrača {name} od vukova i fatalnog Vračevog tretmana!',
+  'double_heal_msg': 'Igrač {name} je primio tretman i od Doktora i od Vrača!',
   'win_title_village': 'SELO POBJEĐUJE!',
   'win_title_werewolves': 'VUKOVI POBJEĐUJU!',
   'win_title_specials': 'POSEBNI POBJEĐUJU!',

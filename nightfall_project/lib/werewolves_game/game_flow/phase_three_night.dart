@@ -453,14 +453,13 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             _knightLives[playerId] = 1;
             messages.add(lang.translate('knight_armor_msg'));
           }
-          // No regeneration - if he wasn't hit, he stays at 2 lives even if doctors "healed" him.
         } else if (currentLives == 1) {
           // Rule: Hit by both on 1 life -> Can be SAVED by Doctor
           if (hitByWerewolves && hitByPlagueAccident) {
             if (savedByDoctor) {
               messages.add(
                 lang
-                    .translate('doctor_saved_msg')
+                    .translate('doctor_saved_from_both_msg')
                     .replaceAll('{name}', player.name),
               );
             } else {
@@ -473,21 +472,40 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           else if (hitByWerewolves || hitByPlagueAccident) {
             if (savedByDoctor || savedByPlagueHeal) {
               // Successfully saved! Lives stay at 1.
-              if (savedByDoctor) {
+              if (savedByDoctor && savedByPlagueHeal) {
                 messages.add(
                   lang
-                      .translate('doctor_saved_msg')
+                      .translate('double_heal_msg')
                       .replaceAll('{name}', player.name),
                 );
               } else {
-                if (role.id == 5) {
-                  messages.add(lang.translate('plague_doctor_self_saved_msg'));
-                } else {
+                if (savedByDoctor && hitByPlagueAccident) {
                   messages.add(
                     lang
-                        .translate('plague_doctor_saved_msg')
+                        .translate('doctor_saved_from_plague_msg')
                         .replaceAll('{name}', player.name),
                   );
+                } else if (savedByDoctor && hitByWerewolves) {
+                  messages.add(
+                    lang
+                        .translate('doctor_saved_msg')
+                        .replaceAll('{name}', player.name),
+                  );
+                }
+
+                // Also report Plague Doctor's successful treatment if applicable
+                if (savedByPlagueHeal) {
+                  if (role.id == 5) {
+                    messages.add(
+                      lang.translate('plague_doctor_self_saved_msg'),
+                    );
+                  } else {
+                    messages.add(
+                      lang
+                          .translate('plague_doctor_saved_msg')
+                          .replaceAll('{name}', player.name),
+                    );
+                  }
                 }
               }
             } else {
@@ -504,16 +522,24 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         }
       } else {
         // NON-KNIGHT standard logic
-        bool alreadySavedByDoctor = false;
+        bool alreadyReportedDoctorSave = false;
 
         if (hitByWerewolves) {
           if (savedByDoctor) {
-            alreadySavedByDoctor = true;
-            messages.add(
-              lang
-                  .translate('doctor_saved_msg')
-                  .replaceAll('{name}', player.name),
-            );
+            alreadyReportedDoctorSave = true;
+            if (hitByPlagueAccident) {
+              messages.add(
+                lang
+                    .translate('doctor_saved_from_both_msg')
+                    .replaceAll('{name}', player.name),
+              );
+            } else {
+              messages.add(
+                lang
+                    .translate('doctor_saved_msg')
+                    .replaceAll('{name}', player.name),
+              );
+            }
           } else if (savedByPlagueHeal) {
             if (role.id == 5) {
               messages.add(lang.translate('plague_doctor_self_saved_msg'));
@@ -532,10 +558,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         if (hitByPlagueAccident && !deadPlayerIds.contains(playerId)) {
           // Doctor can save from Plague accident
           if (savedByDoctor) {
-            if (!alreadySavedByDoctor) {
+            if (!alreadyReportedDoctorSave) {
               messages.add(
                 lang
-                    .translate('doctor_saved_msg')
+                    .translate('doctor_saved_from_plague_msg')
                     .replaceAll('{name}', player.name),
               );
             }
@@ -553,16 +579,24 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           }
         }
 
-        // Informative message for successful Plague Doctor treatment without werewolf attack
+        // Informative message for successful Plague Doctor treatment without werewolf attack (or even with Doctor save)
         if (savedByPlagueHeal && !hitByWerewolves) {
-          if (role.id == 5) {
-            messages.add(lang.translate('plague_doctor_self_treated_msg'));
-          } else {
+          if (savedByDoctor) {
             messages.add(
               lang
-                  .translate('plague_doctor_treated_msg')
+                  .translate('double_heal_msg')
                   .replaceAll('{name}', player.name),
             );
+          } else {
+            if (role.id == 5) {
+              messages.add(lang.translate('plague_doctor_self_treated_msg'));
+            } else {
+              messages.add(
+                lang
+                    .translate('plague_doctor_treated_msg')
+                    .replaceAll('{name}', player.name),
+              );
+            }
           }
         }
       }
