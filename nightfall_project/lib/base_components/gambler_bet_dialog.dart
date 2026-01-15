@@ -800,10 +800,10 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                           height: 100,
                           decoration: BoxDecoration(
                             color: Colors.black26,
-                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: isSelected ? Colors.white : color,
-                              width: 3,
+                              width: 4,
                             ),
                             boxShadow: isSelected
                                 ? [
@@ -818,7 +818,9 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                                   ]
                                 : [],
                           ),
-                          child: ClipOval(
+                          child: ClipRRect(
+                            // Slightly smaller to account for the border width
+                            borderRadius: BorderRadius.circular(12),
                             child: Image.asset(
                               _getBetIcon(bet),
                               fit: BoxFit.cover,
@@ -1008,7 +1010,7 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                                   width: 80,
                                   height: 80,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                       color: Colors.white,
                                       width: 3,
@@ -1022,7 +1024,7 @@ class _GamblerBetDialogState extends State<GamblerBetDialog>
                                     ],
                                   ),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(17),
                                     child: Image.asset(
                                       _getBetIcon(_selectedBet),
                                       fit: BoxFit.cover,
