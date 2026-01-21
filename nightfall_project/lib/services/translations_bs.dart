@@ -1,7 +1,8 @@
 const Map<String, String> bsTranslations = {
   'werewolves': 'VUKOVI',
   'impostor': 'ULJEZI',
-  'impostor-game': 'VARALICA',
+  'impostor-game': 'ULJEZI',
+  'impostor-player' : "ULJEZ",
   'play_now': 'ZAIGRAJ',
   'back': 'NAZAD',
   'players_title': 'IGRAČI',

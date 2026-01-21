@@ -368,7 +368,7 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              languageService.translate('impostor'),
+              languageService.translate('impostor-player'),
               style: GoogleFonts.pressStart2p(
                 color: const Color(0xFFE63946), // Red
                 fontSize: 18,

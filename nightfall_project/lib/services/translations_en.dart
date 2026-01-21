@@ -2,6 +2,7 @@ const Map<String, String> enTranslations = {
   'werewolves': 'WEREWOLVES',
   'impostor': 'IMPOSTOR',
   'impostor-game': 'IMPOSTOR GAME',
+  'impostor-player': "IMPOSTOR",
   'play_now': 'PLAY NOW',
   'back': 'BACK',
   'players_title': 'PLAYERS',
