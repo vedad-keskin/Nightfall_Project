@@ -4,19 +4,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_starfield_background.dart';
-import 'package:nightfall_project/services/sound_settings_service.dart';
-import 'package:provider/provider.dart';
 
 class NightfallIntroScreen extends StatefulWidget {
   final Widget next;
   final Duration totalDuration;
-  final String? introSoundAsset; // ex: 'audio/werewolves/wolf_howl.mp3'
 
   const NightfallIntroScreen({
     super.key,
     required this.next,
     this.totalDuration = const Duration(milliseconds: 3200),
-    this.introSoundAsset = 'audio/werewolves/wolf_howl.mp3',
   });
 
   @override
@@ -34,20 +30,6 @@ class _NightfallIntroScreenState extends State<NightfallIntroScreen>
     super.initState();
     _controller = AnimationController(vsync: this, duration: widget.totalDuration)
       ..forward();
-
-    // Fire-and-forget intro sting (respects mute).
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final asset = widget.introSoundAsset;
-      if (asset == null || asset.isEmpty) return;
-      // In tests (or if used standalone), SoundSettingsService may not be provided.
-      try {
-        final sound = Provider.of<SoundSettingsService>(context, listen: false);
-        // ignore: discarded_futures
-        sound.playGlobal(asset, loop: false);
-      } catch (_) {
-        // No-op: sound is optional for this intro.
-      }
-    });
 
     _navTimer = Timer(widget.totalDuration + const Duration(milliseconds: 250), () {
       _goNext();
@@ -84,6 +66,22 @@ class _NightfallIntroScreenState extends State<NightfallIntroScreen>
         child: Stack(
           children: [
             const Positioned.fill(child: PixelStarfieldBackground()),
+            // Blood-red wash (werewolves vibe).
+            Positioned.fill(
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, _) {
+                    final t = _controller.value;
+                    final pulse = (sin(t * pi * 6) * 0.5 + 0.5);
+                    final a = (0.18 + 0.18 * pulse) * (t < 0.1 ? (t / 0.1) : 1.0);
+                    return ColoredBox(
+                      color: const Color(0xFFB00020).withOpacity(a.clamp(0.0, 0.55)),
+                    );
+                  },
+                ),
+              ),
+            ),
             // Subtle vignette / mood.
             Positioned.fill(
               child: DecoratedBox(
@@ -96,6 +94,23 @@ class _NightfallIntroScreenState extends State<NightfallIntroScreen>
                       Colors.black.withOpacity(0.75),
                     ],
                   ),
+                ),
+              ),
+            ),
+            // Blood moon glow behind the logo/title.
+            Positioned.fill(
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, _) {
+                    final t = _controller.value;
+                    final moonIn = _easeOut(_interval(t, 0.06, 0.28));
+                    final moonOut = (t > 0.88) ? (1.0 - _easeIn(_interval(t, 0.88, 1.0))) : 1.0;
+                    final alpha = (0.0 + 0.55 * moonIn) * moonOut;
+                    return CustomPaint(
+                      painter: _BloodMoonPainter(opacity: alpha.clamp(0.0, 0.55)),
+                    );
+                  },
                 ),
               ),
             ),
@@ -119,6 +134,23 @@ class _NightfallIntroScreenState extends State<NightfallIntroScreen>
                     ),
                   );
                 },
+              ),
+            ),
+            // Claw scratches (brief and nasty).
+            Positioned.fill(
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, _) {
+                    final t = _controller.value;
+                    final a = (t > 0.22 && t < 0.62)
+                        ? (0.15 + 0.25 * (sin(t * pi * 10) * 0.5 + 0.5))
+                        : 0.0;
+                    return CustomPaint(
+                      painter: _ScratchPainter(opacity: a.clamp(0.0, 0.4)),
+                    );
+                  },
+                ),
               ),
             ),
             SafeArea(
@@ -260,18 +292,29 @@ class _GlitchTitle extends StatelessWidget {
       ],
     );
 
-    final amp = (intensity.clamp(0.0, 1.0)) * 1.8;
+    // Stronger + harsher for werewolves vibe.
+    final amp = (intensity.clamp(0.0, 1.0)) * 3.4;
 
     return Stack(
       alignment: Alignment.center,
       children: [
         Transform.translate(
           offset: Offset(-jitter * amp, 0),
-          child: Text(text, style: baseStyle.copyWith(color: Colors.redAccent.withOpacity(0.65))),
+          child: Text(
+            text,
+            style: baseStyle.copyWith(
+              color: const Color(0xFFFF1744).withOpacity(0.75),
+            ),
+          ),
         ),
         Transform.translate(
           offset: Offset(jitter * amp, 0),
-          child: Text(text, style: baseStyle.copyWith(color: Colors.lightBlueAccent.withOpacity(0.55))),
+          child: Text(
+            text,
+            style: baseStyle.copyWith(
+              color: const Color(0xFF8E0000).withOpacity(0.65),
+            ),
+          ),
         ),
         Text(text, style: baseStyle),
       ],
@@ -359,31 +402,35 @@ class _ScanlineGlitchPainter extends CustomPainter {
     if (size.isEmpty || opacity <= 0) return;
 
     // Scanlines.
-    final scanPaint = Paint()..color = Colors.white.withOpacity(0.04 * opacity);
-    const gap = 6.0;
+    final scanPaint = Paint()..color = Colors.white.withOpacity(0.06 * opacity);
+    const gap = 5.0;
     for (double y = 0; y < size.height; y += gap) {
       canvas.drawRect(Rect.fromLTWH(0, y, size.width, 1), scanPaint);
     }
 
     // Occasional horizontal glitch bars.
-    final burst = (time > 0.18 && time < 0.55) ? (0.35 + 0.65 * flicker) : 0.0;
-    final barCount = (burst * 6).floor();
+    final burst = (time > 0.14 && time < 0.72) ? (0.55 + 0.75 * flicker) : 0.0;
+    final barCount = (burst * 11).floor();
     if (barCount > 0) {
-      final barPaint = Paint()..color = Colors.black.withOpacity(0.18 * opacity);
+      final barPaint = Paint()..color = Colors.black.withOpacity(0.30 * opacity);
+      final redPaint = Paint()..color = const Color(0xFFB00020).withOpacity(0.20 * opacity);
       for (int i = 0; i < barCount; i++) {
         final y = _noise(size.height, i, time) * size.height;
-        final h = 8 + (_noise(20, i + 9, time) * 18);
-        final dx = (_noise(1, i + 19, time) - 0.5) * 18;
+        final h = 10 + (_noise(22, i + 9, time) * 28);
+        final dx = (_noise(1, i + 19, time) - 0.5) * 34;
         canvas.save();
         canvas.translate(dx, 0);
         canvas.drawRect(Rect.fromLTWH(0, y, size.width, h), barPaint);
+        if (i.isEven) {
+          canvas.drawRect(Rect.fromLTWH(0, y + 2, size.width, max(2, h * 0.25)), redPaint);
+        }
         canvas.restore();
       }
     }
 
     // Tiny vignette flicker.
     final fogPaint = Paint()
-      ..color = Colors.black.withOpacity((0.06 + 0.06 * flicker) * opacity);
+      ..color = Colors.black.withOpacity((0.10 + 0.10 * flicker) * opacity);
     canvas.drawRect(Offset.zero & size, fogPaint);
   }
 
@@ -417,5 +464,79 @@ double _easeOutBack(double x) {
   const c1 = 1.70158;
   const c3 = c1 + 1;
   return 1 + c3 * pow(x - 1, 3).toDouble() + c1 * pow(x - 1, 2).toDouble();
+}
+
+class _BloodMoonPainter extends CustomPainter {
+  final double opacity;
+  _BloodMoonPainter({required this.opacity});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty || opacity <= 0) return;
+
+    final center = Offset(size.width / 2, size.height / 2 - 90);
+    final r = min(size.width, size.height) * 0.22;
+    final glow = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          const Color(0xFFFF1744).withOpacity(opacity),
+          const Color(0xFFB00020).withOpacity(opacity * 0.55),
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.55, 1.0],
+      ).createShader(Rect.fromCircle(center: center, radius: r * 2.1));
+    canvas.drawCircle(center, r * 2.1, glow);
+
+    final moon = Paint()..color = const Color(0xFFB00020).withOpacity(opacity * 0.9);
+    canvas.drawCircle(center, r, moon);
+
+    final rim = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..color = const Color(0xFFFFCDD2).withOpacity(opacity * 0.35);
+    canvas.drawCircle(center, r, rim);
+  }
+
+  @override
+  bool shouldRepaint(covariant _BloodMoonPainter oldDelegate) =>
+      oldDelegate.opacity != opacity;
+}
+
+class _ScratchPainter extends CustomPainter {
+  final double opacity;
+  _ScratchPainter({required this.opacity});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty || opacity <= 0) return;
+
+    final p = Paint()
+      ..color = const Color(0xFFFF1744).withOpacity(opacity)
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.square;
+
+    // Three diagonal “claws” on the right side.
+    final x0 = size.width * 0.62;
+    final y0 = size.height * 0.22;
+    for (int i = 0; i < 3; i++) {
+      final dx = i * 14.0;
+      final dy = i * 18.0;
+      canvas.drawLine(
+        Offset(x0 + dx, y0 + dy),
+        Offset(x0 + dx + size.width * 0.22, y0 + dy + size.height * 0.34),
+        p,
+      );
+      // Small “tear” notch.
+      canvas.drawLine(
+        Offset(x0 + dx + size.width * 0.08, y0 + dy + size.height * 0.12),
+        Offset(x0 + dx + size.width * 0.06, y0 + dy + size.height * 0.16),
+        p,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _ScratchPainter oldDelegate) =>
+      oldDelegate.opacity != opacity;
 }
 
