@@ -571,18 +571,34 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                       flattenedRoleIds.add(roleId);
                                     }
                                   });
-                                  flattenedRoleIds.shuffle();
+
+                                  // Use secure random for better entropy
+                                  final random = Random.secure();
+                                  flattenedRoleIds.shuffle(random);
 
                                   // 3. Map players to roles
+                                  // We also shuffle a list of indices to ensure player-to-role mapping
+                                  // is randomized from both sides (roles shuffled + assignment order shuffled)
+                                  final List<int> playerIndices = List.generate(
+                                    players.length,
+                                    (index) => index,
+                                  );
+                                  playerIndices.shuffle(random);
+
                                   final Map<String, WerewolfRole> playerRoles =
                                       {};
                                   for (int i = 0; i < players.length; i++) {
-                                    final roleId = flattenedRoleIds[i];
+                                    final roleId =
+                                        flattenedRoleIds[i]; // Roles are already shuffled
+                                    final playerIndex =
+                                        playerIndices[i]; // Player assignment order is shuffled
+                                    final player = players[playerIndex];
+
                                     final role = _roleService.getRoleById(
                                       roleId,
                                     );
                                     if (role != null) {
-                                      playerRoles[players[i].id] = role;
+                                      playerRoles[player.id] = role;
                                     }
                                   }
 
@@ -592,7 +608,8 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             WerewolfPhaseTwoScreen(
-                                              players: players,
+                                              players:
+                                                  players, // Pass original list order for consistent UI
                                               playerRoles: playerRoles,
                                             ),
                                       ),
