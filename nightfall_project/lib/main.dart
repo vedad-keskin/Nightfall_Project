@@ -35,7 +35,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Nightfall Project',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+          surface: Colors.black,
+        ),
+        scaffoldBackgroundColor: Colors.black,
         useMaterial3: true,
       ),
       home: const NightfallIntroScreen(next: SplitHomeScreen()),
@@ -312,7 +316,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     _easterEggTimer?.cancel();
                   },
                   child: Text(
-                    'Nightfall Project v3.9.1',
+                    'Nightfall Project v3.9.3',
                     style: GoogleFonts.vt323(
                       color: Colors.white24,
                       fontSize: 14,

@@ -1186,7 +1186,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       case NightStep.plagueDoctor:
         return 'assets/images/plague_heal.png';
       case NightStep.shaman:
-        return 'assets/images/guard_inspect.png'; // Reuse inspect icon
+        return 'assets/images/shaman_totem.png'; // Reuse inspect icon
     }
   }
 
