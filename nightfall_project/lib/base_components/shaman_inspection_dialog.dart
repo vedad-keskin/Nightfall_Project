@@ -51,9 +51,10 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _revealOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _revealController, curve: Curves.easeIn),
-    );
+    _revealOpacity = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _revealController, curve: Curves.easeIn));
 
     _spiritController = AnimationController(
       vsync: this,
@@ -118,9 +119,7 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                     spreadRadius: 2,
                   ),
                   BoxShadow(
-                    color: shamanColor.withOpacity(
-                      _pulseAnimation.value * 0.3,
-                    ),
+                    color: shamanColor.withOpacity(_pulseAnimation.value * 0.3),
                     blurRadius: 48,
                     spreadRadius: 8,
                   ),
@@ -211,7 +210,7 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
         children: [
           _buildHeader(lang),
 
-          // "Spirits reveal the truth"
+          // "Spirits reveal the truth" - Minimalistic banner
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
@@ -223,10 +222,12 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
             ),
             child: Text(
               lang.translate('shaman_spirits_reveal'),
-              style: GoogleFonts.vt323(
-                color: shamanColor.withOpacity(0.95),
-                fontSize: 24,
-                letterSpacing: 2,
+              style: GoogleFonts.pressStart2p(
+                color: shamanColor,
+                fontSize: 14,
+                shadows: [
+                  Shadow(color: shamanColor.withOpacity(0.5), blurRadius: 6),
+                ],
               ),
               textAlign: TextAlign.center,
             ),
@@ -259,6 +260,37 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                           height: imgH,
                           fit: BoxFit.contain,
                         ),
+                        // Player Name Overlay (top of image)
+                        Positioned(
+                          top: 12,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            color: Colors.black.withOpacity(0.65),
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            child: Text(
+                              widget.playerName.toUpperCase(),
+                              style: GoogleFonts.vt323(
+                                color: Colors.white,
+                                fontSize: 30,
+                                letterSpacing: 3,
+                                shadows: [
+                                  Shadow(
+                                    color: shamanColor.withOpacity(0.4),
+                                    blurRadius: 8,
+                                  ),
+                                  const Shadow(
+                                    color: Colors.black,
+                                    blurRadius: 4,
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
                         Positioned(
                           left: 0,
                           right: 0,
@@ -270,43 +302,47 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                                 end: Alignment.bottomCenter,
                                 colors: [
                                   Colors.transparent,
-                                  const Color(0xFF0D1B2A).withOpacity(0.92),
+                                  const Color(0xFF0D1B2A).withOpacity(0.7),
+                                  const Color(0xFF0D1B2A).withOpacity(0.95),
                                 ],
+                                stops: const [0.0, 0.4, 1.0],
                               ),
                             ),
-                            padding: const EdgeInsets.fromLTRB(
-                              16,
-                              20,
-                              16,
-                              16,
-                            ),
+                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  widget.playerName.toUpperCase(),
-                                  style: GoogleFonts.vt323(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    letterSpacing: 2,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 8),
+                                // Enhanced Role Badge
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
+                                    horizontal: 16,
+                                    vertical: 10,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: roleColor.withOpacity(0.2),
-                                    border: Border.all(
-                                      color: roleColor.withOpacity(0.8),
-                                      width: 2,
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        roleColor.withOpacity(0.15),
+                                        roleColor.withOpacity(0.25),
+                                        roleColor.withOpacity(0.15),
+                                      ],
                                     ),
-                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(
+                                      color: roleColor.withOpacity(0.9),
+                                      width: 2.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(6),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: roleColor.withOpacity(0.4),
+                                        blurRadius: 12,
+                                        spreadRadius: 1,
+                                      ),
+                                      BoxShadow(
+                                        color: roleColor.withOpacity(0.2),
+                                        blurRadius: 24,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
                                   ),
                                   child: Text(
                                     lang
@@ -315,17 +351,25 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.pressStart2p(
                                       color: roleColor,
-                                      fontSize: 23,
+                                      fontSize: 20,
                                       height: 1.3,
                                       shadows: [
                                         Shadow(
-                                          color: roleColor.withOpacity(0.6),
-                                          blurRadius: 8,
+                                          color: roleColor.withOpacity(0.8),
+                                          blurRadius: 10,
+                                        ),
+                                        Shadow(
+                                          color: roleColor.withOpacity(0.5),
+                                          blurRadius: 6,
                                         ),
                                         const Shadow(
                                           color: Colors.black,
-                                          blurRadius: 4,
+                                          blurRadius: 6,
                                           offset: Offset(2, 2),
+                                        ),
+                                        const Shadow(
+                                          color: Colors.black87,
+                                          blurRadius: 3,
                                         ),
                                       ],
                                     ),
@@ -366,12 +410,7 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
         style: GoogleFonts.pressStart2p(
           color: shamanColor,
           fontSize: 11,
-          shadows: [
-            Shadow(
-              color: shamanColor.withOpacity(0.5),
-              blurRadius: 6,
-            ),
-          ],
+          shadows: [Shadow(color: shamanColor.withOpacity(0.5), blurRadius: 6)],
         ),
       ),
     );
