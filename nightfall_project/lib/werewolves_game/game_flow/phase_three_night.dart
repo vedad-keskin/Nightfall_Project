@@ -13,6 +13,7 @@ import 'package:nightfall_project/services/sound_settings_service.dart';
 import 'package:nightfall_project/base_components/guard_inspection_dialog.dart';
 import 'package:nightfall_project/base_components/pixel_heart.dart';
 import 'package:nightfall_project/base_components/gambler_bet_dialog.dart';
+import 'package:nightfall_project/base_components/shaman_inspection_dialog.dart';
 
 class WerewolfPhaseThreeScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -51,6 +52,7 @@ enum NightStep {
   doctor,
   guard,
   plagueDoctor,
+  shaman, // Every 2nd night (2nd, 4th, 6th...) - sees true role
 }
 
 class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
@@ -61,6 +63,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   String? _targetKilledId;
   String? _targetHealedId;
   String? _guardTargetId;
+  String? _shamanTargetId;
   late Map<String, int> _knightLives;
 
   // Gambler state
@@ -158,6 +161,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       _nightSteps.add(NightStep.plagueDoctor);
     }
 
+    // 5. Shaman (only if alive, only on even nights: 2nd, 4th, 6th...)
+    if (aliveRoles.contains(16) && widget.nightNumber % 2 == 0) {
+      _nightSteps.add(NightStep.shaman);
+    }
+
     // Safety check if no steps (shouldn't happen in standard setup)
     if (_nightSteps.isEmpty) {
       // Auto proceed?
@@ -214,6 +222,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return languageService.translate('step_guard_title');
       case NightStep.plagueDoctor:
         return languageService.translate('step_plague_doctor_title');
+      case NightStep.shaman:
+        return languageService.translate('step_shaman_title');
     }
   }
 
@@ -230,6 +240,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return languageService.translate('step_guard_instruction');
       case NightStep.plagueDoctor:
         return languageService.translate('step_plague_doctor_instruction');
+      case NightStep.shaman:
+        return languageService.translate('step_shaman_instruction');
     }
   }
 
@@ -245,6 +257,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return const Color(0xFFFFD166); // Yellow (Shieldy)
       case NightStep.plagueDoctor:
         return const Color(0xFF06D6A0); // Greenish/Toxic
+      case NightStep.shaman:
+        return const Color(0xFFE8720C); // Ember orange
     }
   }
 
@@ -263,6 +277,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return _guardTargetId != null;
       case NightStep.plagueDoctor:
         return _targetHealedId != null; // Plague Doctor must select someone
+      case NightStep.shaman:
+        return _shamanTargetId != null; // Shaman must select someone
     }
   }
 
@@ -327,6 +343,19 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             _targetHealedId = player.id;
           }
           break;
+
+        case NightStep.shaman:
+          // Shaman cannot inspect himself
+          if (targetRole.id == 16) {
+            return;
+          }
+
+          if (_shamanTargetId == player.id) {
+            _shamanTargetId = null;
+          } else {
+            _shamanTargetId = player.id;
+          }
+          break;
       }
     });
   }
@@ -358,6 +387,24 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     _nextStep();
   }
 
+  Future<void> _performShamanCheck(WerewolfPlayer player) async {
+    final role = widget.playerRoles[player.id];
+    if (role == null) return;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => ShamanInspectionDialog(
+        playerName: player.name,
+        role: role,
+        onClose: () => Navigator.of(context).pop(),
+      ),
+    );
+
+    _shamanTargetId = null;
+    _nextStep();
+  }
+
   // Specific state for distinct roles
   String? _doctorHealedId;
   String? _plagueDoctorTargetId;
@@ -367,6 +414,13 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     if (_currentStep == NightStep.guard && _guardTargetId != null) {
       final player = widget.players.firstWhere((p) => p.id == _guardTargetId);
       _performGuardCheck(player);
+      return; // Stop here, perform check will call next step after dialog
+    }
+
+    // Trigger Shaman Check if target selected
+    if (_currentStep == NightStep.shaman && _shamanTargetId != null) {
+      final player = widget.players.firstWhere((p) => p.id == _shamanTargetId);
+      _performShamanCheck(player);
       return; // Stop here, perform check will call next step after dialog
     }
 
@@ -395,6 +449,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       }
       if (finishedStep == NightStep.guard) {
         _guardTargetId = null;
+      }
+      if (finishedStep == NightStep.shaman) {
+        _shamanTargetId = null;
       }
     } else {
       // End of Night - Capture last step's action
@@ -892,6 +949,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
               if (_guardTargetId == player.id) isSelected = true;
               // Guard cannot inspect himself
               if (role?.id == 4) isDisabled = true;
+            } else if (_currentStep == NightStep.shaman) {
+              if (_shamanTargetId == player.id) isSelected = true;
+              // Shaman cannot inspect himself
+              if (role?.id == 16) isDisabled = true;
             }
 
             return GestureDetector(
@@ -1105,6 +1166,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return const Color(0xFF8E9B97); // Sickly Green-Grey
       case 15: // Gambler
         return const Color(0xFFD4AF37); // Gold
+      case 16: // Shaman
+        return const Color(0xFFE8720C); // Ember orange
       default:
         return Colors.white; // Villager etc.
     }
@@ -1122,6 +1185,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return 'assets/images/guard_inspect.png';
       case NightStep.plagueDoctor:
         return 'assets/images/plague_heal.png';
+      case NightStep.shaman:
+        return 'assets/images/guard_inspect.png'; // Reuse inspect icon
     }
   }
 
@@ -1228,11 +1293,21 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: PixelButton(
                     label: _currentStepIndex == _nightSteps.length - 1
-                        ? context.watch<LanguageService>().translate(
-                            'end_night_button',
-                          )
+                        ? (_currentStep == NightStep.shaman &&
+                                  _shamanTargetId != null)
+                              ? context.watch<LanguageService>().translate(
+                                  'investigate_button',
+                                )
+                              : context.watch<LanguageService>().translate(
+                                  'end_night_button',
+                                )
                         : (_currentStep == NightStep.guard &&
                               _guardTargetId != null)
+                        ? context.watch<LanguageService>().translate(
+                            'investigate_button',
+                          )
+                        : (_currentStep == NightStep.shaman &&
+                              _shamanTargetId != null)
                         ? context.watch<LanguageService>().translate(
                             'investigate_button',
                           )

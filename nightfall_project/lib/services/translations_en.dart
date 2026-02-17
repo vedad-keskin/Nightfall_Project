@@ -161,7 +161,11 @@ const Map<String, String> enTranslations = {
       'On the first night only, the Gambler is woken first and secretly chooses which alliance they believe will win.\n'
       'After placing their bet, they behave as a normal Villager for the rest of the game with no special powers.\n'
       'If the Gambler\'s chosen alliance wins, they earn bonus points: +1 for Village, +2 for Werewolves, +3 for Specials (Jester).\n'
-      'The Gambler appears as a Villager when inspected by the Guard.\n\n'
+      'The Gambler appears as a Villager when inspected by the Guard.\n'
+      'SHAMAN: A mystical seer who communes with the spirits.\n'
+      'Every second night (2nd, 4th, 6th...), the Shaman wakes up last and can inspect one player.\n'
+      'Unlike the Guard, the Shaman sees the player\'s true role, seeing through all disguises (Vampire, Drunk, etc.).\n'
+      'The Shaman cannot inspect himself.\n\n'
       '7. Scoring:\n'
       'Points are awarded to members of the winning alliance at the end of the game.\n'
       'Different roles grant different amounts of points depending on their difficulty.\n'
@@ -350,4 +354,12 @@ const Map<String, String> enTranslations = {
   'gambler_roll_dice': 'ROLL THE DICE',
   'gambler_fate_sealed': 'YOUR FATE IS SEALED',
   'gambler_won_bet': 'THE GAMBLER WON THE BET!',
+  'shaman_name': 'Shaman',
+  'shaman_desc':
+      'A mystical seer who communes with the spirits. Every second night, the Shaman can inspect one player and learn their true role. Unlike the Guard, the Shaman sees through all disguises.',
+  'step_shaman_title': 'THE SHAMAN',
+  'step_shaman_instruction': 'SELECT A TARGET to DIVINE',
+  'shaman_vision_title': 'SPIRIT VISION',
+  'shaman_channeling': 'COMMUNING WITH THE SPIRITS...',
+  'shaman_spirits_reveal': 'THE SPIRITS REVEAL THE TRUTH...',
 };

@@ -162,7 +162,11 @@ const Map<String, String> bsTranslations = {
       'Samo prve noći, Kockar se budi prvi i tajno bira za koji savez misli da će pobijediti.\n'
       'Nakon klađenja, ponaša se kao običan Seljak ostatak igre bez posebnih moći.\n'
       'Ako Kockarov odabrani savez pobijedi, on osvaja bonus bodove: +1 za Selo, +2 za Vukove, +3 za Posebne (Luda).\n'
-      'Kockar se pojavljuje kao Seljak kada ga Stražar pregleda.\n\n'
+      'Kockar se pojavljuje kao Seljak kada ga Stražar pregleda.\n'
+      'ŠAMAN: Mistični vidovnjak koji komunicira s duhovima.\n'
+      'Svake druge noći (2., 4., 6...), Šaman se budi posljednji i može pregledati jednog igrača.\n'
+      'Za razliku od Stražara, Šaman vidi pravu ulogu igrača, prolazeći kroz sve maske (Vampir, Pijanica, itd.).\n'
+      'Šaman ne može pregledati samog sebe.\n\n'
       '7. Bodovanje:\n'
       'Bodovi se dodjeljuju članovima pobjedničkog saveza na kraju igre.\n'
       'Različite uloge daju različit broj bodova u zavisnosti od njihove težine.\n'
@@ -348,4 +352,12 @@ const Map<String, String> bsTranslations = {
   'gambler_roll_dice': 'BACI KOCKICE',
   'gambler_fate_sealed': 'SUDBINA JE ZAPEČAĆENA',
   'gambler_won_bet': 'KOCKAR JE DOBIO OKLADU!',
+  'shaman_name': 'Šaman',
+  'shaman_desc':
+      'Mistični vidovnjak koji komunicira s duhovima. Svake druge noći, Šaman može pregledati jednog igrača i saznati njegovu pravu ulogu. Za razliku od Stražara, Šaman vidi kroz sve maske.',
+  'step_shaman_title': 'ŠAMAN',
+  'step_shaman_instruction': 'ODABERI METU ZA VIDOVITOST',
+  'shaman_vision_title': 'DUHOVNO VIĐENJE',
+  'shaman_channeling': 'KOMUNICIRANJE S DUHOVIMA...',
+  'shaman_spirits_reveal': 'DUHOVI OTKRIVAJU ISTINU...',
 };

@@ -143,6 +143,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
         return const Color(0xFF8E9B97); // Sickly Green-Grey
       case 15: // Gambler
         return const Color(0xFFD4AF37); // Gold
+      case 16: // Shaman
+        return const Color(0xFFE8720C); // Ember orange
       default:
         return Colors.white; // Villager etc.
     }

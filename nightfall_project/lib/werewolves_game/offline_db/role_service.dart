@@ -187,6 +187,17 @@ class WerewolfRoleService {
       translationKey: 'gambler_name',
       descriptionKey: 'gambler_desc',
     ),
+    WerewolfRole(
+      id: 16,
+      name: 'Shaman',
+      points: 1,
+      allianceId: 1, // Villagers
+      description:
+          'A mystical seer who communes with the spirits. Every second night, the Shaman can inspect one player and learn their true role. Unlike the Guard, the Shaman sees through all disguises.',
+      imagePath: 'assets/images/werewolves/Shaman.png',
+      translationKey: 'shaman_name',
+      descriptionKey: 'shaman_desc',
+    ),
   ];
 
   List<WerewolfRole> getRoles() => _roles;
