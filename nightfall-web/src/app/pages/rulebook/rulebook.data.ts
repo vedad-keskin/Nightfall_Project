@@ -1,40 +1,56 @@
+import type { TranslationKey } from '../../shared/language/translations';
+
 export interface RuleSection {
     id: string;
     title: string;
+    titleKey: TranslationKey;
     paragraphs: string[];
+    paragraphKeys: TranslationKey[];
 }
 
 export const RULES_SECTIONS: RuleSection[] = [
     {
         id: 'role-distribution',
         title: '1. Role Distribution',
+        titleKey: 'rule_distribution_title',
         paragraphs: [
             'Pass the device to each player individually so they can view their role in secret.',
             'Players must confirm they have seen and understood their role before passing the device to the next player.',
         ],
+        paragraphKeys: ['rule_dist_p1', 'rule_dist_p2'],
     },
     {
         id: 'setup',
         title: '2. Setup',
+        titleKey: 'rule_setup_title',
         paragraphs: [
             'One player needs to be the Narrator. The Narrator does not participate as a character and cannot be killed or voted out.',
             'The Narrator controls the flow of the game and follows instructions provided by the app.',
             'Players are randomly assigned roles belonging to one of the main alliances: THE VILLAGE or THE WEREWOLVES.',
             'Some players may receive unique special roles with additional abilities.',
         ],
+        paragraphKeys: [
+            'rule_setup_p1',
+            'rule_setup_p2',
+            'rule_setup_p3',
+            'rule_setup_p4',
+        ],
     },
     {
         id: 'alliances',
         title: '3. Alliances and Goals',
+        titleKey: 'rule_alliances_title',
         paragraphs: [
             'THE VILLAGE: Wins if all Werewolves are eliminated.',
             'THE WEREWOLVES: Win if they reach a point where the number of Werewolves is equal to or greater than the number of remaining Villagers.',
             'THE SPECIALS: They have their own special winning conditions.',
         ],
+        paragraphKeys: ['rule_all_p1', 'rule_all_p2', 'rule_all_p3'],
     },
     {
         id: 'night-phase',
         title: '4. The Night Phase',
+        titleKey: 'rule_night_title',
         paragraphs: [
             'All players close their eyes and remain silent.',
             'The Narrator wakes specific roles one by one, following the order shown in the app.',
@@ -42,10 +58,18 @@ export const RULES_SECTIONS: RuleSection[] = [
             'The Narrator acknowledges the choice and instructs the role to return to sleep.',
             'No speaking, sounds, or discussion are allowed during the Night Phase.',
         ],
+        paragraphKeys: [
+            'rule_night_p1',
+            'rule_night_p2',
+            'rule_night_p3',
+            'rule_night_p4',
+            'rule_night_p5',
+        ],
     },
     {
         id: 'day-phase',
         title: '5. The Day Phase',
+        titleKey: 'rule_day_title',
         paragraphs: [
             'The Narrator announces the outcome of the Night (who was killed, if anyone).',
             'Eliminated players must remain silent for the rest of the game and may not vote.',
@@ -56,10 +80,21 @@ export const RULES_SECTIONS: RuleSection[] = [
             'Voting may be skipped.',
             'If no player receives a strict majority, or in case of a tie, no player is eliminated.',
         ],
+        paragraphKeys: [
+            'rule_day_p1',
+            'rule_day_p2',
+            'rule_day_p3',
+            'rule_day_p4',
+            'rule_day_p5',
+            'rule_day_p6',
+            'rule_day_p7',
+            'rule_day_p8',
+        ],
     },
     {
         id: 'abilities',
         title: '6. Character Abilities',
+        titleKey: 'rule_abilities_title',
         paragraphs: [
             'WEREWOLF: Awakens at night with other Werewolves and collectively chooses one victim to kill.',
             'VILLAGER: Has no special ability. Relies on discussion, logic, and voting.',
@@ -78,16 +113,42 @@ export const RULES_SECTIONS: RuleSection[] = [
             'GAMBLER: A cunning risk-taker. On the first night only, the Gambler secretly chooses which alliance they believe will win. After placing their bet, they behave as a normal Villager. If correct, they earn bonus points: +1 for Village, +2 for Werewolves, +3 for Specials.',
             'SHAMAN: A mystical seer who communes with the spirits. Every second night (2nd, 4th, 6th…), the Shaman wakes up last and can inspect one player. Unlike the Guard, the Shaman sees the player\'s true role. The Shaman cannot inspect himself.',
         ],
+        paragraphKeys: [
+            'rule_ab_werewolf',
+            'rule_ab_villager',
+            'rule_ab_vampire',
+            'rule_ab_doctor',
+            'rule_ab_guard',
+            'rule_ab_plague_doctor',
+            'rule_ab_twins',
+            'rule_ab_avenging_twin',
+            'rule_ab_jester',
+            'rule_ab_drunk',
+            'rule_ab_knight',
+            'rule_ab_puppet_master',
+            'rule_ab_executioner',
+            'rule_ab_infected',
+            'rule_ab_gambler',
+            'rule_ab_shaman',
+        ],
     },
     {
         id: 'scoring',
         title: '7. Scoring',
+        titleKey: 'rule_scoring_title',
         paragraphs: [
             'Points are awarded to members of the winning alliance at the end of the game.',
             'Different roles grant different amounts of points depending on their difficulty.',
             'Full point distributions can be found in the Roles section of the game.',
             'Special roles do not belong to an alliance and instead have their own winning conditions.',
             'Enjoy the mystery and deception. Good luck!',
+        ],
+        paragraphKeys: [
+            'rule_score_p1',
+            'rule_score_p2',
+            'rule_score_p3',
+            'rule_score_p4',
+            'rule_score_p5',
         ],
     },
 ];

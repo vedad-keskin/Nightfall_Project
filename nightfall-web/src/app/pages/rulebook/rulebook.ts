@@ -1,5 +1,6 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { RULES_SECTIONS, RuleSection } from './rulebook.data';
+import { LanguageService } from '../../shared/language/language.service';
 
 @Component({
     selector: 'app-rulebook',
@@ -8,6 +9,7 @@ import { RULES_SECTIONS, RuleSection } from './rulebook.data';
     styleUrl: './rulebook.css',
 })
 export class RulebookComponent {
+    readonly ls = inject(LanguageService);
     sections = RULES_SECTIONS;
     currentPage = signal(0);
 

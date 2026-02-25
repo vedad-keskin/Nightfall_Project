@@ -118,6 +118,12 @@
     pointer-events: none;
 }
 
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .hamburger.active span:nth-child(1) {
     transform: translateY(6px) rotate(45deg);
 }

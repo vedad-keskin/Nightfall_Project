@@ -10,23 +10,26 @@
             <span class="brand-text">NIGHTFALL</span>
         </a>
 
-        <!-- Hamburger (mobile) -->
-        <button class="hamburger" [class.active]="menuOpen()" (click)="toggleMenu()" aria-label="Toggle navigation">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+        <!-- Lang Switch + Hamburger (mobile) -->
+        <div class="nav-actions">
+            <app-lang-switch />
+            <button class="hamburger" [class.active]="menuOpen()" (click)="toggleMenu()" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
 
         <!-- Nav Links -->
         <ul class="nav-links" [class.open]="menuOpen()">
             <li>
                 <a routerLink="/roles" routerLinkActive="active" (click)="closeMenu()">
-                    ROLES
+                    {{ ls.t('nav_roles') }}
                 </a>
             </li>
             <li>
                 <a routerLink="/rulebook" routerLinkActive="active" (click)="closeMenu()">
-                    RULEBOOK
+                    {{ ls.t('nav_rulebook') }}
                 </a>
             </li>
         </ul>

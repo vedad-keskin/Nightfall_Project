@@ -1,5 +1,6 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { ROLES, ALLIANCES, Role, Alliance } from './roles.data';
+import { LanguageService } from '../../shared/language/language.service';
 
 @Component({
     selector: 'app-roles',
@@ -8,6 +9,7 @@ import { ROLES, ALLIANCES, Role, Alliance } from './roles.data';
     styleUrl: './roles.css',
 })
 export class RolesComponent {
+    readonly ls = inject(LanguageService);
     alliances = ALLIANCES;
     expandedRole = signal<string | null>(null);
 

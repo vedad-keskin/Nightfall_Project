@@ -1,0 +1,19 @@
+<button class="lang-switch" (click)="ls.toggle()" [attr.aria-label]="isEn ? 'Switch to Bosnian' : 'Switch to English'">
+    <!-- Outer pixel shadow layer (matches Flutter PixelLanguageSwitch) -->
+    <div class="ls-outer">
+        <!-- Inner bordered panel -->
+        <div class="ls-inner">
+            <!-- Sliding highlight -->
+            <div class="ls-highlight" [class.right]="!isEn"></div>
+            <!-- Flags: UK (en) left, BIH (bs) right -->
+            <div class="ls-flags">
+                <span class="ls-flag" [class.active]="isEn">
+                    <img src="images/uk.png" alt="English" width="28" height="20" class="ls-flag-img" />
+                </span>
+                <span class="ls-flag" [class.active]="!isEn">
+                    <img src="images/bih.png" alt="Bosnian" width="28" height="20" class="ls-flag-img" />
+                </span>
+            </div>
+        </div>
+    </div>
+</button>

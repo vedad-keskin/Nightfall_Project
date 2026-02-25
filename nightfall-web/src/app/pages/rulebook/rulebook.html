@@ -2,8 +2,8 @@
     <!-- Page Header -->
     <header class="page-header">
         <div class="header-frame">
-            <h1 class="page-title">RULEBOOK</h1>
-            <p class="page-subtitle">How to Play: Werewolves</p>
+            <h1 class="page-title">{{ ls.t('rulebook_page_title') }}</h1>
+            <p class="page-subtitle">{{ ls.t('rulebook_page_subtitle') }}</p>
         </div>
     </header>
 
@@ -18,11 +18,11 @@
         <div class="book-frame">
             <!-- Table of Contents (sidebar on desktop, top bar on mobile) -->
             <nav class="toc">
-                <div class="toc-title">CONTENTS</div>
+                <div class="toc-title">{{ ls.t('rulebook_toc_title') }}</div>
                 @for (section of sections; track section.id; let i = $index) {
                 <button class="toc-item" [class.active]="currentPage() === i" (click)="goToPage(i)">
                     <span class="toc-num">{{ i + 1 }}</span>
-                    <span class="toc-label">{{ section.title.split('. ')[1] }}</span>
+                    <span class="toc-label">{{ ls.t(section.titleKey).split('. ')[1] }}</span>
                 </button>
                 }
             </nav>
@@ -34,30 +34,31 @@
 
                 <div class="paper-content">
                     <!-- Section Title -->
-                    <h2 class="section-title">{{ currentSection().title }}</h2>
+                    <h2 class="section-title">{{ ls.t(currentSection().titleKey) }}</h2>
                     <div class="section-divider"></div>
 
                     <!-- Paragraphs -->
-                    @for (para of currentSection().paragraphs; track $index) {
+                    @for (paraKey of currentSection().paragraphKeys; track $index) {
                     <div class="rule-item">
                         <span class="bullet">●</span>
-                        <p class="rule-text">{{ para }}</p>
+                        <p class="rule-text">{{ ls.t(paraKey) }}</p>
                     </div>
                     }
                 </div>
 
                 <!-- Page Number -->
-                <div class="page-number">— {{ pageLabel() }} —</div>
+                <div class="page-number">— {{ ls.t('rulebook_page_label') }} {{ currentPage() + 1 }} {{
+                    ls.t('on').toUpperCase() }} {{ totalPages() }} —</div>
             </div>
         </div>
 
         <!-- Navigation Buttons -->
         <div class="book-nav">
             <button class="nav-btn pixel-btn" [class.disabled]="!canGoBack()" (click)="prevPage()">
-                ◀ BACK
+                ◀ {{ ls.t('back').toUpperCase() }}
             </button>
             <button class="nav-btn pixel-btn primary" [class.disabled]="!canGoForward()" (click)="nextPage()">
-                NEXT ▶
+                {{ ls.t('next_step_button').toUpperCase() }} ▶
             </button>
         </div>
     </div>
@@ -65,7 +66,7 @@
     <!-- Footer -->
     <footer class="page-footer">
         <div class="footer-frame">
-            <p>NIGHTFALL PROJECT &copy; 2025</p>
+            <p>{{ ls.t('footer_text') }}</p>
         </div>
     </footer>
 </div>
