@@ -9,7 +9,7 @@ export type TranslationKey =
     | 'werewolves_alliance_name' | 'werewolves_alliance_desc'
     | 'specials_alliance_name' | 'specials_alliance_desc'
     // UI labels
-    | 'tap_to_reveal' | 'win_pts_label' | 'win_variable'
+    | 'tap_to_reveal' | 'win_pts_label' | 'win_variable' | 'pts'
     // Gambler note
     | 'gambler_points_note'
     // Puppet Master note
@@ -75,6 +75,7 @@ export const EN: Record<TranslationKey, string> = {
     tap_to_reveal: 'TAP TO REVEAL',
     win_pts_label: 'WIN:',
     win_variable: 'WIN: ?',
+    pts: 'PTS',
 
     gambler_points_note: '+1 Village, +2 Werewolves, +3 Specials',
     puppet_master_points_note: 'Inherits points from transformed role',
@@ -201,6 +202,7 @@ export const BS: Record<TranslationKey, string> = {
     tap_to_reveal: 'DODIRNI ZA OTKRIVANJE',
     win_pts_label: 'POBJEDA:',
     win_variable: 'POBJEDA: ?',
+    pts: 'BOD/A',
 
     gambler_points_note: '+1 Seljani, +2 Vukovi, +3 Posebni',
     puppet_master_points_note: 'Nasljeđuje bodove transformisane uloge',

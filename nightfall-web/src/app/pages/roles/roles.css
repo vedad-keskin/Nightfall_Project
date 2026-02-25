@@ -115,8 +115,14 @@
 
 .roles-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 16px;
+}
+
+@media (min-width: 400px) {
+    .roles-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* ── Role Card ── */
@@ -288,6 +294,8 @@
     opacity: 0.6;
     transition: opacity 0.3s ease;
     padding-top: 2px;
+    width: 100%;
+    text-align: center;
 }
 
 .tap-hint.hide {
