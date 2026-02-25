@@ -1,0 +1,308 @@
+/* ===== Roles Page ===== */
+
+.roles-page {
+    padding: 24px 16px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ── Page Header ── */
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-top: 16px;
+}
+
+.header-frame {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.header-frame>* {
+    background: var(--nf-bg-deep);
+    border: 2px solid var(--nf-frame);
+}
+
+.page-title {
+    font-family: var(--font-pixel);
+    font-size: 28px;
+    color: var(--nf-text);
+    text-shadow: 3px 3px 0 #000;
+    padding: 16px 32px 8px;
+    margin: 0;
+    border-bottom: none;
+}
+
+.page-subtitle {
+    font-family: var(--font-body);
+    font-size: 22px;
+    color: var(--nf-text-dim);
+    padding: 4px 32px 14px;
+    margin: 0;
+    border-top: none;
+}
+
+/* ── Alliance Section ── */
+
+.alliance-section {
+    margin-bottom: 48px;
+}
+
+.alliance-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.alliance-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.alliance-accent {
+    height: 2px;
+    flex: 1;
+    max-width: 80px;
+    background: var(--nf-frame);
+}
+
+.alliance-name {
+    font-family: var(--font-pixel);
+    font-size: 16px;
+    text-shadow: 2px 2px 0 #000;
+    letter-spacing: 2px;
+}
+
+.alliance-desc {
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: var(--nf-text-dim);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Alliance color coding */
+.alliance-village .alliance-name {
+    color: var(--nf-village);
+}
+
+.alliance-village .alliance-accent {
+    background: var(--nf-village-dim);
+}
+
+.alliance-werewolves .alliance-name {
+    color: var(--nf-werewolves);
+}
+
+.alliance-werewolves .alliance-accent {
+    background: var(--nf-werewolves-dim);
+}
+
+.alliance-specials .alliance-name {
+    color: var(--nf-specials);
+}
+
+.alliance-specials .alliance-accent {
+    background: var(--nf-specials-dim);
+}
+
+/* ── Roles Grid ── */
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* ── Role Card ── */
+
+.role-card {
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-2px);
+}
+
+.role-card:active {
+    transform: translateY(2px);
+}
+
+/* Layered pixel borders (matches Flutter PixelDialog) */
+.card-border-outer {
+    background: rgba(0, 0, 0, 0.55);
+    padding: 3px;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.2s ease;
+}
+
+.role-card:hover .card-border-outer {
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.4);
+}
+
+.card-border-mid {
+    background: rgba(119, 141, 169, 0.85);
+    padding: 3px;
+    border-top: 2px solid rgba(224, 225, 221, 0.7);
+    border-bottom: 2px solid rgba(65, 90, 119, 0.7);
+    border-left: 2px solid rgba(65, 90, 119, 0.7);
+    border-right: 2px solid rgba(65, 90, 119, 0.7);
+}
+
+.card-border-inner {
+    background: var(--nf-bg-deep);
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Alliance-specific card accents */
+.alliance-village .card-border-mid {
+    border-top-color: rgba(76, 175, 80, 0.5);
+}
+
+.alliance-werewolves .card-border-mid {
+    border-top-color: rgba(211, 47, 47, 0.5);
+}
+
+.alliance-specials .card-border-mid {
+    border-top-color: rgba(156, 39, 176, 0.5);
+}
+
+/* Card Image */
+.card-image-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 2px solid var(--nf-frame);
+    background: var(--nf-bg-mid);
+}
+
+.card-image-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    transition: transform 0.3s ease;
+}
+
+.role-card:hover .card-image-wrap img {
+    transform: scale(1.05);
+}
+
+/* Card Name */
+.card-name-bar {
+    width: 100%;
+    text-align: center;
+    padding: 6px 4px;
+    background: rgba(27, 38, 59, 0.8);
+    border: 1px solid var(--nf-frame);
+}
+
+.card-name {
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    color: var(--nf-text);
+    text-shadow: 1px 1px 0 #000;
+    letter-spacing: 1px;
+}
+
+/* Card Description */
+.card-desc-wrap {
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 4px;
+}
+
+.card-desc-wrap.show {
+    max-height: 250px;
+    padding: 8px 4px 4px;
+}
+
+.card-desc {
+    font-family: var(--font-body);
+    font-size: 18px;
+    color: var(--nf-text-dim);
+    line-height: 1.3;
+    text-align: center;
+}
+
+/* Tap Hint */
+.tap-hint {
+    font-family: var(--font-pixel);
+    font-size: 7px;
+    color: var(--nf-frame-light);
+    letter-spacing: 1px;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    padding-top: 2px;
+}
+
+.tap-hint.hide {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.role-card:hover .tap-hint:not(.hide) {
+    opacity: 1;
+}
+
+/* ── Footer ── */
+
+.page-footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 2px solid var(--nf-frame);
+}
+
+.footer-frame p {
+    font-family: var(--font-pixel);
+    font-size: 8px;
+    color: var(--nf-frame-light);
+    letter-spacing: 2px;
+}
+
+/* ===== Responsive ===== */
+
+@media (min-width: 640px) {
+    .roles-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .card-name {
+        font-size: 11px;
+    }
+
+    .page-title {
+        font-size: 32px;
+    }
+}
+
+@media (min-width: 960px) {
+    .roles-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+
+    .roles-page {
+        padding: 32px 24px 64px;
+    }
+
+    .card-desc {
+        font-size: 20px;
+    }
+}

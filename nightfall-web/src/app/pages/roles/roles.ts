@@ -1,0 +1,39 @@
+import { Component, signal, computed } from '@angular/core';
+import { ROLES, ALLIANCES, Role, Alliance } from './roles.data';
+
+@Component({
+    selector: 'app-roles',
+    standalone: true,
+    templateUrl: './roles.html',
+    styleUrl: './roles.css',
+})
+export class RolesComponent {
+    alliances = ALLIANCES;
+    expandedRole = signal<string | null>(null);
+
+    villageRoles = computed(() =>
+        ROLES.filter((r) => r.alliance === 'village')
+    );
+    werewolvesRoles = computed(() =>
+        ROLES.filter((r) => r.alliance === 'werewolves')
+    );
+    specialsRoles = computed(() =>
+        ROLES.filter((r) => r.alliance === 'specials')
+    );
+
+    getRolesForAlliance(alliance: Alliance): Role[] {
+        return ROLES.filter((r) => r.alliance === alliance.id);
+    }
+
+    toggleRole(id: string): void {
+        this.expandedRole.update((current) => (current === id ? null : id));
+    }
+
+    isExpanded(id: string): boolean {
+        return this.expandedRole() === id;
+    }
+
+    getAllianceClass(id: string): string {
+        return `alliance-${id}`;
+    }
+}

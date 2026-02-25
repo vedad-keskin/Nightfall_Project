@@ -1,1 +1,72 @@
-/* You can add global styles to this file, and also import other style files */
+/* ===== Nightfall — Global Styles ===== */
+
+:root {
+  /* Nightfall palette (matches Flutter app) */
+  --nf-bg-deep:       #0D1B2A;
+  --nf-bg-mid:        #1B263B;
+  --nf-frame:         #415A77;
+  --nf-frame-light:   #778DA9;
+  --nf-text:          #E0E1DD;
+  --nf-text-dim:      #a0a4a8;
+  --nf-accent-red:    #B00020;
+  --nf-accent-bright: #FF1744;
+  --nf-black:         #000000;
+
+  /* Alliance colors */
+  --nf-village:       #4CAF50;
+  --nf-village-dim:   #2E7D32;
+  --nf-werewolves:    #D32F2F;
+  --nf-werewolves-dim:#B71C1C;
+  --nf-specials:      #9C27B0;
+  --nf-specials-dim:  #6A1B9A;
+
+  /* Fonts */
+  --font-pixel:  'Press Start 2P', monospace;
+  --font-body:   'VT323', monospace;
+
+  /* Spacing */
+  --nav-height: 64px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--nf-bg-deep);
+  color: var(--nf-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  image-rendering: pixelated;
+  max-width: 100%;
+  display: block;
+}
+
+/* Pixel-art scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--nf-bg-deep);
+  border-left: 2px solid var(--nf-frame);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--nf-frame-light);
+  border: 2px solid var(--nf-frame);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nf-text-dim);
+}

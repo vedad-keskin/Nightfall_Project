@@ -1,0 +1,65 @@
+<div class="roles-page">
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="header-frame">
+            <h1 class="page-title">ROLES</h1>
+            <p class="page-subtitle">Learn about every character in the game</p>
+        </div>
+    </header>
+
+    <!-- Alliance Sections -->
+    @for (alliance of alliances; track alliance.id) {
+    <section class="alliance-section" [class]="getAllianceClass(alliance.id)">
+        <!-- Alliance Header -->
+        <div class="alliance-header">
+            <div class="alliance-title-bar">
+                <div class="alliance-accent"></div>
+                <h2 class="alliance-name">{{ alliance.name }}</h2>
+                <div class="alliance-accent"></div>
+            </div>
+            <p class="alliance-desc">{{ alliance.description }}</p>
+        </div>
+
+        <!-- Role Cards Grid -->
+        <div class="roles-grid">
+            @for (role of getRolesForAlliance(alliance); track role.id) {
+            <article class="role-card" [class.expanded]="isExpanded(role.id)" (click)="toggleRole(role.id)">
+                <!-- Card Inner (layered pixel border) -->
+                <div class="card-border-outer">
+                    <div class="card-border-mid">
+                        <div class="card-border-inner">
+                            <!-- Image -->
+                            <div class="card-image-wrap">
+                                <img [src]="role.image" [alt]="role.name" loading="lazy" />
+                            </div>
+
+                            <!-- Name -->
+                            <div class="card-name-bar">
+                                <span class="card-name">{{ role.name }}</span>
+                            </div>
+
+                            <!-- Description (shown when expanded) -->
+                            <div class="card-desc-wrap" [class.show]="isExpanded(role.id)">
+                                <p class="card-desc">{{ role.description }}</p>
+                            </div>
+
+                            <!-- Tap hint -->
+                            <div class="tap-hint" [class.hide]="isExpanded(role.id)">
+                                TAP TO REVEAL
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            }
+        </div>
+    </section>
+    }
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <div class="footer-frame">
+            <p>NIGHTFALL PROJECT &copy; 2025</p>
+        </div>
+    </footer>
+</div>

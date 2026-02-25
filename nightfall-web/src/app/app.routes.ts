@@ -1,3 +1,17 @@
 import { Routes } from '@angular/router';
+import { LayoutComponent } from './layout/layout';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+    {
+        path: '',
+        component: LayoutComponent,
+        children: [
+            { path: '', redirectTo: 'roles', pathMatch: 'full' },
+            {
+                path: 'roles',
+                loadComponent: () =>
+                    import('./pages/roles/roles').then((m) => m.RolesComponent),
+            },
+        ],
+    },
+];
