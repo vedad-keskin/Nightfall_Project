@@ -1,0 +1,438 @@
+/* ===== Rulebook Page ===== */
+
+.rulebook-page {
+    padding: 24px 16px 48px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ── Page Header ── */
+
+.page-header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding-top: 16px;
+}
+
+.header-frame {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px;
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.header-frame>* {
+    background: var(--nf-bg-deep);
+    border: 2px solid var(--nf-frame);
+}
+
+.page-title {
+    font-family: var(--font-pixel);
+    font-size: 22px;
+    color: var(--nf-text);
+    text-shadow: 3px 3px 0 #000;
+    padding: 16px 28px 8px;
+    margin: 0;
+    border-bottom: none;
+}
+
+.page-subtitle {
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: var(--nf-text-dim);
+    padding: 4px 28px 14px;
+    margin: 0;
+    border-top: none;
+}
+
+/* ── Book Outer (with ornaments) ── */
+
+.book-outer {
+    position: relative;
+    background: rgba(27, 38, 59, 0.85);
+    border: 2px solid rgba(65, 90, 119, 0.5);
+    box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.5),
+        inset 0 0 60px rgba(0, 0, 0, 0.2);
+    padding: 8px;
+}
+
+/* Gold corner ornaments */
+.ornament {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    z-index: 2;
+}
+
+.ornament::before,
+.ornament::after {
+    content: '';
+    position: absolute;
+    background: #FCA311;
+}
+
+.top-left {
+    top: 4px;
+    left: 4px;
+}
+
+.top-left::before {
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 3px;
+}
+
+.top-left::after {
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 20px;
+}
+
+.top-right {
+    top: 4px;
+    right: 4px;
+}
+
+.top-right::before {
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 3px;
+}
+
+.top-right::after {
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 20px;
+}
+
+.bottom-left {
+    bottom: 4px;
+    left: 4px;
+}
+
+.bottom-left::before {
+    bottom: 0;
+    left: 0;
+    width: 20px;
+    height: 3px;
+}
+
+.bottom-left::after {
+    bottom: 0;
+    left: 0;
+    width: 3px;
+    height: 20px;
+}
+
+.bottom-right {
+    bottom: 4px;
+    right: 4px;
+}
+
+.bottom-right::before {
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 3px;
+}
+
+.bottom-right::after {
+    bottom: 0;
+    right: 0;
+    width: 3px;
+    height: 20px;
+}
+
+/* ── Book Frame ── */
+
+.book-frame {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Table of Contents ── */
+
+.toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(13, 27, 42, 0.8);
+    border-bottom: 2px solid var(--nf-frame);
+}
+
+.toc-title {
+    font-family: var(--font-pixel);
+    font-size: 8px;
+    color: var(--nf-frame-light);
+    letter-spacing: 2px;
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.toc-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-pixel);
+    font-size: 7px;
+    color: var(--nf-text-dim);
+    letter-spacing: 0.5px;
+}
+
+.toc-item:hover {
+    border-color: var(--nf-frame);
+    color: var(--nf-text);
+    background: rgba(65, 90, 119, 0.2);
+}
+
+.toc-item.active {
+    border-color: #FCA311;
+    color: #FCA311;
+    background: rgba(252, 163, 17, 0.1);
+}
+
+.toc-num {
+    font-family: var(--font-body);
+    font-size: 16px;
+    min-width: 16px;
+    text-align: center;
+}
+
+.toc-label {
+    display: none;
+}
+
+/* ── Paper Area ── */
+
+.paper-area {
+    position: relative;
+    background: #E0E1DD;
+    margin: 12px;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.spine-shadow {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.15), transparent);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.paper-content {
+    flex: 1;
+    padding: 28px 24px 48px 32px;
+    overflow-y: auto;
+}
+
+/* ── Section Title ── */
+
+.section-title {
+    font-family: var(--font-pixel);
+    font-size: 13px;
+    color: #1B263B;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    margin: 0 0 4px;
+    line-height: 1.6;
+}
+
+.section-divider {
+    height: 2px;
+    width: 60px;
+    background: #415A77;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+/* ── Rule Items ── */
+
+.rule-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+}
+
+.bullet {
+    color: #415A77;
+    font-size: 6px;
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+
+.rule-text {
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: rgba(27, 38, 59, 0.9);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ── Page Number ── */
+
+.page-number {
+    font-family: var(--font-pixel);
+    font-size: 8px;
+    color: rgba(27, 38, 59, 0.4);
+    text-align: center;
+    padding: 12px;
+    letter-spacing: 2px;
+}
+
+/* ── Navigation Buttons ── */
+
+.book-nav {
+    display: flex;
+    gap: 12px;
+    padding: 12px 12px 16px;
+    justify-content: center;
+}
+
+.pixel-btn {
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    color: var(--nf-text);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    transition: all 0.15s ease;
+    position: relative;
+    flex: 1;
+    max-width: 180px;
+
+    /* Pixel 3D button */
+    background: #415A77;
+    box-shadow:
+        0 4px 0 #1B263B,
+        0 5px 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-btn:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 5px 0 #1B263B,
+        0 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-btn:active {
+    transform: translateY(3px);
+    box-shadow:
+        0 1px 0 #1B263B,
+        0 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-btn.primary {
+    background: #06D6A0;
+    box-shadow:
+        0 4px 0 #049a74,
+        0 5px 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-btn.primary:hover {
+    box-shadow:
+        0 5px 0 #049a74,
+        0 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-btn.primary:active {
+    box-shadow:
+        0 1px 0 #049a74,
+        0 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-btn.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* ── Footer ── */
+
+.page-footer {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 2px solid var(--nf-frame);
+}
+
+.footer-frame p {
+    font-family: var(--font-pixel);
+    font-size: 8px;
+    color: var(--nf-frame-light);
+    letter-spacing: 2px;
+}
+
+/* ===== Responsive ===== */
+
+@media (min-width: 640px) {
+    .page-title {
+        font-size: 28px;
+    }
+
+    .toc-label {
+        display: inline;
+    }
+
+    .section-title {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 768px) {
+    .book-frame {
+        flex-direction: row;
+    }
+
+    .toc {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        width: 200px;
+        flex-shrink: 0;
+        border-bottom: none;
+        border-right: 2px solid var(--nf-frame);
+        padding: 16px 12px;
+    }
+
+    .toc-label {
+        display: inline;
+    }
+
+    .toc-item {
+        width: 100%;
+    }
+
+    .paper-area {
+        min-height: 500px;
+    }
+
+    .paper-content {
+        padding: 36px 32px 56px 40px;
+    }
+
+    .rule-text {
+        font-size: 22px;
+    }
+
+    .rulebook-page {
+        padding: 32px 24px 64px;
+    }
+}

@@ -93,12 +93,16 @@
     display: none;
     flex-direction: column;
     justify-content: center;
-    gap: 5px;
-    background: none;
+    gap: 4px;
+    background: transparent;
     border: 2px solid var(--nf-frame);
-    padding: 8px 7px;
+    padding: 12px 10px;
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+    outline: none;
+    position: relative;
+    z-index: 10;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .hamburger:hover {
@@ -107,14 +111,15 @@
 
 .hamburger span {
     display: block;
-    width: 20px;
+    width: 18px;
     height: 2px;
     background: var(--nf-text);
     transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .hamburger.active span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(6px) rotate(45deg);
 }
 
 .hamburger.active span:nth-child(2) {
@@ -122,7 +127,7 @@
 }
 
 .hamburger.active span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-6px) rotate(-45deg);
 }
 
 /* ── Page Content ── */
@@ -140,6 +145,26 @@
         display: flex;
     }
 
+    .nav-inner {
+        padding: 0 12px;
+    }
+
+    .brand-text {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+    }
+
+    .logo-frame {
+        padding: 2px;
+    }
+
+    .logo-frame>img {
+        width: 32px;
+        height: 32px;
+        border-width: 1px;
+        padding: 1px;
+    }
+
     .nav-links {
         position: fixed;
         top: var(--nav-height);
@@ -148,10 +173,12 @@
         background: rgba(13, 27, 42, 0.97);
         border-bottom: 3px solid var(--nf-frame);
         flex-direction: column;
-        padding: 16px;
+        padding: 12px;
         gap: 4px;
-        transform: translateY(-110%);
-        transition: transform 0.3s ease;
+        transform: translateY(-120%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.3s ease, opacity 0.3s ease;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         z-index: 99;
@@ -159,17 +186,28 @@
 
     .nav-links.open {
         transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .nav-links li {
+        width: 100%;
     }
 
     .nav-links a {
         display: block;
         width: 100%;
         text-align: center;
-        padding: 14px;
-        font-size: 12px;
+        padding: 14px 12px;
+        font-size: 11px;
+        border: 2px solid var(--nf-frame);
+        background: rgba(27, 38, 59, 0.6);
     }
 
-    .brand-text {
-        font-size: 11px;
+    .nav-links a:hover,
+    .nav-links a.active {
+        background: rgba(176, 0, 32, 0.2);
+        border-color: var(--nf-accent-red);
+        color: var(--nf-accent-bright);
     }
 }

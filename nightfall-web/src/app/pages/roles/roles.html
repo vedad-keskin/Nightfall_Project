@@ -33,14 +33,27 @@
                                 <img [src]="role.image" [alt]="role.name" loading="lazy" />
                             </div>
 
-                            <!-- Name -->
+                            <!-- Name + Points bar -->
                             <div class="card-name-bar">
-                                <span class="card-name">{{ role.name }}</span>
+                                <span class="card-name">{{ role.name.toUpperCase() }}</span>
+                                <span class="card-points">
+                                    <span class="star-icon">★</span>
+                                    @if (role.points > 0) {
+                                    WIN: {{ role.points }} PTS
+                                    } @else {
+                                    WIN: ?
+                                    }
+                                </span>
                             </div>
 
                             <!-- Description (shown when expanded) -->
                             <div class="card-desc-wrap" [class.show]="isExpanded(role.id)">
                                 <p class="card-desc">{{ role.description }}</p>
+                                @if (role.pointsNote) {
+                                <p class="card-points-note">
+                                    <span class="star-icon">★</span> {{ role.pointsNote }}
+                                </p>
+                                }
                             </div>
 
                             <!-- Tap hint -->

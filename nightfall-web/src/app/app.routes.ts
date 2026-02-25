@@ -12,6 +12,11 @@ export const routes: Routes = [
                 loadComponent: () =>
                     import('./pages/roles/roles').then((m) => m.RolesComponent),
             },
+            {
+                path: 'rulebook',
+                loadComponent: () =>
+                    import('./pages/rulebook/rulebook').then((m) => m.RulebookComponent),
+            },
         ],
     },
 ];
