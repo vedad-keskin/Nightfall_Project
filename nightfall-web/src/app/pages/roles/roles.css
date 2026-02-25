@@ -130,6 +130,9 @@
 .role-card {
     cursor: pointer;
     transition: transform 0.15s ease;
+    /* Remove mobile tap highlight (blue overlay) */
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
 }
 
 .role-card:hover {

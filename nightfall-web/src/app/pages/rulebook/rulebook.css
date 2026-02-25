@@ -405,7 +405,8 @@
     .toc {
         flex-direction: column;
         flex-wrap: nowrap;
-        width: 200px;
+        width: 260px;
+        min-width: 260px;
         flex-shrink: 0;
         border-bottom: none;
         border-right: 2px solid var(--nf-frame);
@@ -434,5 +435,12 @@
 
     .rulebook-page {
         padding: 32px 24px 64px;
+    }
+}
+
+@media (min-width: 960px) {
+    .toc {
+        width: 300px;
+        min-width: 300px;
     }
 }
