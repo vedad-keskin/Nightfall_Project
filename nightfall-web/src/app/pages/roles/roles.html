@@ -51,7 +51,10 @@
                                 <p class="card-desc">{{ ls.t(role.descriptionKey) }}</p>
                                 @if (role.pointsNoteKey) {
                                 <p class="card-points-note">
-                                    <span class="star-icon">★</span> {{ ls.t(role.pointsNoteKey) }}
+                                    <span class="star-icon">★</span>
+                                    @for (line of getPointsNoteLines(role.pointsNoteKey); track $index) {
+                                    <span>{{ line }}</span>
+                                    }
                                 </p>
                                 }
                             </div>

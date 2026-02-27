@@ -38,4 +38,9 @@ export class RolesComponent {
     getAllianceClass(id: string): string {
         return `alliance-${id}`;
     }
+
+    getPointsNoteLines(key: string): string[] {
+        const text = this.ls.t(key as any);
+        return text.split(',').map(s => s.trim());
+    }
 }
