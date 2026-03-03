@@ -101,38 +101,38 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
     _runeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2500),
-    )..repeat(reverse: true);
+    )..repeat();
 
     _shimmerController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2200),
     )..repeat();
 
-    // ─── Image reveal: vertical slash + scale slam + flash ───
+    // ─── Image reveal: mystical radial portal + scale slam + flash ───
     _imageRevealController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1600),
     );
     _imageClip = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _imageRevealController,
-        curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
+        curve: const Interval(0.0, 0.75, curve: Curves.easeOutCubic),
       ),
     );
-    _imageScale = Tween<double>(begin: 1.3, end: 1.0).animate(
+    _imageScale = Tween<double>(begin: 1.25, end: 1.0).animate(
       CurvedAnimation(
         parent: _imageRevealController,
-        curve: const Interval(0.1, 0.8, curve: Curves.elasticOut),
+        curve: const Interval(0.15, 0.85, curve: Curves.elasticOut),
       ),
     );
     _imageFlash =
         TweenSequence<double>([
-          TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.8), weight: 25),
-          TweenSequenceItem(tween: Tween(begin: 0.8, end: 0.0), weight: 75),
+          TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 20),
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 80),
         ]).animate(
           CurvedAnimation(
             parent: _imageRevealController,
-            curve: const Interval(0.0, 0.6),
+            curve: const Interval(0.0, 0.55),
           ),
         );
 
@@ -143,22 +143,34 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
     final lang = context.read<LanguageService>();
     final channelingText = lang.translate('shaman_channeling');
 
-    await _typeText(channelingText);
-
-    await Future.delayed(const Duration(milliseconds: 400));
-
+    // Play the shaman reckoning audio (9s total) — reveal happens on the 8th second
     if (!mounted) return;
     final isMuted = context.read<SoundSettingsService>().isMuted;
     if (!isMuted) {
       final player = AudioPlayer();
       try {
-        await player.play(AssetSource('audio/werewolves/shaman_reveal.mp3'));
+        await player.play(
+          AssetSource('audio/werewolves/shamans_reckoning.mp3'),
+        );
       } catch (_) {
         // Silently ignore if file doesn't exist
       }
     }
 
-    await Future.delayed(const Duration(milliseconds: 600));
+    // Start typing the channeling text over the audio
+    await _typeText(channelingText);
+
+    // Wait for the remaining time until 8 seconds have elapsed from audio start.
+    // Typing takes roughly (text.length * 35ms). We want the total delay
+    // from audio start to reveal to be ~8000ms.
+    // The typing + any overhead is roughly accounted for; we add extra wait.
+    final typingDuration = channelingText.length * 35;
+    final elapsed =
+        typingDuration; // approximate ms elapsed since audio started
+    final remainingDelay = 7500 - elapsed;
+    if (remainingDelay > 0) {
+      await Future.delayed(Duration(milliseconds: remainingDelay));
+    }
 
     if (!mounted) return;
     setState(() => _stage = 1);
@@ -699,11 +711,11 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                                 child: Stack(
                                   alignment: Alignment.bottomCenter,
                                   children: [
-                                    // Role image with vertical slash reveal
-                                    Transform.scale(
-                                      scale: imgScale,
-                                      child: ClipRect(
-                                        clipper: _VerticalSlashClipper(clip),
+                                    // Role image with fade+scale reveal
+                                    Opacity(
+                                      opacity: clip.clamp(0.0, 1.0),
+                                      child: Transform.scale(
+                                        scale: imgScale,
                                         child: Image.asset(
                                           widget.role.imagePath,
                                           width: imgW,
@@ -713,13 +725,13 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                                       ),
                                     ),
 
-                                    // Brightness flash overlay
+                                    // Brief ember flash overlay
                                     if (flash > 0)
                                       Positioned.fill(
                                         child: IgnorePointer(
                                           child: Container(
                                             color: shamanColor.withOpacity(
-                                              flash * 0.35,
+                                              flash * 0.3,
                                             ),
                                           ),
                                         ),
@@ -1437,29 +1449,4 @@ class _PixelFramePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PixelFramePainter old) =>
       old.color != color || old.accentColor != accentColor;
-}
-
-/// Clips the image from a thin vertical slit in the center, expanding outward.
-/// [progress] goes from 0.0 (invisible) to 1.0 (fully visible).
-class _VerticalSlashClipper extends CustomClipper<Rect> {
-  final double progress;
-
-  _VerticalSlashClipper(this.progress);
-
-  @override
-  Rect getClip(Size size) {
-    // Start from the center and expand outward horizontally
-    final halfWidth = size.width / 2;
-    final revealWidth = halfWidth * progress;
-    return Rect.fromLTRB(
-      halfWidth - revealWidth,
-      0,
-      halfWidth + revealWidth,
-      size.height,
-    );
-  }
-
-  @override
-  bool shouldReclip(covariant _VerticalSlashClipper oldClipper) =>
-      oldClipper.progress != progress;
 }
