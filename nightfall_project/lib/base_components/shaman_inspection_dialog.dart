@@ -42,12 +42,16 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
   late AnimationController _smokeController;
   late AnimationController _runeController;
   late AnimationController _shimmerController;
+  late AnimationController _imageRevealController;
 
   // ─── Animations ───
   late Animation<double> _pulseAnimation;
   late Animation<double> _revealOpacity;
   late Animation<double> _revealScale;
   late Animation<double> _smokeFade;
+  late Animation<double> _imageClip; // 0→1 vertical slash reveal
+  late Animation<double> _imageScale; // 1.3→1.0 overshoot slam
+  late Animation<double> _imageFlash; // 0→1→0 brightness flash
 
   // ─── State ───
   int _stage = 0;
@@ -104,6 +108,34 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
       duration: const Duration(milliseconds: 2200),
     )..repeat();
 
+    // ─── Image reveal: vertical slash + scale slam + flash ───
+    _imageRevealController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _imageClip = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _imageRevealController,
+        curve: const Interval(0.0, 0.7, curve: Curves.easeOutCubic),
+      ),
+    );
+    _imageScale = Tween<double>(begin: 1.3, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _imageRevealController,
+        curve: const Interval(0.1, 0.8, curve: Curves.elasticOut),
+      ),
+    );
+    _imageFlash =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.8), weight: 25),
+          TweenSequenceItem(tween: Tween(begin: 0.8, end: 0.0), weight: 75),
+        ]).animate(
+          CurvedAnimation(
+            parent: _imageRevealController,
+            curve: const Interval(0.0, 0.6),
+          ),
+        );
+
     _startChannelingSequence();
   }
 
@@ -131,6 +163,10 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
     if (!mounted) return;
     setState(() => _stage = 1);
     _revealController.forward();
+    // Start the image reveal slightly after the overall reveal begins
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) _imageRevealController.forward();
+    });
   }
 
   Future<void> _typeText(String text) async {
@@ -157,6 +193,7 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
     _smokeController.dispose();
     _runeController.dispose();
     _shimmerController.dispose();
+    _imageRevealController.dispose();
     _typeTimer?.cancel();
     super.dispose();
   }
@@ -632,9 +669,15 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                       }
                       return Center(
                         child: AnimatedBuilder(
-                          animation: _revealController,
+                          animation: Listenable.merge([
+                            _revealController,
+                            _imageRevealController,
+                          ]),
                           builder: (context, _) {
                             final glow = _revealOpacity.value * 0.5;
+                            final clip = _imageClip.value;
+                            final imgScale = _imageScale.value;
+                            final flash = _imageFlash.value;
                             return Container(
                               decoration: BoxDecoration(
                                 boxShadow: [
@@ -656,13 +699,31 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
                                 child: Stack(
                                   alignment: Alignment.bottomCenter,
                                   children: [
-                                    // Role image
-                                    Image.asset(
-                                      widget.role.imagePath,
-                                      width: imgW,
-                                      height: imgH,
-                                      fit: BoxFit.contain,
+                                    // Role image with vertical slash reveal
+                                    Transform.scale(
+                                      scale: imgScale,
+                                      child: ClipRect(
+                                        clipper: _VerticalSlashClipper(clip),
+                                        child: Image.asset(
+                                          widget.role.imagePath,
+                                          width: imgW,
+                                          height: imgH,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
                                     ),
+
+                                    // Brightness flash overlay
+                                    if (flash > 0)
+                                      Positioned.fill(
+                                        child: IgnorePointer(
+                                          child: Container(
+                                            color: shamanColor.withOpacity(
+                                              flash * 0.35,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
 
                                     // ── Corner bracket frame overlay ──
                                     Positioned.fill(
@@ -1376,4 +1437,29 @@ class _PixelFramePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PixelFramePainter old) =>
       old.color != color || old.accentColor != accentColor;
+}
+
+/// Clips the image from a thin vertical slit in the center, expanding outward.
+/// [progress] goes from 0.0 (invisible) to 1.0 (fully visible).
+class _VerticalSlashClipper extends CustomClipper<Rect> {
+  final double progress;
+
+  _VerticalSlashClipper(this.progress);
+
+  @override
+  Rect getClip(Size size) {
+    // Start from the center and expand outward horizontally
+    final halfWidth = size.width / 2;
+    final revealWidth = halfWidth * progress;
+    return Rect.fromLTRB(
+      halfWidth - revealWidth,
+      0,
+      halfWidth + revealWidth,
+      size.height,
+    );
+  }
+
+  @override
+  bool shouldReclip(covariant _VerticalSlashClipper oldClipper) =>
+      oldClipper.progress != progress;
 }

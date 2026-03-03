@@ -542,7 +542,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                       .replaceAll('{name}', player.name),
                 );
               }
-            } else {
+            } else if (savedByDoctor || savedByPlagueHeal) {
+              // Saved by one healer -> survives
               if (savedByDoctor && hitByPlagueAccident) {
                 messages.add(
                   lang
@@ -569,17 +570,18 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                   );
                 }
               }
+            } else {
+              // Not saved by anyone -> Death
+              deadPlayerIds.add(playerId);
+              _knightLives[playerId] = 0;
+              messages.add(
+                lang
+                    .translate('player_is_dead_label')
+                    .replaceAll('{name}', player.name.toUpperCase()),
+              );
             }
-          } else {
-            // Not saved -> Death
-            deadPlayerIds.add(playerId);
-            _knightLives[playerId] = 0;
-            messages.add(
-              lang
-                  .translate('player_is_dead_label')
-                  .replaceAll('{name}', player.name.toUpperCase()),
-            );
           }
+          // Knight with 1 life NOT attacked -> nothing happens (survives)
         }
       } else {
         // NON-KNIGHT standard logic

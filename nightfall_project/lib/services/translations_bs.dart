@@ -273,7 +273,7 @@ const Map<String, String> bsTranslations = {
   'dawn_breaks_title': 'SVIĆE ZORA',
   'peaceful_night_msg': 'Bila je mirna noć.\nNiko nije umro.',
   'tragedy_struck_msg': 'Tragedija se dogodila!',
-  'player_is_dead_label': '{name} JE MRTAV/VA',
+  'player_is_dead_label': '{name} je mrtav/a',
   'start_day_button': 'ZAPOČNI DAN',
   'the_pack_alliance_title': 'VUKOVI',
   'the_village_alliance_title': 'SELO',

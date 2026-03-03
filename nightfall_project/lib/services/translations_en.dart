@@ -272,7 +272,7 @@ const Map<String, String> enTranslations = {
   'dawn_breaks_title': 'DAWN BREAKS',
   'peaceful_night_msg': 'It was a peaceful night.\nNo one died.',
   'tragedy_struck_msg': 'Tragedy has struck!',
-  'player_is_dead_label': '{name} IS DEAD',
+  'player_is_dead_label': '{name} is dead',
   'start_day_button': 'START DAY',
   'the_pack_alliance_title': 'THE WEREWOLVES',
   'the_village_alliance_title': 'THE VILLAGE',
