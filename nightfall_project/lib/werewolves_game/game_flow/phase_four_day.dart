@@ -176,21 +176,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
 
     // 2. Wraith Check (immune to hanging)
     if (role?.id == 17) {
-      // Wraith cannot be hanged — show immunity message and skip
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.read<LanguageService>().translate('wraith_immune_hanging_msg'),
-            style: GoogleFonts.vt323(fontSize: 20),
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: const Color(0xFF6EC6CA),
-          duration: const Duration(seconds: 3),
-        ),
-      );
-      setState(() {
-        _selectedForHangingId = null;
-      });
+      _selectedForHangingId = null;
+      _finalizeDayPhase();
       return;
     }
 
