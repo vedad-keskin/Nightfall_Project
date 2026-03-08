@@ -17,13 +17,13 @@ export type TranslationKey =
     // Role names
     | 'villager_name' | 'doctor_name' | 'guard_name' | 'plague_doctor_name'
     | 'twins_name' | 'knight_name' | 'executioner_name' | 'infected_name'
-    | 'drunk_name' | 'shaman_name'
+    | 'drunk_name' | 'shaman_name' | 'wraith_name'
     | 'werewolf_name' | 'avenging_twin_name' | 'vampire_name'
     | 'jester_name' | 'puppet_master_name' | 'gambler_name'
     // Role descriptions
     | 'villager_desc' | 'doctor_desc' | 'guard_desc' | 'plague_doctor_desc'
     | 'twins_desc' | 'knight_desc' | 'executioner_desc' | 'infected_desc'
-    | 'drunk_desc' | 'shaman_desc'
+    | 'drunk_desc' | 'shaman_desc' | 'wraith_desc'
     | 'werewolf_desc' | 'avenging_twin_desc' | 'vampire_desc'
     | 'jester_desc' | 'puppet_master_desc' | 'gambler_desc'
     // Rulebook page
@@ -50,7 +50,7 @@ export type TranslationKey =
     | 'rule_ab_twins' | 'rule_ab_avenging_twin' | 'rule_ab_jester'
     | 'rule_ab_drunk' | 'rule_ab_knight' | 'rule_ab_puppet_master'
     | 'rule_ab_executioner' | 'rule_ab_infected' | 'rule_ab_gambler'
-    | 'rule_ab_shaman'
+    | 'rule_ab_shaman' | 'rule_ab_wraith'
     // scoring
     | 'rule_score_p1' | 'rule_score_p2' | 'rule_score_p3'
     | 'rule_score_p4' | 'rule_score_p5'
@@ -90,6 +90,7 @@ export const EN: Record<TranslationKey, string> = {
     infected_name: 'Infected',
     drunk_name: 'Drunk',
     shaman_name: 'Shaman',
+    wraith_name: 'Wraith',
     werewolf_name: 'Werewolf',
     avenging_twin_name: 'Avenging Twin',
     vampire_name: 'Vampire',
@@ -107,6 +108,7 @@ export const EN: Record<TranslationKey, string> = {
     infected_desc: 'A villager carrying a hidden sickness. If the Doctor heals them, the Doctor gets infected and dies. If the werewolves target them at night while they have a vampire in their team, the vampire gets infected and dies.',
     drunk_desc: 'A confused drinker. Due to intoxication, he appears as a Werewolf to the Guard, but is actually a loyal Villager.',
     shaman_desc: 'A mystical seer who communes with the spirits. Every second night, the Shaman can inspect one player and learn their true role. Unlike the Guard, the Shaman sees through all disguises.',
+    wraith_desc: 'A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
     werewolf_desc: 'A fierce predator hungry for villagers. Each night, they can kill one player. Wins if they outnumber the village.',
     avenging_twin_desc: 'A twin fueled by vengeance. When their sibling is hanged by the village, they embrace the darkness and join the werewolves.',
     vampire_desc: 'A dark creature of the night. Awakens and kills with the werewolves each night, but remains undetected by the Guard.',
@@ -174,6 +176,7 @@ export const EN: Record<TranslationKey, string> = {
     rule_ab_infected: 'INFECTED: A villager carrying a hidden sickness. If the Doctor heals them, the Doctor gets infected and dies. If targeted by the Werewolves with a Vampire, the Vampire gets infected and dies too.',
     rule_ab_gambler: 'GAMBLER: A cunning risk-taker. On the first night only, the Gambler secretly chooses which alliance they believe will win. After placing their bet, they behave as a normal Villager. If correct, they earn bonus points: +1 for Village, +2 for Werewolves, +3 for Specials.',
     rule_ab_shaman: "SHAMAN: A mystical seer who communes with the spirits. Every second night (2nd, 4th, 6th…), the Shaman wakes up last and can inspect one player. Unlike the Guard, the Shaman sees the player's true role. The Shaman cannot inspect himself.",
+    rule_ab_wraith: 'WRAITH: A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
 
     rule_score_p1: 'Points are awarded to members of the winning alliance at the end of the game.',
     rule_score_p2: 'Different roles grant different amounts of points depending on their difficulty.',
@@ -217,6 +220,7 @@ export const BS: Record<TranslationKey, string> = {
     infected_name: 'Zaražena',
     drunk_name: 'Pijanica',
     shaman_name: 'Šaman',
+    wraith_name: 'Utvara',
     werewolf_name: 'Vukodlak',
     avenging_twin_name: 'Osvetnički Blizanac',
     vampire_name: 'Vampir',
@@ -234,6 +238,7 @@ export const BS: Record<TranslationKey, string> = {
     infected_desc: 'Seljak koji nosi skrivenu bolest. Ako ga Doktor izliječi, Doktor se zarazi i umire. Ako ga vukovi ciljaju noću dok imaju Vampira u timu, Vampir se zarazi i umire.',
     drunk_desc: 'Zbunjeni pijanac. Zbog opijenosti, Stražaru izgleda kao Vukodlak, ali je zapravo lojalni Seljak.',
     shaman_desc: 'Mistični vidovnjak koji komunicira s duhovima. Svake druge noći, Šaman može pregledati jednog igrača i saznati njegovu pravu ulogu. Za razliku od Stražara, Šaman vidi kroz sve maske.',
+    wraith_desc: 'Nemirni duh vezan za selo. Utvara ne može biti ubijena ni na koji način — ni od vukodlaka, vrača, vješanja, niti pogubljenja. Vječno luta, bdijući nad živima.',
     werewolf_desc: 'Žestoki grabežljivac gladan seljana. Svake noći može ubiti jednog igrača. Pobjeđuju ako nadmaše selo.',
     avenging_twin_desc: 'Blizanac vođen osvetom. Kada mu selo objesi brata, prihvaća tamu i pridružuje se vukovima.',
     vampire_desc: 'Mračno stvorenje noći. Budi se i ubija s vukovima svake noći, ali ostaje neotkriven od strane Stražara.',
@@ -301,6 +306,7 @@ export const BS: Record<TranslationKey, string> = {
     rule_ab_infected: 'ZARAŽENA: Seljak koji nosi skrivenu bolest. Ako ga Doktor izliječi, Doktor se zarazi i umire. Ako ga vukovi ciljaju sa Vampirom, Vampir se zarazi i umire.',
     rule_ab_gambler: 'KOCKAR: Lukavi rizičar. Samo prve noći, tajno bira za koji savez misli da će pobijediti. Nakon klađenja, ponaša se kao običan Seljak. Ako pogodi, osvaja bonus bodove: +1 za Seljane, +2 za Vukove, +3 za Posebne.',
     rule_ab_shaman: 'ŠAMAN: Mistični vidovnjak koji komunicira s duhovima. Svake druge noći (2., 4., 6…), Šaman se budi posljednji i može pregledati jednog igrača. Za razliku od Stražara, Šaman vidi pravu ulogu. Šaman ne može pregledati samog sebe.',
+    rule_ab_wraith: 'UTVARA: Nemirni duh vezan za selo. Utvara ne može biti ubijena ni na koji način — ni od vukodlaka, kuge, vješanja, niti pogubljenja. Vječno luta, bdijući nad živima.',
 
     rule_score_p1: 'Bodovi se dodjeljuju članovima pobjedničkog saveza na kraju igre.',
     rule_score_p2: 'Različite uloge daju različit broj bodova u zavisnosti od njihove težine.',

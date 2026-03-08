@@ -112,6 +112,7 @@ export const RULES_SECTIONS: RuleSection[] = [
             'INFECTED: A villager carrying a hidden sickness. If the Doctor heals them, the Doctor gets infected and dies. If targeted by the Werewolves with a Vampire, the Vampire gets infected and dies too.',
             'GAMBLER: A cunning risk-taker. On the first night only, the Gambler secretly chooses which alliance they believe will win. After placing their bet, they behave as a normal Villager. If correct, they earn bonus points: +1 for Village, +2 for Werewolves, +3 for Specials.',
             'SHAMAN: A mystical seer who communes with the spirits. Every second night (2nd, 4th, 6th…), the Shaman wakes up last and can inspect one player. Unlike the Guard, the Shaman sees the player\'s true role. The Shaman cannot inspect himself.',
+            'WRAITH: A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
         ],
         paragraphKeys: [
             'rule_ab_werewolf',
@@ -130,6 +131,7 @@ export const RULES_SECTIONS: RuleSection[] = [
             'rule_ab_infected',
             'rule_ab_gambler',
             'rule_ab_shaman',
+            'rule_ab_wraith',
         ],
     },
     {

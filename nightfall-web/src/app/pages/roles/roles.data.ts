@@ -159,6 +159,17 @@ export const ROLES: Role[] = [
         image: 'images/werewolves/Shaman.png',
         points: 1,
     },
+    {
+        id: 'wraith',
+        name: 'Wraith',
+        nameKey: 'wraith_name',
+        description:
+            'A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
+        descriptionKey: 'wraith_desc',
+        alliance: 'village',
+        image: 'images/werewolves/Wraith.png',
+        points: 1,
+    },
     // ── Werewolves (allianceId 2) ──
     {
         id: 'werewolf',
