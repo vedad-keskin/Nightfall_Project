@@ -145,6 +145,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
         return const Color(0xFFD4AF37); // Gold
       case 16: // Shaman
         return const Color(0xFFE8720C); // Ember orange
+      case 17: // Wraith
+        return const Color(0xFF6EC6CA); // Ghostly teal
       default:
         return Colors.white; // Villager etc.
     }
@@ -172,7 +174,27 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       return;
     }
 
-    // 2. Executioner Check
+    // 2. Wraith Check (immune to hanging)
+    if (role?.id == 17) {
+      // Wraith cannot be hanged — show immunity message and skip
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            context.read<LanguageService>().translate('wraith_immune_hanging_msg'),
+            style: GoogleFonts.vt323(fontSize: 20),
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: const Color(0xFF6EC6CA),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      setState(() {
+        _selectedForHangingId = null;
+      });
+      return;
+    }
+
+    // 3. Executioner Check
     if (role?.id == 13) {
       // Only allow retaliation if there are other players alive at this point
       final remainingPlayersCount = widget.players
@@ -203,7 +225,11 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       nextDeadIds.add(_selectedForHangingId!);
     }
     if (_isRetaliationPhase && _selectedForRetaliationId != null) {
-      nextDeadIds.add(_selectedForRetaliationId!);
+      // Wraith immunity: Executioner's retaliation cannot kill the Wraith
+      final retaliationRole = widget.playerRoles[_selectedForRetaliationId];
+      if (retaliationRole?.id != 17) {
+        nextDeadIds.add(_selectedForRetaliationId!);
+      }
     }
 
     Map<String, WerewolfRole> updatedRoles = Map.from(widget.playerRoles);
@@ -324,6 +350,11 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
               break;
             }
             if (role.id == 11 && (updatedKnightLives[player.id] ?? 0) >= 2) {
+              canPreventCasualty = true;
+              break;
+            }
+            // Wraith is immune to all kills, so werewolves could waste their kill
+            if (role.id == 17) {
               canPreventCasualty = true;
               break;
             }

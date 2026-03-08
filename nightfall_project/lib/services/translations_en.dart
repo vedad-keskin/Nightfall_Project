@@ -362,4 +362,11 @@ const Map<String, String> enTranslations = {
   'shaman_vision_title': 'SPIRIT VISION',
   'shaman_channeling': 'COMMUNING WITH THE SPIRITS...',
   'shaman_spirits_reveal': 'THE SPIRITS REVEAL THE TRUTH...',
+  'wraith_name': 'Wraith',
+  'wraith_desc':
+      'A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
+  'wraith_immune_werewolf_msg': 'The Wraith was targeted by werewolves, but their claws passed through its spectral form!',
+  'wraith_immune_plague_msg': 'The Plague Doctor\'s concoction had no effect on the Wraith\'s ethereal body!',
+  'wraith_immune_hanging_msg': 'THE WRAITH CANNOT BE HANGED — THE ROPE PASSES THROUGH!',
+  'wraith_immune_executioner_msg': 'The Executioner\'s blade phases through the Wraith!',
 };

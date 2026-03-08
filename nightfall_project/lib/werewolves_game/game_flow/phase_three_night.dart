@@ -498,6 +498,17 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       bool savedByDoctor = (playerId == doctorTarget);
       bool savedByPlagueHeal = (playerId == plagueTarget && !isPlagueAccident);
 
+      // Wraith immunity: cannot be killed by any night action
+      if (role.id == 17) {
+        if (hitByWerewolves) {
+          messages.add(lang.translate('wraith_immune_werewolf_msg'));
+        }
+        if (hitByPlagueAccident) {
+          messages.add(lang.translate('wraith_immune_plague_msg'));
+        }
+        continue;
+      }
+
       if (isKnight) {
         if (currentLives == 2) {
           // Rule: Hit by both on 2 lives -> Instant death
@@ -1170,6 +1181,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return const Color(0xFFD4AF37); // Gold
       case 16: // Shaman
         return const Color(0xFFE8720C); // Ember orange
+      case 17: // Wraith
+        return const Color(0xFF6EC6CA); // Ghostly teal
       default:
         return Colors.white; // Villager etc.
     }

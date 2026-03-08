@@ -360,4 +360,11 @@ const Map<String, String> bsTranslations = {
   'shaman_vision_title': 'DUHOVNO VIĐENJE',
   'shaman_channeling': 'KOMUNICIRANJE S DUHOVIMA...',
   'shaman_spirits_reveal': 'DUHOVI OTKRIVAJU ISTINU...',
+  'wraith_name': 'Utvara',
+  'wraith_desc':
+      'Nemirni duh vezan za selo. Utvara ne može biti ubijena ni na koji način — ni od vukodlaka, kuge, vješanja, niti pogubljenja. Vječno luta, bdijući nad živima.',
+  'wraith_immune_werewolf_msg': 'Vukodlaci su napali Utvaru, ali su im kandže prošle kroz njen spektralni oblik!',
+  'wraith_immune_plague_msg': 'Napoj Kužnog Doktora nije imao efekta na eterično tijelo Utvare!',
+  'wraith_immune_hanging_msg': 'UTVARA SE NE MOŽE OBJESITI — KONOPAC PROLAZI KROZ NJU!',
+  'wraith_immune_executioner_msg': 'Oštrica Dželata prolazi kroz Utvaru!',
 };

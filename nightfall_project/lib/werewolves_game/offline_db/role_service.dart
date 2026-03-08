@@ -198,6 +198,17 @@ class WerewolfRoleService {
       translationKey: 'shaman_name',
       descriptionKey: 'shaman_desc',
     ),
+    WerewolfRole(
+      id: 17,
+      name: 'Wraith',
+      points: 1,
+      allianceId: 1, // Villagers
+      description:
+          'A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
+      imagePath: 'assets/images/werewolves/Wraith.png',
+      translationKey: 'wraith_name',
+      descriptionKey: 'wraith_desc',
+    ),
   ];
 
   List<WerewolfRole> getRoles() => _roles;
