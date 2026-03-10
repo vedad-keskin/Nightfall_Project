@@ -356,11 +356,11 @@ const Map<String, String> bsTranslations = {
   'shaman_name': 'Šaman',
   'shaman_desc':
       'Mistični vidovnjak koji komunicira s duhovima. Svake druge noći, Šaman može pregledati jednog igrača i saznati njegovu pravu ulogu. Za razliku od Stražara, Šaman vidi kroz sve maske.',
-  'step_shaman_title': 'ŠAMAN',
-  'step_shaman_instruction': 'ODABERI METU ZA VIDOVITOST',
-  'shaman_vision_title': 'DUHOVNO VIĐENJE',
-  'shaman_channeling': 'KOMUNICIRANJE S DUHOVIMA...',
-  'shaman_spirits_reveal': 'DUHOVI OTKRIVAJU ISTINU...',
+'step_shaman_title': 'ŠAMAN',
+'step_shaman_instruction': 'ODABERI IGRACA ZA PROVJERU',
+'shaman_vision_title': 'VIZIJA',
+'shaman_channeling': 'TRAŽENJE ISTINE...',
+'shaman_spirits_reveal': 'ISTINA JE OTKRIVENA...',
   'wraith_name': 'Utvara',
   'wraith_desc':
       'Nemirni duh vezan za selo. Utvara ne može biti ubijena ni na koji način — ni od vukodlaka, kuge, vješanja, niti pogubljenja. Vječno luta, bdijući nad živima.',

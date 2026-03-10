@@ -358,11 +358,11 @@ const Map<String, String> enTranslations = {
   'shaman_name': 'Shaman',
   'shaman_desc':
       'A mystical seer who communes with the spirits. Every second night, the Shaman can inspect one player and learn their true role. Unlike the Guard, the Shaman sees through all disguises.',
-  'step_shaman_title': 'THE SHAMAN',
-  'step_shaman_instruction': 'SELECT A TARGET to DIVINE',
-  'shaman_vision_title': 'SPIRIT VISION',
-  'shaman_channeling': 'COMMUNING WITH THE SPIRITS...',
-  'shaman_spirits_reveal': 'THE SPIRITS REVEAL THE TRUTH...',
+'step_shaman_title': 'THE SHAMAN',
+'step_shaman_instruction': 'SELECT A TARGET TO DIVINE',
+'shaman_vision_title': 'THE VISION',
+'shaman_channeling': 'SEEKING THE TRUTH...',
+'shaman_spirits_reveal': 'THE TRUTH IS REVEALED...',
   'wraith_name': 'Wraith',
   'wraith_desc':
       'A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
