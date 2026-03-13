@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_button.dart';
@@ -143,18 +142,17 @@ class _ShamanInspectionDialogState extends State<ShamanInspectionDialog>
     final lang = context.read<LanguageService>();
     final channelingText = lang.translate('shaman_channeling');
 
-    // Play the shaman reckoning audio (9s total) — reveal happens on the 8th second
     if (!mounted) return;
-    final isMuted = context.read<SoundSettingsService>().isMuted;
-    if (!isMuted) {
-      final player = AudioPlayer();
+    final soundService = context.read<SoundSettingsService>();
+    soundService.stopAll();
+
+    if (!soundService.isMuted) {
       try {
-        await player.play(
-          AssetSource('audio/werewolves/shamans_reckoning.mp3'),
+        await soundService.playGlobal(
+          'audio/werewolves/shamans_reckoning.mp3',
+          loop: false,
         );
-      } catch (_) {
-        // Silently ignore if file doesn't exist
-      }
+      } catch (_) {}
     }
 
     // Start typing the channeling text over the audio

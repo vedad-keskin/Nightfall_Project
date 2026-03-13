@@ -267,6 +267,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       }
 
       if (puppetMasterId != null && hangedRole != null) {
+        context.read<SoundSettingsService>().stopAll();
         // Show transformation screen
         await showDialog(
           context: context,
@@ -416,7 +417,13 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
         .where((p) => !widget.deadPlayerIds.contains(p.id))
         .toList();
 
-    return Scaffold(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          context.read<SoundSettingsService>().stopAll();
+        }
+      },
+      child: Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
@@ -870,6 +877,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 }

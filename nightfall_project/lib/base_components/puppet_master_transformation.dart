@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:nightfall_project/werewolves_game/offline_db/role_service.dart';
 import 'package:nightfall_project/base_components/pixel_button.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
 import 'package:nightfall_project/base_components/gambler_bet_dialog.dart';
 
@@ -70,13 +69,14 @@ class _PuppetMasterTransformationDialogState
       _stage = 1;
     });
 
-    // Play transformation sound if not muted
-    final isMuted = context.read<SoundSettingsService>().isMuted;
-    if (!isMuted) {
-      final player = AudioPlayer();
+    final soundService = context.read<SoundSettingsService>();
+    soundService.stopAll();
+
+    if (!soundService.isMuted) {
       try {
-        await player.play(
-          AssetSource('audio/werewolves/puppet_master_transformation.mp3'),
+        await soundService.playGlobal(
+          'audio/werewolves/puppet_master_transformation.mp3',
+          loop: false,
         );
       } catch (e) {
         debugPrint('Error playing transformation sound: $e');

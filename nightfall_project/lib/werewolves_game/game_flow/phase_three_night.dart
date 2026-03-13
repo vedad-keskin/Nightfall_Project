@@ -70,6 +70,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   GamblerBet? _gamblerBet;
   bool _gamblerBetMade = false;
 
+  // Prevents the delayed ambient music from overriding a special-dialog track
+  bool _suppressAmbient = false;
+
   @override
   void initState() {
     super.initState();
@@ -107,7 +110,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       // Wait for owl howl to finish (approximately 3-4 seconds)
       await Future.delayed(const Duration(seconds: 4));
 
-      if (!mounted) return;
+      if (!mounted || _suppressAmbient) return;
       await context.read<SoundSettingsService>().playGlobal(
         'audio/werewolves/birds_frogs_night.mp3',
         loop: true,
@@ -390,6 +393,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   Future<void> _performShamanCheck(WerewolfPlayer player) async {
     final role = widget.playerRoles[player.id];
     if (role == null) return;
+
+    _suppressAmbient = true;
+    context.read<SoundSettingsService>().stopAll();
 
     await showDialog(
       context: context,
@@ -1207,7 +1213,13 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          context.read<SoundSettingsService>().stopAll();
+        }
+      },
+      child: Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
@@ -1338,6 +1350,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 }
