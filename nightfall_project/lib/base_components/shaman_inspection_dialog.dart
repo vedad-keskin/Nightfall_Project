@@ -1283,7 +1283,7 @@ class _RitualCirclePainter extends CustomPainter {
     final pentaR = maxR * 0.52;
     final pentaVertices = <Offset>[];
     for (int i = 0; i < 5; i++) {
-      final angle = (i / 5) * 2 * math.pi - math.pi / 2 + progress * math.pi;
+      final angle = (i / 5) * 2 * math.pi - math.pi / 2 + progress * math.pi * 2;
       pentaVertices.add(
         Offset(
           center.dx + pentaR * math.cos(angle),
