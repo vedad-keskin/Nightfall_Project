@@ -267,19 +267,22 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       }
 
       if (puppetMasterId != null && hangedRole != null) {
-        context.read<SoundSettingsService>().stopAll();
-        // Show transformation screen
-        await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => PuppetMasterTransformationDialog(
-            playerName: widget.players
-                .firstWhere((p) => p.id == puppetMasterId)
-                .name,
-            targetRole: hangedRole,
-            gamblerBet: widget.gamblerBet,
-          ),
+        final pmPlayer = widget.players.cast<WerewolfPlayer?>().firstWhere(
+          (p) => p!.id == puppetMasterId,
+          orElse: () => null,
         );
+        if (pmPlayer != null) {
+          context.read<SoundSettingsService>().stopAll();
+          await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => PuppetMasterTransformationDialog(
+              playerName: pmPlayer.name,
+              targetRole: hangedRole,
+              gamblerBet: widget.gamblerBet,
+            ),
+          );
+        }
         updatedRoles[puppetMasterId] = hangedRole;
         if (hangedRole.id == 11) {
           updatedKnightLives[puppetMasterId] = 2;

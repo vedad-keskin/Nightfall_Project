@@ -163,6 +163,67 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
     });
   }
 
+  /// Shuffles roles and assigns them to players, re-rolling when too many
+  /// players receive the same role they had in the previous game.
+  Future<Map<String, WerewolfRole>> _assignRolesWithAntiRepeat(
+    List<WerewolfPlayer> players,
+  ) async {
+    final random = Random.secure();
+
+    // Flatten role counts into a list of role IDs
+    final List<int> flattenedRoleIds = [];
+    _roleCounts.forEach((roleId, count) {
+      for (int i = 0; i < count; i++) {
+        flattenedRoleIds.add(roleId);
+      }
+    });
+
+    // Load previous game assignments for anti-repeat comparison
+    final prevAssignments = await _settingsService.loadLastAssignments();
+
+    Map<String, WerewolfRole> bestAssignment = {};
+    int bestRepeatCount = players.length + 1;
+
+    // Try up to 20 shuffles and pick the one with fewest repeats
+    const maxAttempts = 20;
+    for (int attempt = 0; attempt < maxAttempts; attempt++) {
+      flattenedRoleIds.shuffle(random);
+
+      final Map<String, WerewolfRole> candidate = {};
+      for (int i = 0; i < players.length; i++) {
+        final role = _roleService.getRoleById(flattenedRoleIds[i]);
+        if (role != null) {
+          candidate[players[i].id] = role;
+        }
+      }
+
+      if (prevAssignments == null) {
+        bestAssignment = candidate;
+        break;
+      }
+
+      int repeats = 0;
+      for (final entry in candidate.entries) {
+        if (prevAssignments[entry.key] == entry.value.id) {
+          repeats++;
+        }
+      }
+
+      if (repeats < bestRepeatCount) {
+        bestRepeatCount = repeats;
+        bestAssignment = candidate;
+      }
+
+      if (repeats == 0) break;
+    }
+
+    // Persist this game's assignments for next time
+    final assignmentMap = bestAssignment.map((k, v) => MapEntry(k, v.id));
+    await _settingsService.saveLastAssignments(assignmentMap);
+
+    return bestAssignment;
+  }
+
   Color _getAllianceColor(int allianceId) {
     switch (allianceId) {
       case 1:
@@ -560,56 +621,18 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                               : const Color(0xFF415A77).withOpacity(0.5),
                           onPressed: _canProceed
                               ? () async {
-                                  // 1. Load players
                                   final players = await _playerService
                                       .loadPlayers();
 
-                                  // 2. Flatten and shuffle roles
-                                  final List<int> flattenedRoleIds = [];
-                                  _roleCounts.forEach((roleId, count) {
-                                    for (int i = 0; i < count; i++) {
-                                      flattenedRoleIds.add(roleId);
-                                    }
-                                  });
+                                  final playerRoles =
+                                      await _assignRolesWithAntiRepeat(players);
 
-                                  // Use secure random for better entropy
-                                  final random = Random.secure();
-                                  flattenedRoleIds.shuffle(random);
-
-                                  // 3. Map players to roles
-                                  // We also shuffle a list of indices to ensure player-to-role mapping
-                                  // is randomized from both sides (roles shuffled + assignment order shuffled)
-                                  final List<int> playerIndices = List.generate(
-                                    players.length,
-                                    (index) => index,
-                                  );
-                                  playerIndices.shuffle(random);
-
-                                  final Map<String, WerewolfRole> playerRoles =
-                                      {};
-                                  for (int i = 0; i < players.length; i++) {
-                                    final roleId =
-                                        flattenedRoleIds[i]; // Roles are already shuffled
-                                    final playerIndex =
-                                        playerIndices[i]; // Player assignment order is shuffled
-                                    final player = players[playerIndex];
-
-                                    final role = _roleService.getRoleById(
-                                      roleId,
-                                    );
-                                    if (role != null) {
-                                      playerRoles[player.id] = role;
-                                    }
-                                  }
-
-                                  // 4. Navigate to Phase Two
                                   if (mounted) {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             WerewolfPhaseTwoScreen(
-                                              players:
-                                                  players, // Pass original list order for consistent UI
+                                              players: players,
                                               playerRoles: playerRoles,
                                             ),
                                       ),

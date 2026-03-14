@@ -73,6 +73,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   // Prevents the delayed ambient music from overriding a special-dialog track
   bool _suppressAmbient = false;
 
+  // Guards against double-tap on the action button
+  bool _isProcessing = false;
+
   @override
   void initState() {
     super.initState();
@@ -416,34 +419,38 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   String? _plagueDoctorTargetId;
 
   void _nextStep() {
+    if (_isProcessing) return;
+    _isProcessing = true;
+
     // Trigger Guard Check if target selected (Prioritize this even if it's the last step)
     if (_currentStep == NightStep.guard && _guardTargetId != null) {
-      final player = widget.players.firstWhere((p) => p.id == _guardTargetId);
+      final player = widget.players.cast<WerewolfPlayer?>().firstWhere(
+        (p) => p!.id == _guardTargetId,
+        orElse: () => null,
+      );
+      if (player == null) { _isProcessing = false; return; }
+      _isProcessing = false;
       _performGuardCheck(player);
-      return; // Stop here, perform check will call next step after dialog
+      return;
     }
 
     // Trigger Shaman Check if target selected
     if (_currentStep == NightStep.shaman && _shamanTargetId != null) {
-      final player = widget.players.firstWhere((p) => p.id == _shamanTargetId);
+      final player = widget.players.cast<WerewolfPlayer?>().firstWhere(
+        (p) => p!.id == _shamanTargetId,
+        orElse: () => null,
+      );
+      if (player == null) { _isProcessing = false; return; }
+      _isProcessing = false;
       _performShamanCheck(player);
-      return; // Stop here, perform check will call next step after dialog
+      return;
     }
 
     if (_currentStepIndex < _nightSteps.length - 1) {
-      // Force selection logic could go here, but for now we allow skipping (e.g., if no one is selected)
-
       setState(() {
         _currentStepIndex++;
-        // Reset transient selection state between steps
-        // Capture Doctor's choice before resetting if moving away from Doctor
-        // Note: _currentStep updates AFTER index increment.
-        // We need to capture BEFORE increment or use the previous step index.
-        // Easier: Capture based on the step we just finished.
       });
 
-      // Post-transition cleanup
-      // If we just finished Doctor, store the ID and clear for next healer
       final finishedStep = _nightSteps[_currentStepIndex - 1];
       if (finishedStep == NightStep.doctor) {
         _doctorHealedId = _targetHealedId;
@@ -459,6 +466,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       if (finishedStep == NightStep.shaman) {
         _shamanTargetId = null;
       }
+
+      _isProcessing = false;
     } else {
       // End of Night - Capture last step's action
       if (_currentStep == NightStep.plagueDoctor) {
@@ -468,6 +477,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       }
 
       _calculateResults();
+      _isProcessing = false;
     }
   }
 
@@ -492,7 +502,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
     // 3. Resolve results for each involved player
     for (final playerId in actionPlayerIds) {
-      final player = widget.players.firstWhere((p) => p.id == playerId);
+      final player = widget.players.cast<WerewolfPlayer?>().firstWhere(
+        (p) => p!.id == playerId,
+        orElse: () => null,
+      );
+      if (player == null) continue;
       final role = widget.playerRoles[playerId];
       if (role == null) continue;
 
@@ -689,11 +703,15 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     }
 
     // --- INFECTED ROLE LOGIC ---
+    final alivePlayerIds = widget.players.map((p) => p.id).toSet();
+
     // 1. Doctor Side-Effect: If Doctor heals Infected, Doctor dies.
     if (doctorTarget != null && widget.playerRoles[doctorTarget]?.id == 14) {
       String? doctorId;
       for (final entry in widget.playerRoles.entries) {
-        if (entry.value.id == 3 && !deadPlayerIds.contains(entry.key)) {
+        if (entry.value.id == 3 &&
+            alivePlayerIds.contains(entry.key) &&
+            !deadPlayerIds.contains(entry.key)) {
           doctorId = entry.key;
           break;
         }
@@ -701,14 +719,17 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
       if (doctorId != null) {
         deadPlayerIds.add(doctorId);
-        final infectedName = widget.players
-            .firstWhere((p) => p.id == doctorTarget)
-            .name;
-        messages.add(
-          lang
-              .translate('infected_doctor_msg')
-              .replaceAll('{name}', infectedName),
+        final infectedPlayer = widget.players.cast<WerewolfPlayer?>().firstWhere(
+          (p) => p!.id == doctorTarget,
+          orElse: () => null,
         );
+        if (infectedPlayer != null) {
+          messages.add(
+            lang
+                .translate('infected_doctor_msg')
+                .replaceAll('{name}', infectedPlayer.name),
+          );
+        }
       }
     }
 
@@ -717,7 +738,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         widget.playerRoles[werewolfTarget]?.id == 14) {
       String? vampireId;
       for (final entry in widget.playerRoles.entries) {
-        if (entry.value.id == 8 && !deadPlayerIds.contains(entry.key)) {
+        if (entry.value.id == 8 &&
+            alivePlayerIds.contains(entry.key) &&
+            !deadPlayerIds.contains(entry.key)) {
           vampireId = entry.key;
           break;
         }
@@ -725,14 +748,17 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
 
       if (vampireId != null) {
         deadPlayerIds.add(vampireId);
-        final infectedName = widget.players
-            .firstWhere((p) => p.id == werewolfTarget)
-            .name;
-        messages.add(
-          lang
-              .translate('infected_vampire_msg')
-              .replaceAll('{name}', infectedName),
+        final infectedPlayer = widget.players.cast<WerewolfPlayer?>().firstWhere(
+          (p) => p!.id == werewolfTarget,
+          orElse: () => null,
         );
+        if (infectedPlayer != null) {
+          messages.add(
+            lang
+                .translate('infected_vampire_msg')
+                .replaceAll('{name}', infectedPlayer.name),
+          );
+        }
       }
     }
     // ---------------------------
@@ -775,9 +801,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                   ),
                   const SizedBox(height: 16),
                   ...deadPlayerIds.map((id) {
-                    final p = widget.players.firstWhere(
-                      (element) => element.id == id,
+                    final p = widget.players.cast<WerewolfPlayer?>().firstWhere(
+                      (element) => element!.id == id,
+                      orElse: () => null,
                     );
+                    if (p == null) return const SizedBox.shrink();
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Text(
