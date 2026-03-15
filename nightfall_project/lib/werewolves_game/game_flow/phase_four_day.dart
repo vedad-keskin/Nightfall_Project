@@ -124,9 +124,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       case 2: // Werewolf
       case 7: // Avenging Twin
       case 8: // Vampire
-        return const Color(0xFFE63946); // Red
       case 18: // Dire Wolf
-        return const Color(0xFF5B8FB9); // Icy blue
+        return const Color(0xFFE63946); // Red
       case 6: // Twins
         return const Color(0xFF4CC9F0); // Blue
       case 3: // Doctor

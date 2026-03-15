@@ -1152,35 +1152,21 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                               left: 4,
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 4,
+                                  horizontal: 2,
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF5B8FB9).withOpacity(0.85),
+                                  color: Colors.black.withOpacity(0.5),
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.3),
+                                    color: const Color(0xFF5B8FB9),
                                     width: 1,
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.volume_off,
-                                      color: Colors.white,
-                                      size: 12,
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Text(
-                                      context
-                                          .watch<LanguageService>()
-                                          .translate('silenced_indicator'),
-                                      style: GoogleFonts.pressStart2p(
-                                        color: Colors.white,
-                                        fontSize: 5,
-                                      ),
-                                    ),
-                                  ],
+                                child: Image.asset(
+                                  'assets/images/dire_wolf_silence.png',
+                                  width: 24,
+                                  height: 24,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                             ),
@@ -1279,9 +1265,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       case 2: // Werewolf
       case 7: // Avenging Twin
       case 8: // Vampire
-        return const Color(0xFFE63946); // Red
       case 18: // Dire Wolf
-        return const Color(0xFF5B8FB9); // Icy blue
+        return const Color(0xFFE63946); // Red
       case 6: // Twins
         return const Color(0xFF4CC9F0); // Blue
       case 3: // Doctor
@@ -1320,7 +1305,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       case NightStep.werewolves:
         return 'assets/images/werewolf_kill.png';
       case NightStep.direWolf:
-        return null;
+        return 'assets/images/dire_wolf_silence.png';
       case NightStep.doctor:
         return 'assets/images/doctor_heal.png';
       case NightStep.guard:
