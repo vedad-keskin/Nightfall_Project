@@ -183,6 +183,7 @@ const Map<String, String> enTranslations = {
       'Enjoy the mystery and deception. Good luck!\n\n',
   'werewolf_game': 'WEREWOLVES GAME',
   'roles_title': 'ROLES',
+  'all_label': 'ALL',
   'pts': 'pts',
   'alliance_label': 'ALLIANCE',
   'win_pts_label': 'WIN: {points} PTS',

@@ -184,6 +184,7 @@ const Map<String, String> bsTranslations = {
       'Uživajte u misteriji i obmani. Sretno!\n\n',
   'werewolf_game': 'IGRA VUKOVA',
   'roles_title': 'ULOGE',
+  'all_label': 'SVE',
   'pts': 'bod',
   'alliance_label': 'SAVEZ',
   'win_pts_label': 'WIN: {points} BOD',

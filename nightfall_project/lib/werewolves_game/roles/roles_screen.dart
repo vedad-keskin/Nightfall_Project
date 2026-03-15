@@ -8,6 +8,8 @@ import 'package:nightfall_project/werewolves_game/offline_db/alliance_service.da
 import 'package:nightfall_project/services/language_service.dart';
 import 'package:provider/provider.dart';
 
+enum RoleAllianceFilter { all, village, werewolves, specials }
+
 class WerewolfRolesScreen extends StatefulWidget {
   const WerewolfRolesScreen({super.key});
 
@@ -18,18 +20,21 @@ class WerewolfRolesScreen extends StatefulWidget {
 class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
   final WerewolfRoleService _roleService = WerewolfRoleService();
   final WerewolfAllianceService _allianceService = WerewolfAllianceService();
-  late List<WerewolfRole> _roles;
+  late List<WerewolfRole> _allRoles;
   final PageController _pageController = PageController(viewportFraction: 0.8);
   int _currentPage = 0;
+  RoleAllianceFilter _selectedFilter = RoleAllianceFilter.all;
 
-  // Track flip state for each card
-  late List<bool> _isFlipped;
+  // Track flip state by role id so it remains stable when filtering
+  final Map<int, bool> _isFlippedByRoleId = {};
 
   @override
   void initState() {
     super.initState();
-    _roles = _roleService.getRoles();
-    _isFlipped = List.generate(_roles.length, (_) => false);
+    _allRoles = _roleService.getRoles();
+    for (final role in _allRoles) {
+      _isFlippedByRoleId[role.id] = false;
+    }
   }
 
   @override
@@ -51,9 +56,194 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
     }
   }
 
+  List<WerewolfRole> get _filteredRoles {
+    switch (_selectedFilter) {
+      case RoleAllianceFilter.village:
+        return _allRoles.where((role) => role.allianceId == 1).toList();
+      case RoleAllianceFilter.werewolves:
+        return _allRoles.where((role) => role.allianceId == 2).toList();
+      case RoleAllianceFilter.specials:
+        return _allRoles.where((role) => role.allianceId == 3).toList();
+      case RoleAllianceFilter.all:
+        return _allRoles;
+    }
+  }
+
+  Color _getFilterColor(RoleAllianceFilter filter) {
+    switch (filter) {
+      case RoleAllianceFilter.all:
+        return const Color(0xFF778DA9);
+      case RoleAllianceFilter.village:
+        return _getAllianceColor(1);
+      case RoleAllianceFilter.werewolves:
+        return _getAllianceColor(2);
+      case RoleAllianceFilter.specials:
+        return _getAllianceColor(3);
+    }
+  }
+
+  int? _getAllianceIdForFilter(RoleAllianceFilter filter) {
+    switch (filter) {
+      case RoleAllianceFilter.village:
+        return 1;
+      case RoleAllianceFilter.werewolves:
+        return 2;
+      case RoleAllianceFilter.specials:
+        return 3;
+      case RoleAllianceFilter.all:
+        return null;
+    }
+  }
+
+  String _getFilterLabel(
+    RoleAllianceFilter filter,
+    LanguageService languageService,
+  ) {
+    switch (filter) {
+      case RoleAllianceFilter.all:
+        return languageService.translate('all_label').toUpperCase();
+      case RoleAllianceFilter.village:
+        return languageService
+            .translate('villagers_alliance_name')
+            .toUpperCase();
+      case RoleAllianceFilter.werewolves:
+        return languageService
+            .translate('werewolves_alliance_name')
+            .toUpperCase();
+      case RoleAllianceFilter.specials:
+        return languageService
+            .translate('specials_alliance_name')
+            .toUpperCase();
+    }
+  }
+
+  void _setFilter(RoleAllianceFilter filter) {
+    setState(() {
+      // Toggle: if same filter clicked again, clear to "all"
+      _selectedFilter = _selectedFilter == filter ? RoleAllianceFilter.all : filter;
+      _currentPage = 0;
+      _isFlippedByRoleId.updateAll((_, __) => false);
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_pageController.hasClients) {
+        _pageController.jumpToPage(0);
+      }
+    });
+  }
+
+  Widget _buildAllianceFilterBar(
+    LanguageService languageService,
+    int? currentRoleAllianceId,
+  ) {
+    // Only three tiles; "all" is default when none selected
+    final filters = [
+      RoleAllianceFilter.werewolves,
+      RoleAllianceFilter.village,
+      RoleAllianceFilter.specials,
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Container(
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: const Color(0xFF0D1B2A).withValues(alpha: 0.85),
+          border: Border.all(color: const Color(0xFF415A77), width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              offset: const Offset(2, 2),
+              blurRadius: 0,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            for (int i = 0; i < filters.length; i++) ...[
+              if (i > 0) const SizedBox(width: 3),
+              Expanded(
+                child: _buildFilterTab(
+                  filters[i],
+                  languageService,
+                  currentRoleAllianceId: currentRoleAllianceId,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterTab(
+    RoleAllianceFilter filter,
+    LanguageService languageService, {
+    int? currentRoleAllianceId,
+  }) {
+    final isSelected = _selectedFilter == filter;
+    final baseColor = _getFilterColor(filter);
+    // In "all" mode: light only the dot for the tile matching current card's alliance
+    final allianceId = _getAllianceIdForFilter(filter);
+    final dotOn = isSelected ||
+        (currentRoleAllianceId != null && currentRoleAllianceId == allianceId);
+
+    return GestureDetector(
+      onTap: () => _setFilter(filter),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        curve: Curves.easeOut,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? baseColor.withValues(alpha: 0.25)
+              : const Color(0xFF1B263B).withValues(alpha: 0.5),
+          border: Border.all(
+            color: isSelected ? baseColor : const Color(0xFF415A77),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 5,
+                  height: 5,
+                  margin: const EdgeInsets.only(right: 4),
+                  color: dotOn
+                      ? baseColor
+                      : const Color(0xFFE0E1DD).withValues(alpha: 0.4),
+                ),
+                Text(
+                  _getFilterLabel(filter, languageService),
+                  style: GoogleFonts.vt323(
+                    color: isSelected
+                        ? const Color(0xFFE0E1DD)
+                        : const Color(0xFFE0E1DD).withValues(alpha: 0.8),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                    shadows: const [
+                      Shadow(color: Colors.black, offset: Offset(1, 1)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final languageService = context.watch<LanguageService>();
+    final filteredRoles = _filteredRoles;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -96,99 +286,131 @@ class _WerewolfRolesScreenState extends State<WerewolfRolesScreen> {
                   ),
                 ),
 
+                _buildAllianceFilterBar(
+                  languageService,
+                  _selectedFilter == RoleAllianceFilter.all &&
+                          _filteredRoles.isNotEmpty
+                      ? _filteredRoles[
+                              _currentPage.clamp(0, _filteredRoles.length - 1)]
+                          .allianceId
+                      : null,
+                ),
+                const SizedBox(height: 14),
+
                 // Swipable Cards
                 Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index;
-                        // Reset all cards to front side when swiping
-                        for (int i = 0; i < _isFlipped.length; i++) {
-                          _isFlipped[i] = false;
-                        }
-                      });
-                    },
-                    itemCount: _roles.length,
-                    itemBuilder: (context, index) {
-                      final role = _roles[index];
-                      final isSelected = index == _currentPage;
-
-                      return AnimatedScale(
-                        duration: const Duration(milliseconds: 300),
-                        scale: isSelected ? 1.0 : 0.8,
-                        child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 300),
-                          opacity: isSelected ? 1.0 : 0.5,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _isFlipped[index] = !_isFlipped[index];
-                              });
-                            },
-                            child: Center(
-                              child: AspectRatio(
-                                aspectRatio: 880 / 1184,
-                                child: TweenAnimationBuilder(
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.easeInOutBack,
-                                  tween: Tween<double>(
-                                    begin: 0,
-                                    end: _isFlipped[index] ? 180 : 0,
-                                  ),
-                                  builder: (context, double value, child) {
-                                    final isBack = value > 90;
-                                    return Transform(
-                                      transform: Matrix4.identity()
-                                        ..setEntry(3, 2, 0.001)
-                                        ..rotateY(value * pi / 180),
-                                      alignment: Alignment.center,
-                                      child: isBack
-                                          ? Transform(
-                                              transform: Matrix4.identity()
-                                                ..rotateY(pi),
-                                              alignment: Alignment.center,
-                                              child: _buildCardBack(role),
-                                            )
-                                          : _buildCardFront(role),
-                                    );
-                                  },
-                                ),
-                              ),
+                  child: filteredRoles.isEmpty
+                      ? Center(
+                          child: Text(
+                            'NO ROLES',
+                            style: GoogleFonts.pressStart2p(
+                              color: Colors.white54,
+                              fontSize: 14,
                             ),
                           ),
+                        )
+                      : PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _currentPage = index;
+                              _isFlippedByRoleId.updateAll((_, __) => false);
+                            });
+                          },
+                          itemCount: filteredRoles.length,
+                          itemBuilder: (context, index) {
+                            final role = filteredRoles[index];
+                            final isSelected = index == _currentPage;
+                            final isFlipped =
+                                _isFlippedByRoleId[role.id] ?? false;
+
+                            return AnimatedScale(
+                              duration: const Duration(milliseconds: 300),
+                              scale: isSelected ? 1.0 : 0.8,
+                              child: AnimatedOpacity(
+                                duration: const Duration(milliseconds: 300),
+                                opacity: isSelected ? 1.0 : 0.5,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _isFlippedByRoleId[role.id] = !isFlipped;
+                                    });
+                                  },
+                                  child: Center(
+                                    child: AspectRatio(
+                                      aspectRatio: 880 / 1184,
+                                      child: TweenAnimationBuilder(
+                                        duration: const Duration(
+                                          milliseconds: 600,
+                                        ),
+                                        curve: Curves.easeInOutBack,
+                                        tween: Tween<double>(
+                                          begin: 0,
+                                          end: isFlipped ? 180 : 0,
+                                        ),
+                                        builder:
+                                            (context, double value, child) {
+                                              final isBack = value > 90;
+                                              return Transform(
+                                                transform: Matrix4.identity()
+                                                  ..setEntry(3, 2, 0.001)
+                                                  ..rotateY(value * pi / 180),
+                                                alignment: Alignment.center,
+                                                child: isBack
+                                                    ? Transform(
+                                                        transform:
+                                                            Matrix4.identity()
+                                                              ..rotateY(pi),
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: _buildCardBack(
+                                                          role,
+                                                        ),
+                                                      )
+                                                    : _buildCardFront(role),
+                                              );
+                                            },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
 
                 // Indicator
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _roles.length,
-                      (index) => Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          color: index == _currentPage
-                              ? const Color(0xFFE0E1DD)
-                              : const Color(0xFF415A77),
+                if (filteredRoles.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        filteredRoles.length,
+                        (index) => Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            color: index == _currentPage
+                                ? const Color(0xFFE0E1DD)
+                                : const Color(0xFF415A77),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                Text(
-                  languageService.translate('tap_to_flip_card'),
-                  style: GoogleFonts.vt323(color: Colors.white38, fontSize: 20),
-                ),
+                if (filteredRoles.isNotEmpty)
+                  Text(
+                    languageService.translate('tap_to_flip_card'),
+                    style: GoogleFonts.vt323(
+                      color: Colors.white38,
+                      fontSize: 20,
+                    ),
+                  ),
                 const SizedBox(height: 16),
               ],
             ),
