@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:nightfall_project/services/language_service.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
 import 'package:nightfall_project/base_components/gambler_bet_dialog.dart';
+import 'package:nightfall_project/werewolves_game/offline_db/player_analytics_service.dart';
 
 class WerewolfPhaseFiveScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -164,6 +165,42 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
 
     // 5. Save to DB
     await _playerService.savePlayers(updatedList);
+
+    // 6. Record analytics for each participating player
+    final Map<String, GameRecord> analyticsRecords = {};
+    for (final entry in widget.playerRoles.entries) {
+      final playerId = entry.key;
+      final role = entry.value;
+
+      bool playerWon = false;
+      int pointsEarned = 0;
+
+      if (team.contains('jester')) {
+        if (role.id == 9) {
+          playerWon = true;
+          pointsEarned = role.points;
+        }
+      } else if (role.allianceId == winningAllianceId) {
+        playerWon = true;
+        pointsEarned = role.points;
+      }
+
+      if (role.id == 15 && gamblerWonBet) {
+        playerWon = true;
+        pointsEarned += gamblerBonusPoints;
+      }
+
+      analyticsRecords[playerId] = GameRecord(
+        roleId: role.id,
+        roleName: role.name,
+        allianceId: role.allianceId,
+        winningTeam: widget.winningTeam,
+        won: playerWon,
+        pointsEarned: pointsEarned,
+        playedAt: DateTime.now(),
+      );
+    }
+    await PlayerAnalyticsService().recordGame(analyticsRecords);
 
     if (mounted) {
       setState(() {

@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_starfield_background.dart';
 import 'package:nightfall_project/base_components/pixel_button.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart';
+import 'package:nightfall_project/werewolves_game/offline_db/player_analytics_service.dart';
+import 'package:nightfall_project/werewolves_game/leaderboards/player_analytics_screen.dart';
 import 'package:nightfall_project/services/language_service.dart';
 import 'package:provider/provider.dart';
 
@@ -87,6 +89,7 @@ class _WerewolfLeaderboardsScreenState
 
     if (confirm == true) {
       final updatedPlayers = await _playerService.resetPlayersPoints(_players);
+      await PlayerAnalyticsService().clearAllAnalytics();
       if (mounted) {
         setState(() {
           _players = updatedPlayers;
@@ -244,57 +247,78 @@ class _WerewolfLeaderboardsScreenState
                                               0xFFCD7F32,
                                             ); // Bronze
 
-                                          return Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 12,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black.withOpacity(
-                                                0.5,
-                                              ),
-                                              border: Border.all(
-                                                color: const Color(0xFF415A77),
-                                                width: 2,
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "$rank.",
-                                                  style: GoogleFonts.vt323(
-                                                    color: rankColor,
-                                                    fontSize: 28,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      PlayerAnalyticsScreen(
+                                                        player: player,
+                                                      ),
                                                 ),
-                                                const SizedBox(width: 16),
-                                                Expanded(
-                                                  child: Text(
-                                                    player.name,
+                                              );
+                                            },
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 12,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.black.withOpacity(
+                                                  0.5,
+                                                ),
+                                                border: Border.all(
+                                                  color: const Color(0xFF415A77),
+                                                  width: 2,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "$rank.",
                                                     style: GoogleFonts.vt323(
-                                                      color: Colors.white,
+                                                      color: rankColor,
                                                       fontSize: 28,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
-                                                ),
-                                                Text(
-                                                  "${player.points}",
-                                                  style: GoogleFonts.vt323(
-                                                    color: rankColor,
-                                                    fontSize: 28,
-                                                    fontWeight: FontWeight.bold,
+                                                  const SizedBox(width: 16),
+                                                  Expanded(
+                                                    child: Text(
+                                                      player.name,
+                                                      style: GoogleFonts.vt323(
+                                                        color: Colors.white,
+                                                        fontSize: 28,
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  "pts",
-                                                  style: GoogleFonts.vt323(
-                                                    color: Colors.white54,
-                                                    fontSize: 18,
+                                                  Text(
+                                                    "${player.points}",
+                                                    style: GoogleFonts.vt323(
+                                                      color: rankColor,
+                                                      fontSize: 28,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    "pts",
+                                                    style: GoogleFonts.vt323(
+                                                      color: Colors.white54,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  const Icon(
+                                                    Icons.chevron_right,
+                                                    color: Color(0xFF778DA9),
+                                                    size: 24,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           );
                                         },
