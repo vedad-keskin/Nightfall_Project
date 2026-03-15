@@ -113,7 +113,7 @@ export const RULES_SECTIONS: RuleSection[] = [
             'GAMBLER: A cunning risk-taker. On the first night only, the Gambler secretly chooses which alliance they believe will win. After placing their bet, they behave as a normal Villager. If correct, they earn bonus points: +1 for Village, +2 for Werewolves, +3 for Specials.',
             'SHAMAN: A mystical seer who communes with the spirits. Every second night (2nd, 4th, 6th…), the Shaman wakes up last and can inspect one player. Unlike the Guard, the Shaman sees the player\'s true role. The Shaman cannot inspect himself.',
             'WRAITH: A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.',
-            'DIRE WOLF: A terrifying alpha. Hunts with the Werewolves each night. Every other night the Dire Wolf wakes alone to silence one player, preventing them from using their ability the following night.',
+            'DIRE WOLF: A terrifying alpha predator aligned with the Werewolves. Wakes up with the pack and participates in the kill. After the wolves sleep, the Dire Wolf wakes alone every other night (1st, 3rd, 5th...) to silence one player. The silenced player cannot use their active ability the following night. Silence only affects roles that wake up at night: Doctor, Guard, Plague Doctor, and Shaman. Passive abilities (Knight armor, Wraith immortality, Jester, Executioner) are not affected. Cannot silence wolves, himself, or the same player as last time. Appears as a Werewolf when inspected by the Guard.',
         ],
         paragraphKeys: [
             'rule_ab_werewolf',
