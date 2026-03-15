@@ -245,46 +245,20 @@ class _PlayerAnalyticsScreenState extends State<PlayerAnalyticsScreen> {
       ),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFF415A77),
-              border: Border.all(color: const Color(0xFFE0E1DD), width: 2),
-            ),
-            child: Center(
-              child: Text(
-                widget.player.name.isNotEmpty
-                    ? widget.player.name[0].toUpperCase()
-                    : '?',
-                style: GoogleFonts.pressStart2p(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
+          Expanded(
+            child: Text(
+              widget.player.name,
+              style: GoogleFonts.pressStart2p(
+                color: Colors.white,
+                fontSize: 14,
               ),
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.player.name,
-                  style: GoogleFonts.pressStart2p(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${widget.player.points} ${lang.translate('pts')}',
-                  style: GoogleFonts.vt323(
-                    color: const Color(0xFFFFD700),
-                    fontSize: 22,
-                  ),
-                ),
-              ],
+          Text(
+            '${widget.player.points} ${lang.translate('pts')}',
+            style: GoogleFonts.vt323(
+              color: const Color(0xFFFFD700),
+              fontSize: 22,
             ),
           ),
         ],
