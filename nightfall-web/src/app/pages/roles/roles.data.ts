@@ -204,6 +204,17 @@ export const ROLES: Role[] = [
         image: 'images/werewolves/Vampire.png',
         points: 2,
     },
+    {
+        id: 'dire_wolf',
+        name: 'Dire Wolf',
+        nameKey: 'dire_wolf_name',
+        description:
+            'A terrifying alpha predator. Hunts with the pack, then wakes alone every other night to silence one player, preventing them from using their ability the following night.',
+        descriptionKey: 'dire_wolf_desc',
+        alliance: 'werewolves',
+        image: 'images/werewolves/Dire Wolf.png',
+        points: 2,
+    },
     // ── Specials (allianceId 3) ──
     {
         id: 'jester',
