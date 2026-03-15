@@ -45,7 +45,7 @@ class PixelTeamDialog extends StatelessWidget {
                   labelColor: const Color(0xFF48CAE4), // Bright Cyan
                   valueColor: Colors.white,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 _buildCreditRow(
                   'GAME DESIGN',
                   'Nidal Keskin',
@@ -54,28 +54,36 @@ class PixelTeamDialog extends StatelessWidget {
                     0xFF9B5DE5,
                   ), // Vivid Lavender / Creative Purple
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 _buildCreditRow(
                   'ART DESIGN',
                   'Iman-Bejana Keskin',
                   labelColor: const Color(0xFFF72585), // Neon Pink
                   valueColor: Colors.white,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 _buildCreditRow(
-                  'TESTER',
+                  'QA TESTING',
                   'Amar Bešić',
                   labelColor: const Color(0xFF06D6A0), // Emerald Green
                   valueColor: Colors.white,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
                 _buildCreditRow(
                   'HOTSPOT PROVIDER',
                   'Said Keskin',
                   labelColor: const Color(0xFFFF9F1C), // Orange
                   valueColor: Colors.white,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 15),
+                
+                _buildCreditRow(
+  'CERTIFIED HATER',
+  'Benjamin Cero',
+  labelColor: const Color(0xFFFF595E), // angry red 😄
+  valueColor: Colors.white,
+),
+                const SizedBox(height: 15),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: Container(
