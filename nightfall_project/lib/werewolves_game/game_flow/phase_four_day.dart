@@ -30,6 +30,9 @@ class WerewolfPhaseFourScreen extends StatefulWidget {
 
   final int dayNumber;
 
+  // Dire Wolf: who was last silenced (passed through to next night)
+  final String? lastDireWolfTargetId;
+
   const WerewolfPhaseFourScreen({
     super.key,
     required this.playerRoles,
@@ -40,6 +43,7 @@ class WerewolfPhaseFourScreen extends StatefulWidget {
     this.knightLives,
     this.gamblerBet,
     this.dayNumber = 1,
+    this.lastDireWolfTargetId,
   });
 
   @override
@@ -121,6 +125,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       case 7: // Avenging Twin
       case 8: // Vampire
         return const Color(0xFFE63946); // Red
+      case 18: // Dire Wolf
+        return const Color(0xFF5B8FB9); // Icy blue
       case 6: // Twins
         return const Color(0xFF4CC9F0); // Blue
       case 3: // Doctor
@@ -229,8 +235,8 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
     for (final player in widget.players) {
       if (!nextDeadIds.contains(player.id)) {
         final role = widget.playerRoles[player.id];
-        // Werewolf Alliance (2: Werewolf, 7: Avenging Twin, 8: Vampire)
-        if (role?.id == 2 || role?.id == 7 || role?.id == 8) {
+        // Werewolf Alliance (2: Werewolf, 7: Avenging Twin, 8: Vampire, 18: Dire Wolf)
+        if (role?.id == 2 || role?.id == 7 || role?.id == 8 || role?.id == 18) {
           preliminaryWerewolves++;
         }
       }
@@ -315,11 +321,10 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
       if (!nextDeadIds.contains(player.id)) {
         final role = updatedRoles[player.id];
         if (role != null) {
-          // Werewolf Alliance (2, 7, 8) count as "Bad"
-          if (role.id == 2 || role.id == 7 || role.id == 8) {
+          // Werewolf Alliance (2, 7, 8, 18) count as "Bad"
+          if (role.id == 2 || role.id == 7 || role.id == 8 || role.id == 18) {
             aliveWerewolves++;
           } else {
-            // Everyone else counts as Village/Good for now
             aliveVillagers++;
           }
         }
@@ -407,6 +412,7 @@ class _WerewolfPhaseFourScreenState extends State<WerewolfPhaseFourScreen> {
             isFirstNight: false,
             gamblerBet: widget.gamblerBet,
             nightNumber: widget.dayNumber + 1,
+            lastDireWolfTargetId: widget.lastDireWolfTargetId,
           ),
         ),
       );

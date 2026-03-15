@@ -28,6 +28,8 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
   final bool isFirstNight;
   // Gambler's bet (passed through if already made)
   final GamblerBet? gamblerBet;
+  // Dire Wolf: who was last silenced (can't re-target + silence effect on even nights)
+  final String? lastDireWolfTargetId;
 
   const WerewolfPhaseThreeScreen({
     super.key,
@@ -39,6 +41,7 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
     this.isFirstNight = false,
     this.gamblerBet,
     this.nightNumber = 1,
+    this.lastDireWolfTargetId,
   });
 
   @override
@@ -48,7 +51,8 @@ class WerewolfPhaseThreeScreen extends StatefulWidget {
 
 enum NightStep {
   gambler, // First night only - Gambler places bet
-  werewolves, // Includes Vampire
+  werewolves, // Includes Vampire and Dire Wolf
+  direWolf, // Every other night (1st, 3rd, 5th...) - silences one player
   doctor,
   guard,
   plagueDoctor,
@@ -64,6 +68,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   String? _targetHealedId;
   String? _guardTargetId;
   String? _shamanTargetId;
+  String? _direWolfSilenceTargetId;
   late Map<String, int> _knightLives;
 
   // Gambler state
@@ -140,35 +145,51 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         .map((entry) => entry.value.id)
         .toSet();
 
+    // Determine if a player is silenced this night.
+    // Silence takes effect the night AFTER the Dire Wolf acts (even nights).
+    final bool isSilenceActive =
+        widget.lastDireWolfTargetId != null && widget.nightNumber % 2 == 0;
+    final int? silencedRoleId = isSilenceActive
+        ? widget.playerRoles[widget.lastDireWolfTargetId]?.id
+        : null;
+
     // 0. Gambler (only on first night, only if alive and bet not yet made)
     if (widget.isFirstNight && !_gamblerBetMade && aliveRoles.contains(15)) {
       _nightSteps.add(NightStep.gambler);
     }
 
-    // 1. Werewolves/Vampire/Avenging Twin always wake up (unless all dead, but game usually ends then)
+    // 1. Werewolves/Vampire/Avenging Twin/Dire Wolf always wake up
     if (aliveRoles.contains(2) ||
         aliveRoles.contains(7) ||
-        aliveRoles.contains(8)) {
+        aliveRoles.contains(8) ||
+        aliveRoles.contains(18)) {
       _nightSteps.add(NightStep.werewolves);
     }
 
-    // 2. Doctor (only if alive)
-    if (aliveRoles.contains(3)) {
+    // 1b. Dire Wolf solo step (odd nights: 1st, 3rd, 5th...)
+    if (aliveRoles.contains(18) && widget.nightNumber % 2 == 1) {
+      _nightSteps.add(NightStep.direWolf);
+    }
+
+    // 2. Doctor (only if alive and not silenced)
+    if (aliveRoles.contains(3) && silencedRoleId != 3) {
       _nightSteps.add(NightStep.doctor);
     }
 
-    // 3. Guard (only if alive)
-    if (aliveRoles.contains(4)) {
+    // 3. Guard (only if alive and not silenced)
+    if (aliveRoles.contains(4) && silencedRoleId != 4) {
       _nightSteps.add(NightStep.guard);
     }
 
-    // 4. Plague Doctor (only if alive)
-    if (aliveRoles.contains(5)) {
+    // 4. Plague Doctor (only if alive and not silenced)
+    if (aliveRoles.contains(5) && silencedRoleId != 5) {
       _nightSteps.add(NightStep.plagueDoctor);
     }
 
-    // 5. Shaman (only if alive, only on even nights: 2nd, 4th, 6th...)
-    if (aliveRoles.contains(16) && widget.nightNumber % 2 == 0) {
+    // 5. Shaman (only if alive, only on even nights, and not silenced)
+    if (aliveRoles.contains(16) &&
+        widget.nightNumber % 2 == 0 &&
+        silencedRoleId != 16) {
       _nightSteps.add(NightStep.shaman);
     }
 
@@ -222,6 +243,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return languageService.translate('step_gambler_title');
       case NightStep.werewolves:
         return languageService.translate('step_werewolves_title');
+      case NightStep.direWolf:
+        return languageService.translate('step_dire_wolf_title');
       case NightStep.doctor:
         return languageService.translate('step_doctor_title');
       case NightStep.guard:
@@ -240,6 +263,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return languageService.translate('step_gambler_instruction');
       case NightStep.werewolves:
         return languageService.translate('step_werewolves_instruction');
+      case NightStep.direWolf:
+        return languageService.translate('step_dire_wolf_instruction');
       case NightStep.doctor:
         return languageService.translate('step_doctor_instruction');
       case NightStep.guard:
@@ -257,6 +282,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return const Color(0xFFD4AF37); // Gold
       case NightStep.werewolves:
         return const Color(0xFFE63946); // Red
+      case NightStep.direWolf:
+        return const Color(0xFF5B8FB9); // Icy blue
       case NightStep.doctor:
         return Colors.green; // Green
       case NightStep.guard:
@@ -274,12 +301,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         return _gamblerBetMade; // Gambler must make a bet (handled by dialog)
       case NightStep.werewolves:
         return _targetKilledId != null; // Werewolves must kill someone
+      case NightStep.direWolf:
+        return _direWolfSilenceTargetId != null; // Dire Wolf must silence someone
       case NightStep.doctor:
         return _targetHealedId != null; // Doctor must select someone
       case NightStep.guard:
-        // Guard must select someone OR proceed if they want to skip (handled by null check in nextStep)
-        // But if they selected someone, we allow proceed (which becomes Investigate)
-        // If they didn't select, we allow proceed (which becomes Skip/Next)
         return _guardTargetId != null;
       case NightStep.plagueDoctor:
         return _targetHealedId != null; // Plague Doctor must select someone
@@ -303,15 +329,25 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
         case NightStep.werewolves:
           // Restriction: Cannot kill Werewolf Alliance
           if (targetRole.allianceId == 2) {
-            // Show feedback? For now just ignore tap
             return;
           }
 
-          // Toggle selection. Only one can be selected.
           if (_targetKilledId == player.id) {
             _targetKilledId = null;
           } else {
             _targetKilledId = player.id;
+          }
+          break;
+
+        case NightStep.direWolf:
+          // Cannot silence wolves, self, or last silenced target
+          if (targetRole.allianceId == 2) return;
+          if (player.id == widget.lastDireWolfTargetId) return;
+
+          if (_direWolfSilenceTargetId == player.id) {
+            _direWolfSilenceTargetId = null;
+          } else {
+            _direWolfSilenceTargetId = player.id;
           }
           break;
 
@@ -370,10 +406,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
     final role = widget.playerRoles[player.id];
     bool isWerewolf = false;
 
-    // Check Logic: Werewolf (2), Avenging Twin (7), or Drunk (10) -> "W" (Threat)
+    // Check Logic: Werewolf (2), Avenging Twin (7), Drunk (10), Dire Wolf (18) -> "W" (Threat)
     // Everyone else (including Vampire 8, Jester 9) -> "V" (Clear)
     if (role != null) {
-      if (role.id == 2 || role.id == 7 || role.id == 10) {
+      if (role.id == 2 || role.id == 7 || role.id == 10 || role.id == 18) {
         isWerewolf = true;
       }
     }
@@ -879,11 +915,10 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       if (!deadPlayerIds.contains(player.id)) {
         final role = widget.playerRoles[player.id];
         if (role != null) {
-          // Werewolf Alliance (2, 7, 8) count as "Bad"
-          if (role.id == 2 || role.id == 7 || role.id == 8) {
+          // Werewolf Alliance (2, 7, 8, 18) count as "Bad"
+          if (role.id == 2 || role.id == 7 || role.id == 8 || role.id == 18) {
             aliveWerewolves++;
           } else {
-            // Everyone else counts as Village/Good
             aliveVillagers++;
           }
         }
@@ -928,6 +963,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             knightLives: _knightLives,
             gamblerBet: _gamblerBet,
             dayNumber: widget.nightNumber,
+            lastDireWolfTargetId:
+                _direWolfSilenceTargetId ?? widget.lastDireWolfTargetId,
           ),
         ),
       );
@@ -983,9 +1020,24 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
             bool isSelected = false;
             bool isDisabled = false;
 
+            // Silence indicator: show when a player's ability is being skipped this night
+            final bool isSilenceActive =
+                widget.lastDireWolfTargetId != null &&
+                widget.nightNumber % 2 == 0;
+            final bool isSilenced = isSilenceActive &&
+                player.id == widget.lastDireWolfTargetId &&
+                (role?.id == 3 ||
+                    role?.id == 4 ||
+                    role?.id == 5 ||
+                    role?.id == 16);
+
             if (_currentStep == NightStep.werewolves) {
               if (_targetKilledId == player.id) isSelected = true;
               if (role?.allianceId == 2) isDisabled = true;
+            } else if (_currentStep == NightStep.direWolf) {
+              if (_direWolfSilenceTargetId == player.id) isSelected = true;
+              if (role?.allianceId == 2) isDisabled = true;
+              if (player.id == widget.lastDireWolfTargetId) isDisabled = true;
             } else if (_currentStep == NightStep.doctor) {
               if (_targetHealedId == player.id) isSelected = true;
               if (player.id == widget.lastHealedId) isDisabled = true;
@@ -994,11 +1046,9 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
               if (player.id == widget.lastPlagueTargetId) isDisabled = true;
             } else if (_currentStep == NightStep.guard) {
               if (_guardTargetId == player.id) isSelected = true;
-              // Guard cannot inspect himself
               if (role?.id == 4) isDisabled = true;
             } else if (_currentStep == NightStep.shaman) {
               if (_shamanTargetId == player.id) isSelected = true;
-              // Shaman cannot inspect himself
               if (role?.id == 16) isDisabled = true;
             }
 
@@ -1090,6 +1140,45 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
                                       isFull:
                                           (_knightLives[player.id] ?? 0) >= 2,
                                       size: 13,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          // Silence indicator overlay
+                          if (isSilenced)
+                            Positioned(
+                              top: 4,
+                              left: 4,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF5B8FB9).withOpacity(0.85),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.3),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.volume_off,
+                                      color: Colors.white,
+                                      size: 12,
+                                    ),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      context
+                                          .watch<LanguageService>()
+                                          .translate('silenced_indicator'),
+                                      style: GoogleFonts.pressStart2p(
+                                        color: Colors.white,
+                                        fontSize: 5,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1191,6 +1280,8 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       case 7: // Avenging Twin
       case 8: // Vampire
         return const Color(0xFFE63946); // Red
+      case 18: // Dire Wolf
+        return const Color(0xFF5B8FB9); // Icy blue
       case 6: // Twins
         return const Color(0xFF4CC9F0); // Blue
       case 3: // Doctor
@@ -1225,9 +1316,11 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
   String? _getActionIcon() {
     switch (_currentStep) {
       case NightStep.gambler:
-        return null; // Gambler doesn't have an action icon (uses dialog)
+        return null;
       case NightStep.werewolves:
         return 'assets/images/werewolf_kill.png';
+      case NightStep.direWolf:
+        return null;
       case NightStep.doctor:
         return 'assets/images/doctor_heal.png';
       case NightStep.guard:
@@ -1235,7 +1328,7 @@ class _WerewolfPhaseThreeScreenState extends State<WerewolfPhaseThreeScreen> {
       case NightStep.plagueDoctor:
         return 'assets/images/plague_heal.png';
       case NightStep.shaman:
-        return 'assets/images/shaman_totem.png'; // Reuse inspect icon
+        return 'assets/images/shaman_totem.png';
     }
   }
 

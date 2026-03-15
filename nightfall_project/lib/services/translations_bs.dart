@@ -167,7 +167,15 @@ const Map<String, String> bsTranslations = {
       'Svake druge noći (2., 4., 6...), Šaman se budi posljednji i može pregledati jednog igrača.\n'
       'Za razliku od Stražara, Šaman vidi pravu ulogu igrača, prolazeći kroz sve maske (Vampir, Pijanica, itd.).\n'
       'Šaman ne može pregledati samog sebe.\n'
-      'UTVARA: Nemirni duh vezan za selo. Utvara ne može biti ubijena ni na koji način — ni od vukodlaka, kuge, vješanja, niti pogubljenja. Vječno luta, bdijući nad živima.\n\n'
+      'UTVARA: Nemirni duh vezan za selo. Utvara ne može biti ubijena ni na koji način — ni od vukodlaka, kuge, vješanja, niti pogubljenja. Vječno luta, bdijući nad živima.\n'
+      'STRAHOVUK: Zastrašujući alfa predator na strani Vukova.\n'
+      'Budi se sa čoporom i učestvuje u ubijanju.\n'
+      'Nakon što vukovi zaspu, Strahovuk se budi sam svake druge noći (1., 3., 5...) da ušutka jednog igrača.\n'
+      'Ušutkani igrač ne može koristiti svoju aktivnu sposobnost sljedeće noći.\n'
+      'Ušutkivanje djeluje samo na uloge koje se bude noću: Doktor, Stražar, Vrač i Šaman.\n'
+      'Pasivne sposobnosti (oklop Viteza, besmrtnost Utvare, Luda, Dželat) nisu pogođene.\n'
+      'Ne može ušutkati vukove, sebe, niti istog igrača kao prošli put.\n'
+      'Stražaru izgleda kao Vukodlak.\n\n'
       '7. Bodovanje:\n'
       'Bodovi se dodjeljuju članovima pobjedničkog saveza na kraju igre.\n'
       'Različite uloge daju različit broj bodova u zavisnosti od njihove težine.\n'
@@ -368,4 +376,10 @@ const Map<String, String> bsTranslations = {
   'wraith_immune_plague_msg': 'Napoj Kužnog Doktora nije imao efekta na eterično tijelo Utvare!',
   'wraith_immune_hanging_msg': 'UTVARA SE NE MOŽE OBJESITI — KONOPAC PROLAZI KROZ NJU!',
   'wraith_immune_executioner_msg': 'Oštrica Dželata prolazi kroz Utvaru!',
+  'dire_wolf_name': 'Strahovuk',
+  'dire_wolf_desc':
+      'Zastrašujući alfa predator. Lovi sa čoporom, a zatim se budi sam svake druge noći da ušutka jednog igrača, sprečavajući ga da koristi svoju sposobnost sljedeće noći.',
+  'step_dire_wolf_title': 'STRAHOVUK',
+  'step_dire_wolf_instruction': 'ODABERI IGRAČA ZA UŠUTKIVANJE',
+  'silenced_indicator': 'UŠUTKAN',
 };

@@ -584,7 +584,8 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                               builder: (context) {
                                 final werewolfCount =
                                     (_roleCounts[2] ?? 0) +
-                                    (_roleCounts[8] ?? 0);
+                                    (_roleCounts[8] ?? 0) +
+                                    (_roleCounts[18] ?? 0);
                                 if (werewolfCount < 1) {
                                   return Text(
                                     context.watch<LanguageService>().translate(

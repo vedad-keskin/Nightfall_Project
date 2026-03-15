@@ -209,6 +209,17 @@ class WerewolfRoleService {
       translationKey: 'wraith_name',
       descriptionKey: 'wraith_desc',
     ),
+    WerewolfRole(
+      id: 18,
+      name: 'Dire Wolf',
+      points: 2,
+      allianceId: 2, // Werewolves
+      description:
+          'A terrifying alpha predator. Hunts with the pack, then wakes alone every other night to silence one player, preventing them from using their ability the following night.',
+      imagePath: 'assets/images/werewolves/Dire Wolf.png',
+      translationKey: 'dire_wolf_name',
+      descriptionKey: 'dire_wolf_desc',
+    ),
   ];
 
   List<WerewolfRole> getRoles() => _roles;

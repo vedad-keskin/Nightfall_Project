@@ -166,7 +166,15 @@ const Map<String, String> enTranslations = {
       'Every second night (2nd, 4th, 6th...), the Shaman wakes up last and can inspect one player.\n'
       'Unlike the Guard, the Shaman sees the player\'s true role, seeing through all disguises (Vampire, Drunk, etc.).\n'
       'The Shaman cannot inspect himself.\n'
-      'WRAITH: A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.\n\n'
+      'WRAITH: A restless spirit bound to the village. The Wraith cannot be killed by any means — not by werewolves, plague, hanging, or execution. It lingers eternally, watching over the living.\n'
+      'DIRE WOLF: A terrifying alpha predator aligned with the Werewolves.\n'
+      'Wakes up with the pack and participates in the kill.\n'
+      'After the wolves sleep, the Dire Wolf wakes alone every other night (1st, 3rd, 5th...) to silence one player.\n'
+      'The silenced player cannot use their active ability the following night.\n'
+      'Silence only affects roles that wake up at night: Doctor, Guard, Plague Doctor, and Shaman.\n'
+      'Passive abilities (Knight armor, Wraith immortality, Jester, Executioner) are not affected.\n'
+      'Cannot silence wolves, himself, or the same player as last time.\n'
+      'Appears as a Werewolf when inspected by the Guard.\n\n'
       '7. Scoring:\n'
       'Points are awarded to members of the winning alliance at the end of the game.\n'
       'Different roles grant different amounts of points depending on their difficulty.\n'
@@ -370,4 +378,10 @@ const Map<String, String> enTranslations = {
   'wraith_immune_plague_msg': 'The Plague Doctor\'s concoction had no effect on the Wraith\'s ethereal body!',
   'wraith_immune_hanging_msg': 'THE WRAITH CANNOT BE HANGED — THE ROPE PASSES THROUGH!',
   'wraith_immune_executioner_msg': 'The Executioner\'s blade phases through the Wraith!',
+  'dire_wolf_name': 'Dire Wolf',
+  'dire_wolf_desc':
+      'A terrifying alpha predator. Hunts with the pack, then wakes alone every other night to silence one player, preventing them from using their ability the following night.',
+  'step_dire_wolf_title': 'THE DIRE WOLF',
+  'step_dire_wolf_instruction': 'SELECT A TARGET TO SILENCE',
+  'silenced_indicator': 'SILENCED',
 };
