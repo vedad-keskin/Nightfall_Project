@@ -165,7 +165,9 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
 
   /// Shuffles roles and assigns them to players, re-rolling when too many
   /// players receive the same role they had in the previous game.
-  Future<Map<String, WerewolfRole>> _assignRolesWithAntiRepeat(
+  ///
+  /// NOTE: Anti-repeat logic was removed to keep role assignment purely random.
+  Future<Map<String, WerewolfRole>> _assignRolesRandom(
     List<WerewolfPlayer> players,
   ) async {
     final random = Random.secure();
@@ -178,50 +180,18 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
       }
     });
 
-    // Load previous game assignments for anti-repeat comparison
-    final prevAssignments = await _settingsService.loadLastAssignments();
+    // Pure random assignment (single shuffle)
+    flattenedRoleIds.shuffle(random);
 
-    Map<String, WerewolfRole> bestAssignment = {};
-    int bestRepeatCount = players.length + 1;
-
-    // Try up to 20 shuffles and pick the one with fewest repeats
-    const maxAttempts = 20;
-    for (int attempt = 0; attempt < maxAttempts; attempt++) {
-      flattenedRoleIds.shuffle(random);
-
-      final Map<String, WerewolfRole> candidate = {};
-      for (int i = 0; i < players.length; i++) {
-        final role = _roleService.getRoleById(flattenedRoleIds[i]);
-        if (role != null) {
-          candidate[players[i].id] = role;
-        }
+    final Map<String, WerewolfRole> assignment = {};
+    for (int i = 0; i < players.length; i++) {
+      final role = _roleService.getRoleById(flattenedRoleIds[i]);
+      if (role != null) {
+        assignment[players[i].id] = role;
       }
-
-      if (prevAssignments == null) {
-        bestAssignment = candidate;
-        break;
-      }
-
-      int repeats = 0;
-      for (final entry in candidate.entries) {
-        if (prevAssignments[entry.key] == entry.value.id) {
-          repeats++;
-        }
-      }
-
-      if (repeats < bestRepeatCount) {
-        bestRepeatCount = repeats;
-        bestAssignment = candidate;
-      }
-
-      if (repeats == 0) break;
     }
 
-    // Persist this game's assignments for next time
-    final assignmentMap = bestAssignment.map((k, v) => MapEntry(k, v.id));
-    await _settingsService.saveLastAssignments(assignmentMap);
-
-    return bestAssignment;
+    return assignment;
   }
 
   Color _getAllianceColor(int allianceId) {
@@ -626,7 +596,7 @@ class _WerewolfPhaseOneScreenState extends State<WerewolfPhaseOneScreen> {
                                       .loadPlayers();
 
                                   final playerRoles =
-                                      await _assignRolesWithAntiRepeat(players);
+                                      await _assignRolesRandom(players);
 
                                   if (mounted) {
                                     Navigator.of(context).push(
