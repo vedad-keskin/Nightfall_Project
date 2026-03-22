@@ -14,26 +14,18 @@
             <div class="code-card-border">
                 <div class="code-card-inner">
                     <label class="code-label">{{ ls.t('live_enter_code') }}</label>
-                    <div class="code-input-row">
-                        <input
-                            type="text"
-                            class="code-input"
-                            [value]="codeInput()"
-                            (input)="onCodeInput($any($event.target).value)"
-                            (keydown.enter)="connect()"
-                            maxlength="6"
-                            placeholder="ABCDEF"
-                            spellcheck="false"
-                            autocomplete="off"
-                        />
-                        <button
-                            class="pixel-btn connect-btn"
-                            [disabled]="codeInput().length !== 6"
-                            (click)="connect()"
-                        >
-                            {{ ls.t('live_connect') }}
-                        </button>
-                    </div>
+                    <input
+                        #codeField
+                        type="text"
+                        class="code-input"
+                        [value]="codeInput()"
+                        (input)="onCodeInput($any($event.target).value)"
+                        maxlength="6"
+                        placeholder="ABCDEF"
+                        spellcheck="false"
+                        autocomplete="off"
+                        autofocus
+                    />
                     @if (error()) {
                     <p class="error-text">{{ error() }}</p>
                     }

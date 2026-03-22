@@ -1,10 +1,9 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LanguageService } from '../../shared/language/language.service';
 import {
   LiveRankingService,
   RankedPlayer,
-  PlayerAnalytics,
 } from '../../shared/firebase/live-ranking.service';
 
 interface RoleStats {
@@ -21,12 +20,18 @@ interface RoleStats {
   templateUrl: './live.html',
   styleUrl: './live.css',
 })
-export class LiveComponent {
+export class LiveComponent implements AfterViewInit {
+  @ViewChild('codeField') codeFieldRef?: ElementRef<HTMLInputElement>;
+
   readonly ls = inject(LanguageService);
   readonly ranking = inject(LiveRankingService);
 
   codeInput = signal('');
   expandedPlayer = signal<string | null>(null);
+
+  ngAfterViewInit(): void {
+    this.codeFieldRef?.nativeElement.focus();
+  }
 
   readonly players = this.ranking.players;
   readonly connected = this.ranking.connected;
@@ -35,7 +40,11 @@ export class LiveComponent {
   readonly error = this.ranking.error;
 
   onCodeInput(value: string): void {
-    this.codeInput.set(value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 6));
+    const cleaned = value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 6);
+    this.codeInput.set(cleaned);
+    if (cleaned.length === 6) {
+      this.ranking.connect(cleaned);
+    }
   }
 
   connect(): void {
