@@ -276,8 +276,8 @@
     cursor: pointer;
     border: 2px solid var(--nf-frame);
     background: rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
-    animation: fadeSlideIn 0.4s ease-out both;
+    transition: border-color 0.2s, background 0.2s;
+    will-change: transform;
 }
 
 .player-row:hover {
@@ -289,27 +289,13 @@
     border-color: var(--nf-frame-light);
 }
 
+/* rank-up/down: subtle border glow after FLIP lands */
 .player-row.rank-up {
-    animation: rankUp 0.6s ease-out;
+    border-color: #52B788;
 }
 
 .player-row.rank-down {
-    animation: rankDown 0.6s ease-out;
-}
-
-@keyframes fadeSlideIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes rankUp {
-    0% { background: rgba(82, 183, 136, 0.2); transform: translateY(4px); }
-    100% { background: rgba(0, 0, 0, 0.4); transform: translateY(0); }
-}
-
-@keyframes rankDown {
-    0% { background: rgba(230, 57, 70, 0.2); transform: translateY(-4px); }
-    100% { background: rgba(0, 0, 0, 0.4); transform: translateY(0); }
+    border-color: #E63946;
 }
 
 .player-main {
@@ -510,8 +496,18 @@
 
 .role-color-bar {
     width: 4px;
-    height: 32px;
+    height: 36px;
     flex-shrink: 0;
+}
+
+.role-img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    object-position: top center;
+    flex-shrink: 0;
+    border: 1px solid rgba(119, 141, 169, 0.4);
+    image-rendering: pixelated;
 }
 
 .role-info {

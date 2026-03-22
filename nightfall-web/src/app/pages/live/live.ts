@@ -1,4 +1,14 @@
-import { Component, inject, signal, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  AfterViewInit,
+  AfterViewChecked,
+  ElementRef,
+  ViewChild,
+  ViewChildren,
+  QueryList,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LanguageService } from '../../shared/language/language.service';
 import {
@@ -13,6 +23,28 @@ interface RoleStats {
   won: number;
 }
 
+// Maps Flutter roleId → local image path
+const ROLE_IMAGES: Record<number, string> = {
+  1:  'images/werewolves/Villager.png',
+  2:  'images/werewolves/Werewolf.png',
+  3:  'images/werewolves/Doctor.png',
+  4:  'images/werewolves/Guard.png',
+  5:  'images/werewolves/Plague Doctor.png',
+  6:  'images/werewolves/Twins.png',
+  7:  'images/werewolves/Avenging Twin.png',
+  8:  'images/werewolves/Vampire.png',
+  9:  'images/werewolves/Jester.png',
+  10: 'images/werewolves/Drunk.png',
+  11: 'images/werewolves/Knight.png',
+  12: 'images/werewolves/Puppet Master.png',
+  13: 'images/werewolves/Executioner.png',
+  14: 'images/werewolves/Infected.png',
+  15: 'images/werewolves/Gambler.png',
+  16: 'images/werewolves/Shaman.png',
+  17: 'images/werewolves/Wraith.png',
+  18: 'images/werewolves/Dire Wolf.png',
+};
+
 @Component({
   selector: 'app-live',
   standalone: true,
@@ -20,8 +52,9 @@ interface RoleStats {
   templateUrl: './live.html',
   styleUrl: './live.css',
 })
-export class LiveComponent implements AfterViewInit {
+export class LiveComponent implements AfterViewInit, AfterViewChecked {
   @ViewChild('codeField') codeFieldRef?: ElementRef<HTMLInputElement>;
+  @ViewChildren('playerRow') playerRows!: QueryList<ElementRef<HTMLElement>>;
 
   readonly ls = inject(LanguageService);
   readonly ranking = inject(LiveRankingService);
@@ -29,8 +62,85 @@ export class LiveComponent implements AfterViewInit {
   codeInput = signal('');
   expandedPlayer = signal<string | null>(null);
 
+  // FLIP animation state
+  private _prevTops = new Map<string, number>();
+  private _lastOrder: string[] = [];
+  private _animating = false;
+
   ngAfterViewInit(): void {
     this.codeFieldRef?.nativeElement.focus();
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this.playerRows || this.playerRows.length === 0) return;
+
+    const currentOrder = this.players().map((p) => p.id);
+    const orderChanged =
+      currentOrder.join('|') !== this._lastOrder.join('|') &&
+      this._lastOrder.length > 0;
+
+    if (orderChanged && !this._animating) {
+      this._flip();
+    }
+
+    if (!this._animating) {
+      this._storeTops();
+      this._lastOrder = [...currentOrder];
+    }
+  }
+
+  private _storeTops(): void {
+    this._prevTops.clear();
+    this.playerRows.forEach((ref) => {
+      const id = ref.nativeElement.dataset['id'];
+      if (id) {
+        this._prevTops.set(id, ref.nativeElement.getBoundingClientRect().top);
+      }
+    });
+  }
+
+  private _flip(): void {
+    const movers: { el: HTMLElement; delta: number }[] = [];
+
+    this.playerRows.forEach((ref) => {
+      const el = ref.nativeElement;
+      const id = el.dataset['id'];
+      if (!id) return;
+      const prevTop = this._prevTops.get(id);
+      if (prevTop === undefined) return;
+      const newTop = el.getBoundingClientRect().top;
+      const delta = prevTop - newTop;
+      if (Math.abs(delta) > 1) movers.push({ el, delta });
+    });
+
+    if (movers.length === 0) return;
+
+    this._animating = true;
+
+    // Invert: snap elements back to where they were
+    movers.forEach(({ el, delta }) => {
+      el.style.transition = 'none';
+      el.style.transform = `translateY(${delta}px)`;
+    });
+
+    // Force reflow so the browser registers the transform before we transition
+    movers[0].el.offsetHeight;
+
+    // Play: animate to natural (new) position
+    movers.forEach(({ el }) => {
+      el.style.transition = 'transform 0.55s cubic-bezier(0.34, 1.2, 0.64, 1)';
+      el.style.transform = 'translateY(0)';
+    });
+
+    setTimeout(() => {
+      movers.forEach(({ el }) => {
+        el.style.transition = '';
+        el.style.transform = '';
+      });
+      this._animating = false;
+      this._storeTops();
+      this._lastOrder = this.players().map((p) => p.id);
+    }, 600);
   }
 
   readonly players = this.ranking.players;
@@ -142,6 +252,10 @@ export class LiveComponent implements AfterViewInit {
   getRolePct(s: RoleStats): number {
     if (s.played === 0) return 0;
     return Math.round((s.won / s.played) * 100);
+  }
+
+  getRoleImage(roleId: number): string {
+    return ROLE_IMAGES[roleId] ?? '';
   }
 
   getRoleColor(roleId: number): string {

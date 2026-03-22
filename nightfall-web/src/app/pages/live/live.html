@@ -68,7 +68,9 @@
                     <div class="rankings-border-inner">
                         @for (player of players(); track player.id; let i = $index) {
                         <div
+                            #playerRow
                             class="player-row"
+                            [attr.data-id]="player.id"
                             [class.expanded]="isExpanded(player.id)"
                             [class.rank-up]="getRankChange(player, i + 1) === 'up'"
                             [class.rank-down]="getRankChange(player, i + 1) === 'down'"
@@ -163,7 +165,11 @@
                                 <div class="role-list">
                                     @for (s of getRoleStats(player); track s.roleId) {
                                     <div class="role-row">
+                                        @if (getRoleImage(s.roleId)) {
+                                        <img class="role-img" [src]="getRoleImage(s.roleId)" [alt]="s.roleName" />
+                                        } @else {
                                         <div class="role-color-bar" [style.background]="getRoleColor(s.roleId)"></div>
+                                        }
                                         <div class="role-info">
                                             <span class="role-name-text" [style.color]="getRoleColor(s.roleId)">
                                                 {{ s.roleName.toUpperCase() }}
