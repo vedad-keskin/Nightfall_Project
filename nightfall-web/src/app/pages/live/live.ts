@@ -143,35 +143,39 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
 
     this._animating = true;
 
-    // Invert: snap rows back to their old visual position (before paint!)
+    // Use the Web Animations API — this runs on the compositor,
+    // completely independent of Angular's change detection and CSS.
+    const animations: Animation[] = [];
+
     movers.forEach(({ el, delta, direction }) => {
-      el.style.transition = 'none';
-      el.style.transform = `translateY(${delta}px) scale(1.03)`;
+      // Add glow classes for visual styling
       el.classList.add('flip-active');
       el.classList.add(direction === 'up' ? 'flip-moving-up' : 'flip-moving-down');
+
+      // Animate from old position → new position
+      const anim = el.animate(
+        [
+          { transform: `translateY(${delta}px) scale(1.03)`, offset: 0 },
+          { transform: 'translateY(0) scale(1)', offset: 1 },
+        ],
+        {
+          duration: 600,
+          easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+          fill: 'none',
+        },
+      );
+      animations.push(anim);
     });
 
-    // Force reflow so the browser registers the invert transforms
-    movers[0].el.offsetHeight;
-
-    // Play: animate to natural (new) position
-    movers.forEach(({ el }) => {
-      el.style.transition =
-        'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-      el.style.transform = 'translateY(0) scale(1)';
-    });
-
-    // Cleanup after animation completes
-    setTimeout(() => {
+    // Cleanup after all animations finish
+    Promise.all(animations.map((a) => a.finished)).then(() => {
       movers.forEach(({ el }) => {
-        el.style.transition = '';
-        el.style.transform = '';
         el.classList.remove('flip-active', 'flip-moving-up', 'flip-moving-down');
       });
       this._animating = false;
       this._storeTops();
       this._lastOrder = this.players().map((p) => p.id);
-    }, 650);
+    });
   }
 
   readonly players = this.ranking.players;
