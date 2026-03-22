@@ -276,7 +276,7 @@
     cursor: pointer;
     border: 2px solid var(--nf-frame);
     background: rgba(0, 0, 0, 0.4);
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color 0.3s, background 0.2s, box-shadow 0.3s;
     will-change: transform;
 }
 
@@ -296,6 +296,43 @@
 
 .player-row.rank-down {
     border-color: #E63946;
+}
+
+/* ── FLIP Animation Classes ── */
+
+.flip-active {
+    z-index: 10;
+    position: relative;
+}
+
+.flip-moving-up {
+    border-color: #52B788 !important;
+    box-shadow:
+        0 0 12px rgba(82, 183, 136, 0.5),
+        0 0 24px rgba(82, 183, 136, 0.2),
+        inset 3px 0 0 #52B788;
+    animation: flip-glow-up 0.6s ease-out;
+}
+
+.flip-moving-down {
+    border-color: #E63946 !important;
+    box-shadow:
+        0 0 12px rgba(230, 57, 70, 0.5),
+        0 0 24px rgba(230, 57, 70, 0.2),
+        inset 3px 0 0 #E63946;
+    animation: flip-glow-down 0.6s ease-out;
+}
+
+@keyframes flip-glow-up {
+    0%   { box-shadow: 0 0 0 rgba(82, 183, 136, 0), inset 3px 0 0 transparent; }
+    30%  { box-shadow: 0 0 18px rgba(82, 183, 136, 0.7), 0 0 36px rgba(82, 183, 136, 0.3), inset 3px 0 0 #52B788; }
+    100% { box-shadow: 0 0 12px rgba(82, 183, 136, 0.5), 0 0 24px rgba(82, 183, 136, 0.2), inset 3px 0 0 #52B788; }
+}
+
+@keyframes flip-glow-down {
+    0%   { box-shadow: 0 0 0 rgba(230, 57, 70, 0), inset 3px 0 0 transparent; }
+    30%  { box-shadow: 0 0 18px rgba(230, 57, 70, 0.7), 0 0 36px rgba(230, 57, 70, 0.3), inset 3px 0 0 #E63946; }
+    100% { box-shadow: 0 0 12px rgba(230, 57, 70, 0.5), 0 0 24px rgba(230, 57, 70, 0.2), inset 3px 0 0 #E63946; }
 }
 
 .player-main {
