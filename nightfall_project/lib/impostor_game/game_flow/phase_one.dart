@@ -40,7 +40,7 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
 
     showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (context) {
         bool isRevealed = false;
         return StatefulBuilder(
@@ -85,6 +85,10 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                           onTap: () {
                             setDialogState(() {
                               isRevealed = true;
+                            });
+                            // Mark as seen immediately on reveal — prevents back-gesture exploit
+                            setState(() {
+                              _viewedPlayerIds.add(player.id);
                             });
                           },
                           child: Center(
@@ -143,9 +147,6 @@ class _PhaseOneScreenState extends State<PhaseOneScreen> {
                           label: languageService.translate('understood_button'),
                           color: const Color(0xFF415A77),
                           onPressed: () {
-                            setState(() {
-                              _viewedPlayerIds.add(player.id);
-                            });
                             Navigator.of(context).pop();
                           },
                         ),
