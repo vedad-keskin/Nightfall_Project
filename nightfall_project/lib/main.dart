@@ -16,10 +16,12 @@ import 'package:nightfall_project/base_components/pixel_swipe_indicator.dart';
 import 'package:nightfall_project/base_components/nightfall_intro_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseAuth.instance.signInAnonymously();
 
   final liveSession = LiveSessionService();
   await liveSession.loadExistingSession();
@@ -325,7 +327,7 @@ class _SplitHomeScreenState extends State<SplitHomeScreen> {
                     _easterEggTimer?.cancel();
                   },
                   child: Text(
-                    'Nightfall Project v4.5.3',
+                    'Nightfall Project v4.6.1',
                     style: GoogleFonts.vt323(
                       color: Colors.white24,
                       fontSize: 14,

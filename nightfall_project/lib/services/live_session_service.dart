@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_analytics_service.dart';
 
@@ -16,6 +17,8 @@ class LiveSessionService extends ChangeNotifier {
   bool get hasSession => _sessionCode != null;
 
   final DatabaseReference _db = FirebaseDatabase.instance.ref();
+
+  String get _uid => FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> loadExistingSession() async {
     final prefs = await SharedPreferences.getInstance();
@@ -32,6 +35,7 @@ class LiveSessionService extends ChangeNotifier {
 
     await _db.child('sessions/$code').set({
       'createdAt': ServerValue.timestamp,
+      'ownerUid': _uid,
     });
 
     notifyListeners();
@@ -54,12 +58,7 @@ class LiveSessionService extends ChangeNotifier {
         playersData[player.id] = {
           'name': player.name,
           'points': player.points,
-          'analytics': playerAnalytics.map((r) => {
-            'roleId': r.roleId,
-            'allianceId': r.allianceId,
-            'won': r.won,
-            'pointsEarned': r.pointsEarned,
-          }).toList(),
+          'analytics': playerAnalytics.map((r) => r.toJson()).toList(),
         };
       }
 
