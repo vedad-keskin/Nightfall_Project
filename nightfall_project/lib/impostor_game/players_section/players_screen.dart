@@ -32,10 +32,26 @@ class _PlayersScreenState extends State<PlayersScreen> {
   }
 
   Future<void> _addPlayer() async {
-    if (_nameController.text.trim().isEmpty) return;
+    final playerName = _nameController.text.trim();
+    if (playerName.isEmpty) return;
+
+    if (playerName.length > 20) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Name cannot exceed 20 characters!',
+              style: GoogleFonts.vt323(fontSize: 20),
+            ),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+      return;
+    }
 
     // Check for duplicate names (case-insensitive)
-    final newName = _nameController.text.trim().toLowerCase();
+    final newName = playerName.toLowerCase();
     final isDuplicate = _players.any(
       (player) => player.name.toLowerCase() == newName,
     );
@@ -45,7 +61,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Player "${_nameController.text.trim()}" already exists!',
+              'Player "$playerName" already exists!',
               style: GoogleFonts.vt323(fontSize: 20),
             ),
             backgroundColor: Colors.redAccent,
@@ -58,7 +74,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
     try {
       final updated = await _playerService.addPlayer(
         _players,
-        _nameController.text.trim(),
+        playerName,
       );
       setState(() {
         _players = updated;
@@ -365,13 +381,44 @@ class _PlayersScreenState extends State<PlayersScreen> {
                           label: languageService.translate('save_button'),
                           color: const Color(0xFF415A77),
                           onPressed: () async {
-                            if (editController.text.trim().isNotEmpty) {
+                            final newName = editController.text.trim();
+                            if (newName.isNotEmpty) {
+                              if (newName.length > 20) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Name cannot exceed 20 characters!',
+                                      style: GoogleFonts.vt323(fontSize: 20),
+                                    ),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              final isDuplicate = _players.any(
+                                (p) => p.id != player.id && p.name.toLowerCase() == newName.toLowerCase(),
+                              );
+
+                              if (isDuplicate) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Player "$newName" already exists!',
+                                      style: GoogleFonts.vt323(fontSize: 20),
+                                    ),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                                return;
+                              }
+
                               try {
                                 final updated = await _playerService
                                     .updatePlayer(
                                       _players,
                                       player.id,
-                                      editController.text.trim(),
+                                      newName,
                                     );
                                 setState(() {
                                   _players = updated;
