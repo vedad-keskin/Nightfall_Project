@@ -1,4 +1,4 @@
-package com.example.nightfall_project
+package com.nightfall.app
 
 import io.flutter.embedding.android.FlutterActivity
 
