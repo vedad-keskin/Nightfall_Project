@@ -65,8 +65,7 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
   codeInput = signal('');
   expandedPlayer = signal<string | null>(null);
 
-  // FLIP animation state
-  private _prevTops = new Map<string, number>();
+  // Rank-change animation state
   private _lastOrder: string[] = [];
   private _animating = false;
 
@@ -83,8 +82,7 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
       this._lastOrder.length > 0;
 
     if (orderChanged && !this._animating) {
-      // Snapshot old positions before anything changes
-      const savedTops = new Map(this._prevTops);
+      const savedOrder = [...this._lastOrder];
       this._animating = true;
       this._lastOrder = [...currentOrder];
 
@@ -93,66 +91,50 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
         this.expandedPlayer.set(null);
       }
 
-      // Always defer — Angular's DOM needs to fully settle before we
-      // can measure accurate positions and animate.
-      setTimeout(() => this._executeFlip(savedTops));
+      // Defer so Angular's DOM fully settles (accordion collapse + reorder)
+      setTimeout(() => this._animateRankChange(savedOrder));
     }
 
     if (!this._animating) {
-      this._storeTops();
       this._lastOrder = [...currentOrder];
     }
   }
 
-  private _storeTops(): void {
-    this._prevTops.clear();
-    this.playerRows.forEach((ref) => {
-      const id = ref.nativeElement.dataset['id'];
-      if (id) {
-        this._prevTops.set(id, ref.nativeElement.getBoundingClientRect().top);
-      }
-    });
-  }
-
-  private _executeFlip(oldTops: Map<string, number>): void {
-    const movers: { el: HTMLElement; delta: number; direction: 'up' | 'down' }[] = [];
-
-    this.playerRows.forEach((ref) => {
-      const el = ref.nativeElement;
-      const id = el.dataset['id'];
-      if (!id) return;
-      const prevTop = oldTops.get(id);
-      if (prevTop === undefined) return;
-      const newTop = el.getBoundingClientRect().top;
-      const delta = prevTop - newTop;
-      if (Math.abs(delta) > 1) {
-        movers.push({ el, delta, direction: delta > 0 ? 'up' : 'down' });
-      }
-    });
-
-    if (movers.length === 0) {
+  private _animateRankChange(oldOrder: string[]): void {
+    if (!this.playerRows || this.playerRows.length === 0) {
       this._animating = false;
-      this._storeTops();
-      this._lastOrder = this.players().map((p) => p.id);
       return;
     }
 
-    this._animating = true;
+    // Build lookup: player ID → old index
+    const oldIndexMap = new Map<string, number>();
+    oldOrder.forEach((id, i) => oldIndexMap.set(id, i));
 
-    // Use the Web Animations API — this runs on the compositor,
-    // completely independent of Angular's change detection and CSS.
+    // Measure row step height (row height + 8px gap from CSS)
+    const firstEl = this.playerRows.first?.nativeElement;
+    if (!firstEl) { this._animating = false; return; }
+    const stepHeight = firstEl.offsetHeight + 8;
+
+    const currentOrder = this.players().map((p) => p.id);
     const animations: Animation[] = [];
 
-    movers.forEach(({ el, delta, direction }) => {
-      // Add glow classes for visual styling
+    this.playerRows.forEach((ref, newIdx) => {
+      const el = ref.nativeElement;
+      const id = el.dataset['id'];
+      if (!id) return;
+      const oldIdx = oldIndexMap.get(id);
+      if (oldIdx === undefined || oldIdx === newIdx) return;
+
+      const delta = (oldIdx - newIdx) * stepHeight;
+      const direction = delta > 0 ? 'up' : 'down';
+
       el.classList.add('flip-active');
       el.classList.add(direction === 'up' ? 'flip-moving-up' : 'flip-moving-down');
 
-      // Animate from old position → new position
       const anim = el.animate(
         [
-          { transform: `translateY(${delta}px) scale(1.03)`, offset: 0 },
-          { transform: 'translateY(0) scale(1)', offset: 1 },
+          { transform: `translateY(${delta}px) scale(1.03)` },
+          { transform: 'translateY(0) scale(1)' },
         ],
         {
           duration: 600,
@@ -163,15 +145,25 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
       animations.push(anim);
     });
 
-    // Cleanup after all animations finish
-    Promise.all(animations.map((a) => a.finished)).then(() => {
-      movers.forEach(({ el }) => {
-        el.classList.remove('flip-active', 'flip-moving-up', 'flip-moving-down');
+    if (animations.length === 0) {
+      this._animating = false;
+      return;
+    }
+
+    const cleanup = () => {
+      this.playerRows?.forEach((ref) => {
+        ref.nativeElement.classList.remove(
+          'flip-active', 'flip-moving-up', 'flip-moving-down',
+        );
       });
       this._animating = false;
-      this._storeTops();
-      this._lastOrder = this.players().map((p) => p.id);
-    });
+    };
+
+    // .catch() ensures _animating is ALWAYS reset even if Angular
+    // recycles DOM nodes and cancels running animations.
+    Promise.all(animations.map((a) => a.finished))
+      .then(cleanup)
+      .catch(cleanup);
   }
 
   readonly players = this.ranking.players;
