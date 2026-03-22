@@ -8,6 +8,8 @@ import {
   ViewChild,
   ViewChildren,
   QueryList,
+  Injector,
+  afterNextRender,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LanguageService } from '../../shared/language/language.service';
@@ -56,6 +58,7 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
   @ViewChild('codeField') codeFieldRef?: ElementRef<HTMLInputElement>;
   @ViewChildren('playerRow') playerRows!: QueryList<ElementRef<HTMLElement>>;
 
+  private readonly injector = inject(Injector);
   readonly ls = inject(LanguageService);
   readonly ranking = inject(LiveRankingService);
 
@@ -168,6 +171,15 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
     this.ranking.disconnect();
     this.codeInput.set('');
     this.expandedPlayer.set(null);
+    // Input is re-created when session ends — focus after view updates
+    afterNextRender(
+      () => {
+        const el = this.codeFieldRef?.nativeElement;
+        el?.focus();
+        el?.select();
+      },
+      { injector: this.injector },
+    );
   }
 
   togglePlayer(id: string): void {
