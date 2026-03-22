@@ -135,60 +135,63 @@ class _PhaseThreeScreenState extends State<PhaseThreeScreen> {
   @override
   Widget build(BuildContext context) {
     final languageService = context.watch<LanguageService>();
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          const PixelStarfieldBackground(),
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 40),
-                      Text(
-                        languageService.translate('verdict_title'),
-                        style: GoogleFonts.pressStart2p(
-                          color: Colors.white,
-                          fontSize: 24,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
+            const PixelStarfieldBackground(),
+            SafeArea(
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 40),
+                        Text(
+                          languageService.translate('verdict_title'),
+                          style: GoogleFonts.pressStart2p(
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      _buildVerdictCard(),
-                      if (_showRealImpostor) ...[
                         const SizedBox(height: 20),
-                        _buildRealImpostorCard(),
-                      ],
-                      const SizedBox(height: 20),
-                      if (_isRevealDone &&
-                          (!_impostorWon ||
-                              _typedImpostorName.length ==
-                                  _realImpostor.name.length)) ...[
-                        _buildWordCard(),
-                        const SizedBox(height: 16),
-                        _buildResultText(),
+                        _buildVerdictCard(),
+                        if (_showRealImpostor) ...[
+                          const SizedBox(height: 20),
+                          _buildRealImpostorCard(),
+                        ],
                         const SizedBox(height: 20),
-                        PixelButton(
-                          label: languageService.translate('back_to_menu'),
-                          color: const Color(0xFF415A77),
-                          onPressed: () {
-                            Navigator.of(
-                              context,
-                            ).popUntil(ModalRoute.withName('/impostor_game'));
-                          },
-                        ),
+                        if (_isRevealDone &&
+                            (!_impostorWon ||
+                                _typedImpostorName.length ==
+                                    _realImpostor.name.length)) ...[
+                          _buildWordCard(),
+                          const SizedBox(height: 16),
+                          _buildResultText(),
+                          const SizedBox(height: 20),
+                          PixelButton(
+                            label: languageService.translate('back_to_menu'),
+                            color: const Color(0xFF415A77),
+                            onPressed: () {
+                              Navigator.of(
+                                context,
+                              ).popUntil(ModalRoute.withName('/impostor_game'));
+                            },
+                          ),
+                        ],
+                        const SizedBox(height: 40),
                       ],
-                      const SizedBox(height: 40),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

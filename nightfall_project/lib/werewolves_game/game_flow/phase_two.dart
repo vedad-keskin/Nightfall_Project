@@ -85,6 +85,10 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                               setDialogState(() {
                                 isRevealed = true;
                               });
+                              // Mark card as seen immediately on reveal
+                              setState(() {
+                                _viewedPlayerIds.add(player.id);
+                              });
                             }
                           },
                           child: AspectRatio(
@@ -130,9 +134,6 @@ class _WerewolfPhaseTwoScreenState extends State<WerewolfPhaseTwoScreen> {
                               ),
                               color: const Color(0xFF415A77),
                               onPressed: () {
-                                setState(() {
-                                  _viewedPlayerIds.add(player.id);
-                                });
                                 Navigator.of(context).pop();
                               },
                             ),
