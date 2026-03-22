@@ -54,7 +54,12 @@ class LiveSessionService extends ChangeNotifier {
         playersData[player.id] = {
           'name': player.name,
           'points': player.points,
-          'analytics': playerAnalytics.map((r) => r.toJson()).toList(),
+          'analytics': playerAnalytics.map((r) => {
+            'roleId': r.roleId,
+            'allianceId': r.allianceId,
+            'won': r.won,
+            'pointsEarned': r.pointsEarned,
+          }).toList(),
         };
       }
 

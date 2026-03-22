@@ -234,27 +234,32 @@ class _WerewolfLeaderboardsScreenState
                           ),
                           child: Row(
                             children: [
-                              Container(
-                                width: 10,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                  color: liveSession.isSyncing
-                                      ? Colors.amber
-                                      : const Color(0xFF52B788),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    languageService.translate('live_code_label'),
-                                    style: GoogleFonts.vt323(
-                                      color: Colors.white54,
-                                      fontSize: 14,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: liveSession.isSyncing
+                                              ? Colors.amber
+                                              : const Color(0xFF52B788),
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        languageService.translate('live_code_label'),
+                                        style: GoogleFonts.vt323(
+                                          color: Colors.white54,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                  const SizedBox(height: 4),
                                   GestureDetector(
                                     onTap: () {
                                       Clipboard.setData(ClipboardData(

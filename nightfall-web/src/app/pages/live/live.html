@@ -166,13 +166,13 @@
                                     @for (s of getRoleStats(player); track s.roleId) {
                                     <div class="role-row">
                                         @if (getRoleImage(s.roleId)) {
-                                        <img class="role-img" [src]="getRoleImage(s.roleId)" [alt]="s.roleName" />
+                                        <img class="role-img" [src]="getRoleImage(s.roleId)" [alt]="getRoleName(s.roleId)" />
                                         } @else {
                                         <div class="role-color-bar" [style.background]="getRoleColor(s.roleId)"></div>
                                         }
                                         <div class="role-info">
                                             <span class="role-name-text" [style.color]="getRoleColor(s.roleId)">
-                                                {{ s.roleName.toUpperCase() }}
+                                                {{ getRoleName(s.roleId).toUpperCase() }}
                                             </span>
                                             <span class="role-meta">
                                                 {{ ls.t('live_played') }}: {{ s.played }}

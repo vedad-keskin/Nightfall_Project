@@ -2,6 +2,7 @@ import type { TranslationKey } from '../../shared/language/translations';
 
 export interface Role {
     id: string;
+    numericId: number; // Matches Flutter roleId
     name: string;
     nameKey: TranslationKey;
     description: string;
@@ -15,6 +16,7 @@ export interface Role {
 
 export interface Alliance {
     id: 'village' | 'werewolves' | 'specials';
+    numericId: number; // Matches Flutter allianceId
     name: string;
     nameKey: TranslationKey;
     description: string;
@@ -24,6 +26,7 @@ export interface Alliance {
 export const ALLIANCES: Alliance[] = [
     {
         id: 'village',
+        numericId: 1,
         name: 'The Village',
         nameKey: 'villagers_alliance_name',
         description:
@@ -32,6 +35,7 @@ export const ALLIANCES: Alliance[] = [
     },
     {
         id: 'werewolves',
+        numericId: 2,
         name: 'The Werewolves',
         nameKey: 'werewolves_alliance_name',
         description:
@@ -40,6 +44,7 @@ export const ALLIANCES: Alliance[] = [
     },
     {
         id: 'specials',
+        numericId: 3,
         name: 'Specials',
         nameKey: 'specials_alliance_name',
         description:
@@ -52,6 +57,7 @@ export const ROLES: Role[] = [
     // ── Village (allianceId 1) ──
     {
         id: 'villager',
+        numericId: 1,
         name: 'Villager',
         nameKey: 'villager_name',
         description: 'A simple townsperson trying to survive the night.',
@@ -62,6 +68,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'doctor',
+        numericId: 3,
         name: 'Doctor',
         nameKey: 'doctor_name',
         description:
@@ -73,6 +80,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'guard',
+        numericId: 4,
         name: 'Guard',
         nameKey: 'guard_name',
         description:
@@ -84,6 +92,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'plague_doctor',
+        numericId: 5,
         name: 'Plague Doctor',
         nameKey: 'plague_doctor_name',
         description:
@@ -95,6 +104,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'twins',
+        numericId: 6,
         name: 'Twins',
         nameKey: 'twins_name',
         description:
@@ -106,6 +116,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'knight',
+        numericId: 11,
         name: 'Knight',
         nameKey: 'knight_name',
         description:
@@ -117,6 +128,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'executioner',
+        numericId: 13,
         name: 'Executioner',
         nameKey: 'executioner_name',
         description:
@@ -128,6 +140,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'infected',
+        numericId: 14,
         name: 'Infected',
         nameKey: 'infected_name',
         description:
@@ -139,6 +152,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'drunk',
+        numericId: 10,
         name: 'Drunk',
         nameKey: 'drunk_name',
         description:
@@ -150,6 +164,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'shaman',
+        numericId: 16,
         name: 'Shaman',
         nameKey: 'shaman_name',
         description:
@@ -161,6 +176,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'wraith',
+        numericId: 17,
         name: 'Wraith',
         nameKey: 'wraith_name',
         description:
@@ -173,6 +189,7 @@ export const ROLES: Role[] = [
     // ── Werewolves (allianceId 2) ──
     {
         id: 'werewolf',
+        numericId: 2,
         name: 'Werewolf',
         nameKey: 'werewolf_name',
         description:
@@ -184,6 +201,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'avenging_twin',
+        numericId: 7,
         name: 'Avenging Twin',
         nameKey: 'avenging_twin_name',
         description:
@@ -195,6 +213,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'vampire',
+        numericId: 8,
         name: 'Vampire',
         nameKey: 'vampire_name',
         description:
@@ -206,6 +225,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'dire_wolf',
+        numericId: 18,
         name: 'Dire Wolf',
         nameKey: 'dire_wolf_name',
         description:
@@ -218,6 +238,7 @@ export const ROLES: Role[] = [
     // ── Specials (allianceId 3) ──
     {
         id: 'jester',
+        numericId: 9,
         name: 'Jester',
         nameKey: 'jester_name',
         description:
@@ -229,6 +250,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'puppet_master',
+        numericId: 12,
         name: 'Puppet Master',
         nameKey: 'puppet_master_name',
         description:
@@ -242,6 +264,7 @@ export const ROLES: Role[] = [
     },
     {
         id: 'gambler',
+        numericId: 15,
         name: 'Gambler',
         nameKey: 'gambler_name',
         description:
@@ -254,3 +277,21 @@ export const ROLES: Role[] = [
         pointsNoteKey: 'gambler_points_note',
     },
 ];
+
+// ── Lookup helpers (used by live page to resolve Firebase IDs) ──
+
+const _roleByNumericId = new Map<number, Role>(
+    ROLES.map((r) => [r.numericId, r]),
+);
+
+const _allianceByNumericId = new Map<number, Alliance>(
+    ALLIANCES.map((a) => [a.numericId, a]),
+);
+
+export function getRoleByNumericId(id: number): Role | undefined {
+    return _roleByNumericId.get(id);
+}
+
+export function getAllianceByNumericId(id: number): Alliance | undefined {
+    return _allianceByNumericId.get(id);
+}

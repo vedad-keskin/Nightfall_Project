@@ -17,35 +17,13 @@ import {
   LiveRankingService,
   RankedPlayer,
 } from '../../shared/firebase/live-ranking.service';
+import { getRoleByNumericId } from '../roles/roles.data';
 
 interface RoleStats {
   roleId: number;
-  roleName: string;
   played: number;
   won: number;
 }
-
-// Maps Flutter roleId → local image path
-const ROLE_IMAGES: Record<number, string> = {
-  1:  'images/werewolves/Villager.png',
-  2:  'images/werewolves/Werewolf.png',
-  3:  'images/werewolves/Doctor.png',
-  4:  'images/werewolves/Guard.png',
-  5:  'images/werewolves/Plague Doctor.png',
-  6:  'images/werewolves/Twins.png',
-  7:  'images/werewolves/Avenging Twin.png',
-  8:  'images/werewolves/Vampire.png',
-  9:  'images/werewolves/Jester.png',
-  10: 'images/werewolves/Drunk.png',
-  11: 'images/werewolves/Knight.png',
-  12: 'images/werewolves/Puppet Master.png',
-  13: 'images/werewolves/Executioner.png',
-  14: 'images/werewolves/Infected.png',
-  15: 'images/werewolves/Gambler.png',
-  16: 'images/werewolves/Shaman.png',
-  17: 'images/werewolves/Wraith.png',
-  18: 'images/werewolves/Dire Wolf.png',
-};
 
 @Component({
   selector: 'app-live',
@@ -285,7 +263,6 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
       if (!map.has(a.roleId)) {
         map.set(a.roleId, {
           roleId: a.roleId,
-          roleName: a.roleName,
           played: 0,
           won: 0,
         });
@@ -302,8 +279,16 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
     return Math.round((s.won / s.played) * 100);
   }
 
+  getRoleName(roleId: number): string {
+    return getRoleByNumericId(roleId)?.name ?? `Role ${roleId}`;
+  }
+
+  getRoleNameKey(roleId: number): string {
+    return getRoleByNumericId(roleId)?.nameKey ?? '';
+  }
+
   getRoleImage(roleId: number): string {
-    return ROLE_IMAGES[roleId] ?? '';
+    return getRoleByNumericId(roleId)?.image ?? '';
   }
 
   getRoleColor(roleId: number): string {

@@ -4,12 +4,9 @@ import { db } from './firebase.config';
 
 export interface PlayerAnalytics {
   roleId: number;
-  roleName: string;
   allianceId: number;
-  winningTeam: string;
   won: boolean;
   pointsEarned: number;
-  playedAt: string;
 }
 
 export interface RankedPlayer {
