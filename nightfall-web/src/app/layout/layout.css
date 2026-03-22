@@ -239,10 +239,31 @@
         background: rgba(27, 38, 59, 0.6);
     }
 
+    /* Dot + label must stay centered like other nav items (inline-flex was shrinking to content) */
+    .nav-links a.live-link {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
     .nav-links a:hover,
     .nav-links a.active {
         background: rgba(176, 0, 32, 0.2);
         border-color: var(--nf-accent-red);
         color: var(--nf-accent-bright);
+    }
+
+    .nav-links a.live-link.active {
+        background: rgba(82, 183, 136, 0.2);
+        border-color: #52B788;
+        color: #52B788;
+        text-shadow: 0 0 8px rgba(82, 183, 136, 0.35);
+    }
+
+    .nav-links a.live-link:hover {
+        border-color: #52B788;
+        color: #52B788;
+        background: rgba(82, 183, 136, 0.12);
     }
 }
