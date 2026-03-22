@@ -69,7 +69,6 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
   private _prevTops = new Map<string, number>();
   private _lastOrder: string[] = [];
   private _animating = false;
-  private _pendingFlipTops: Map<string, number> | null = null;
 
   ngAfterViewInit(): void {
     this.codeFieldRef?.nativeElement.focus();
@@ -78,31 +77,28 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
   ngAfterViewChecked(): void {
     if (!this.playerRows || this.playerRows.length === 0) return;
 
-    // Deferred FLIP: accordion just collapsed, now run the slide
-    if (this._pendingFlipTops && !this._animating) {
-      this._executeFlip(this._pendingFlipTops);
-      this._pendingFlipTops = null;
-      return;
-    }
-
     const currentOrder = this.players().map((p) => p.id);
     const orderChanged =
       currentOrder.join('|') !== this._lastOrder.join('|') &&
       this._lastOrder.length > 0;
 
     if (orderChanged && !this._animating) {
+      // Snapshot old positions before anything changes
+      const savedTops = new Map(this._prevTops);
+      this._animating = true;
+      this._lastOrder = [...currentOrder];
+
+      // Collapse accordion if open
       if (this.expandedPlayer() !== null) {
-        // Accordion is open → save positions, collapse, defer FLIP
-        this._pendingFlipTops = new Map(this._prevTops);
         this.expandedPlayer.set(null);
-        this._lastOrder = [...currentOrder];
-      } else {
-        // No accordion → FLIP immediately (synchronous, before paint)
-        this._executeFlip(this._prevTops);
       }
+
+      // Always defer — Angular's DOM needs to fully settle before we
+      // can measure accurate positions and animate.
+      setTimeout(() => this._executeFlip(savedTops));
     }
 
-    if (!this._animating && !this._pendingFlipTops) {
+    if (!this._animating) {
       this._storeTops();
       this._lastOrder = [...currentOrder];
     }
