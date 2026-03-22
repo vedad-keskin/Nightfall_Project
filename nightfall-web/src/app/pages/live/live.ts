@@ -69,6 +69,7 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
   private _prevTops = new Map<string, number>();
   private _lastOrder: string[] = [];
   private _animating = false;
+  private _pendingFlipTops: Map<string, number> | null = null;
 
   ngAfterViewInit(): void {
     this.codeFieldRef?.nativeElement.focus();
@@ -77,16 +78,31 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
   ngAfterViewChecked(): void {
     if (!this.playerRows || this.playerRows.length === 0) return;
 
+    // Deferred FLIP: accordion just collapsed, now run the slide
+    if (this._pendingFlipTops && !this._animating) {
+      this._executeFlip(this._pendingFlipTops);
+      this._pendingFlipTops = null;
+      return;
+    }
+
     const currentOrder = this.players().map((p) => p.id);
     const orderChanged =
       currentOrder.join('|') !== this._lastOrder.join('|') &&
       this._lastOrder.length > 0;
 
     if (orderChanged && !this._animating) {
-      this._flip();
+      if (this.expandedPlayer() !== null) {
+        // Accordion is open → save positions, collapse, defer FLIP
+        this._pendingFlipTops = new Map(this._prevTops);
+        this.expandedPlayer.set(null);
+        this._lastOrder = [...currentOrder];
+      } else {
+        // No accordion → FLIP immediately (synchronous, before paint)
+        this._executeFlip(this._prevTops);
+      }
     }
 
-    if (!this._animating) {
+    if (!this._animating && !this._pendingFlipTops) {
       this._storeTops();
       this._lastOrder = [...currentOrder];
     }
@@ -102,84 +118,60 @@ export class LiveComponent implements AfterViewInit, AfterViewChecked {
     });
   }
 
-  private _flip(): void {
-    this._animating = true;
+  private _executeFlip(oldTops: Map<string, number>): void {
+    const movers: { el: HTMLElement; delta: number; direction: 'up' | 'down' }[] = [];
 
-    // ── Phase 1: Collapse any expanded accordion ──
-    const wasExpanded = this.expandedPlayer() !== null;
-    if (wasExpanded) {
-      this.expandedPlayer.set(null);
+    this.playerRows.forEach((ref) => {
+      const el = ref.nativeElement;
+      const id = el.dataset['id'];
+      if (!id) return;
+      const prevTop = oldTops.get(id);
+      if (prevTop === undefined) return;
+      const newTop = el.getBoundingClientRect().top;
+      const delta = prevTop - newTop;
+      if (Math.abs(delta) > 1) {
+        movers.push({ el, delta, direction: delta > 0 ? 'up' : 'down' });
+      }
+    });
+
+    if (movers.length === 0) {
+      this._animating = false;
+      this._storeTops();
+      this._lastOrder = this.players().map((p) => p.id);
+      return;
     }
 
-    // Wait for accordion collapse to settle (or 0ms if nothing was expanded)
-    const collapseDelay = wasExpanded ? 350 : 0;
+    this._animating = true;
 
+    // Invert: snap rows back to their old visual position (before paint!)
+    movers.forEach(({ el, delta, direction }) => {
+      el.style.transition = 'none';
+      el.style.transform = `translateY(${delta}px) scale(1.03)`;
+      el.classList.add('flip-active');
+      el.classList.add(direction === 'up' ? 'flip-moving-up' : 'flip-moving-down');
+    });
+
+    // Force reflow so the browser registers the invert transforms
+    movers[0].el.offsetHeight;
+
+    // Play: animate to natural (new) position
+    movers.forEach(({ el }) => {
+      el.style.transition =
+        'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      el.style.transform = 'translateY(0) scale(1)';
+    });
+
+    // Cleanup after animation completes
     setTimeout(() => {
-      // ── Phase 2: Snapshot positions after collapse ──
-      // The DOM has now settled with collapsed accordion
-      // Re-measure before computing deltas since collapsing changed heights
-      const freshTops = new Map<string, number>();
-      this.playerRows.forEach((ref) => {
-        const el = ref.nativeElement;
-        const id = el.dataset['id'];
-        if (id) {
-          freshTops.set(id, el.getBoundingClientRect().top);
-        }
-      });
-
-      // ── Phase 3: Compute deltas and classify movers ──
-      const movers: { el: HTMLElement; delta: number; direction: 'up' | 'down' }[] = [];
-
-      this.playerRows.forEach((ref) => {
-        const el = ref.nativeElement;
-        const id = el.dataset['id'];
-        if (!id) return;
-        const prevTop = this._prevTops.get(id);
-        if (prevTop === undefined) return;
-        const newTop = freshTops.get(id) ?? el.getBoundingClientRect().top;
-        const delta = prevTop - newTop;
-        if (Math.abs(delta) > 1) {
-          movers.push({ el, delta, direction: delta > 0 ? 'up' : 'down' });
-        }
-      });
-
-      if (movers.length === 0) {
-        this._animating = false;
-        this._storeTops();
-        this._lastOrder = this.players().map((p) => p.id);
-        return;
-      }
-
-      // ── Phase 4: Invert — snap rows back to old position ──
-      movers.forEach(({ el, delta, direction }) => {
-        el.style.transition = 'none';
-        el.style.transform = `translateY(${delta}px) scale(1.03)`;
-        el.classList.add('flip-active');
-        el.classList.add(direction === 'up' ? 'flip-moving-up' : 'flip-moving-down');
-      });
-
-      // Force reflow
-      movers[0].el.offsetHeight;
-
-      // ── Phase 5: Play — animate to natural (new) position ──
       movers.forEach(({ el }) => {
-        el.style.transition =
-          'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        el.style.transform = 'translateY(0) scale(1)';
+        el.style.transition = '';
+        el.style.transform = '';
+        el.classList.remove('flip-active', 'flip-moving-up', 'flip-moving-down');
       });
-
-      // ── Phase 6: Cleanup ──
-      setTimeout(() => {
-        movers.forEach(({ el }) => {
-          el.style.transition = '';
-          el.style.transform = '';
-          el.classList.remove('flip-active', 'flip-moving-up', 'flip-moving-down');
-        });
-        this._animating = false;
-        this._storeTops();
-        this._lastOrder = this.players().map((p) => p.id);
-      }, 650);
-    }, collapseDelay);
+      this._animating = false;
+      this._storeTops();
+      this._lastOrder = this.players().map((p) => p.id);
+    }, 650);
   }
 
   readonly players = this.ranking.players;
