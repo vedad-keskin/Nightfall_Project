@@ -11,6 +11,7 @@ import 'package:nightfall_project/services/language_service.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
 import 'package:nightfall_project/base_components/gambler_bet_dialog.dart';
 import 'package:nightfall_project/werewolves_game/offline_db/player_analytics_service.dart';
+import 'package:nightfall_project/services/live_session_service.dart';
 
 class WerewolfPhaseFiveScreen extends StatefulWidget {
   final Map<String, WerewolfRole> playerRoles;
@@ -201,6 +202,13 @@ class _WerewolfPhaseFiveScreenState extends State<WerewolfPhaseFiveScreen> {
       );
     }
     await PlayerAnalyticsService().recordGame(analyticsRecords);
+
+    // Fire-and-forget live sync if session is active
+    final liveSession = context.read<LiveSessionService>();
+    if (liveSession.hasSession) {
+      final allAnalytics = await PlayerAnalyticsService().loadAllAnalytics();
+      liveSession.syncLeaderboard(updatedList, allAnalytics);
+    }
 
     if (mounted) {
       setState(() {

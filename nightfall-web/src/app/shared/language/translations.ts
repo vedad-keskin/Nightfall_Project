@@ -1,7 +1,7 @@
 // ── Web-app translation keys ───────────────────────────────────────────────
 export type TranslationKey =
     // Navbar
-    | 'nav_roles' | 'nav_rulebook'
+    | 'nav_roles' | 'nav_rulebook' | 'nav_live'
     // Roles page header
     | 'roles_page_title' | 'roles_page_subtitle'
     // Alliance names & descriptions
@@ -54,6 +54,14 @@ export type TranslationKey =
     // scoring
     | 'rule_score_p1' | 'rule_score_p2' | 'rule_score_p3'
     | 'rule_score_p4' | 'rule_score_p5'
+    // Live Ranking
+    | 'live_page_title' | 'live_page_subtitle'
+    | 'live_enter_code' | 'live_connect' | 'live_disconnect'
+    | 'live_no_data' | 'live_connecting' | 'live_connected'
+    | 'live_total_games' | 'live_win_rate' | 'live_wins' | 'live_losses'
+    | 'live_village_wins' | 'live_werewolf_wins' | 'live_special_wins'
+    | 'live_alliance_breakdown' | 'live_role_history'
+    | 'live_played' | 'live_won' | 'live_pts'
     // Footer
     | 'footer_text';
 
@@ -61,6 +69,7 @@ export type TranslationKey =
 export const EN: Record<TranslationKey, string> = {
     nav_roles: 'ROLES',
     nav_rulebook: 'RULEBOOK',
+    nav_live: 'LIVE',
 
     roles_page_title: 'ROLES',
     roles_page_subtitle: 'Learn about every character in the game',
@@ -187,6 +196,27 @@ export const EN: Record<TranslationKey, string> = {
     rule_score_p4: 'Special roles do not belong to an alliance and instead have their own winning conditions.',
     rule_score_p5: 'Enjoy the mystery and deception. Good luck!',
 
+    live_page_title: 'LIVE RANKING',
+    live_page_subtitle: 'Follow the game in real-time',
+    live_enter_code: 'ENTER SESSION CODE',
+    live_connect: 'CONNECT',
+    live_disconnect: 'DISCONNECT',
+    live_no_data: 'No player data yet. Waiting for game results...',
+    live_connecting: 'CONNECTING...',
+    live_connected: 'LIVE',
+    live_total_games: 'TOTAL GAMES',
+    live_win_rate: 'WIN RATE',
+    live_wins: 'WINS',
+    live_losses: 'LOSSES',
+    live_village_wins: 'VILLAGE WINS',
+    live_werewolf_wins: 'WEREWOLF WINS',
+    live_special_wins: 'SPECIAL WINS',
+    live_alliance_breakdown: 'ALLIANCE BREAKDOWN',
+    live_role_history: 'ROLE HISTORY',
+    live_played: 'PLAYED',
+    live_won: 'WON',
+    live_pts: 'PTS',
+
     footer_text: 'NIGHTFALL PROJECT © 2025',
 };
 
@@ -194,6 +224,7 @@ export const EN: Record<TranslationKey, string> = {
 export const BS: Record<TranslationKey, string> = {
     nav_roles: 'ULOGE',
     nav_rulebook: 'PRAVILA',
+    nav_live: 'UŽIVO',
 
     roles_page_title: 'ULOGE',
     roles_page_subtitle: 'Upoznajte sve likove iz igre',
@@ -319,6 +350,27 @@ export const BS: Record<TranslationKey, string> = {
     rule_score_p3: 'Punu raspodjelu bodova možete pronaći u sekciji Uloge.',
     rule_score_p4: 'Posebni ne pripadaju savezu i imaju svoje posebne uslove za pobjedu.',
     rule_score_p5: 'Uživajte u misteriji i obmani. Sretno!',
+
+    live_page_title: 'LIVE RANGIRANJE',
+    live_page_subtitle: 'Pratite igru u realnom vremenu',
+    live_enter_code: 'UNESITE KOD SESIJE',
+    live_connect: 'POVEŽI SE',
+    live_disconnect: 'PREKINI',
+    live_no_data: 'Nema podataka. Čekanje na rezultate igre...',
+    live_connecting: 'POVEZIVANJE...',
+    live_connected: 'UŽIVO',
+    live_total_games: 'UKUPNO IGARA',
+    live_win_rate: 'PROCENAT POBJEDA',
+    live_wins: 'POBJEDE',
+    live_losses: 'PORAZI',
+    live_village_wins: 'POBJEDE SELA',
+    live_werewolf_wins: 'POBJEDE VUKOVA',
+    live_special_wins: 'POBJEDE POSEBNIH',
+    live_alliance_breakdown: 'PODJELA PO SAVEZU',
+    live_role_history: 'HISTORIJA ULOGA',
+    live_played: 'IGRANO',
+    live_won: 'POBJEDA',
+    live_pts: 'BOD',
 
     footer_text: 'NIGHTFALL PROJECT © 2025',
 };

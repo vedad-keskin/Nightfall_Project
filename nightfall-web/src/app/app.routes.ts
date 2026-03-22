@@ -17,6 +17,11 @@ export const routes: Routes = [
                 loadComponent: () =>
                     import('./pages/rulebook/rulebook').then((m) => m.RulebookComponent),
             },
+            {
+                path: 'live',
+                loadComponent: () =>
+                    import('./pages/live/live').then((m) => m.LiveComponent),
+            },
         ],
     },
 ];

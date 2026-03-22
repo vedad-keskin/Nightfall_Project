@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nightfall_project/base_components/pixel_starfield_background.dart';
 import 'package:nightfall_project/base_components/pixel_button.dart';
@@ -6,6 +7,7 @@ import 'package:nightfall_project/werewolves_game/offline_db/player_service.dart
 import 'package:nightfall_project/werewolves_game/offline_db/player_analytics_service.dart';
 import 'package:nightfall_project/werewolves_game/leaderboards/player_analytics_screen.dart';
 import 'package:nightfall_project/services/language_service.dart';
+import 'package:nightfall_project/services/live_session_service.dart';
 import 'package:provider/provider.dart';
 
 class WerewolfLeaderboardsScreen extends StatefulWidget {
@@ -88,6 +90,10 @@ class _WerewolfLeaderboardsScreenState
     );
 
     if (confirm == true) {
+      final liveSession = context.read<LiveSessionService>();
+      if (liveSession.hasSession) {
+        await liveSession.deleteSession();
+      }
       final updatedPlayers = await _playerService.resetPlayersPoints(_players);
       await PlayerAnalyticsService().clearAllAnalytics();
       if (mounted) {
@@ -95,6 +101,66 @@ class _WerewolfLeaderboardsScreenState
           _players = updatedPlayers;
         });
       }
+    }
+  }
+
+  Future<void> _handleGoLive() async {
+    final liveSession = context.read<LiveSessionService>();
+    await liveSession.createSession();
+
+    final allAnalytics = await PlayerAnalyticsService().loadAllAnalytics();
+    await liveSession.syncLeaderboard(_players, allAnalytics);
+  }
+
+  Future<void> _handleStopLive() async {
+    final languageService = context.read<LanguageService>();
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF0D1B2A),
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(color: Color(0xFF778DA9), width: 4),
+        ),
+        title: Text(
+          languageService.translate('live_confirm_stop'),
+          style: GoogleFonts.pressStart2p(
+            color: const Color(0xFFE0E1DD),
+            fontSize: 14,
+          ),
+        ),
+        content: Text(
+          languageService.translate('live_stop_warn'),
+          style: GoogleFonts.vt323(color: Colors.white70, fontSize: 18),
+        ),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                  languageService.translate('cancel_button'),
+                  style: GoogleFonts.pressStart2p(
+                    color: Colors.white54,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              PixelButton(
+                label: languageService.translate('stop_live'),
+                color: Colors.redAccent.withOpacity(0.8),
+                onPressed: () => Navigator.of(context).pop(true),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await context.read<LiveSessionService>().deleteSession();
     }
   }
 
@@ -148,7 +214,105 @@ class _WerewolfLeaderboardsScreenState
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
+
+                  // Live Session Controls
+                  Consumer<LiveSessionService>(
+                    builder: (context, liveSession, _) {
+                      if (liveSession.hasSession) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF52B788).withOpacity(0.1),
+                            border: Border.all(
+                              color: const Color(0xFF52B788),
+                              width: 2,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: liveSession.isSyncing
+                                      ? Colors.amber
+                                      : const Color(0xFF52B788),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    languageService.translate('live_code_label'),
+                                    style: GoogleFonts.vt323(
+                                      color: Colors.white54,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Clipboard.setData(ClipboardData(
+                                        text: liveSession.sessionCode!,
+                                      ));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            '${liveSession.sessionCode} copied!',
+                                            style: GoogleFonts.vt323(fontSize: 18),
+                                          ),
+                                          duration: const Duration(seconds: 1),
+                                          backgroundColor: const Color(0xFF415A77),
+                                        ),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          liveSession.sessionCode!,
+                                          style: GoogleFonts.pressStart2p(
+                                            color: const Color(0xFF52B788),
+                                            fontSize: 18,
+                                            letterSpacing: 4,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        const Icon(
+                                          Icons.copy,
+                                          color: Color(0xFF52B788),
+                                          size: 16,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              PixelButton(
+                                label: languageService.translate('stop_live'),
+                                color: Colors.redAccent.withOpacity(0.7),
+                                onPressed: _handleStopLive,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return SizedBox(
+                        width: double.infinity,
+                        child: PixelButton(
+                          label: languageService.translate('go_live'),
+                          color: const Color(0xFF52B788).withOpacity(0.8),
+                          onPressed: _players.isEmpty ? null : _handleGoLive,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 12),
 
                   // Main Content
                   Expanded(

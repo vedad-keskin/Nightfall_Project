@@ -63,6 +63,12 @@ const Map<String, String> enTranslations = {
   'reset_button': 'RESET',
   'top_players_title': 'TOP PLAYERS',
   'no_players_found': 'No players found.',
+  'go_live': 'GO LIVE',
+  'stop_live': 'STOP LIVE',
+  'live_code_label': 'LIVE CODE',
+  'live_syncing': 'SYNCING...',
+  'live_confirm_stop': 'STOP LIVE SESSION?',
+  'live_stop_warn': 'This will end the live session and remove data from the web. This cannot be undone.',
   'how_to_play': 'RULES',
   'rules_impostor_title': 'HOW TO PLAY: IMPOSTOR',
   'rules_impostor_content':

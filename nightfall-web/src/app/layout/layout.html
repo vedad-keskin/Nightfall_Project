@@ -32,6 +32,12 @@
                     {{ ls.t('nav_rulebook') }}
                 </a>
             </li>
+            <li>
+                <a routerLink="/live" routerLinkActive="active" (click)="closeMenu()" class="live-link">
+                    <span class="live-dot"></span>
+                    {{ ls.t('nav_live') }}
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

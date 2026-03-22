@@ -63,6 +63,12 @@ const Map<String, String> bsTranslations = {
   'reset_button': 'RESETUJ',
   'top_players_title': 'NAJBOLJI IGRAČI',
   'no_players_found': 'Nema igrača.',
+  'go_live': 'UŽIVO',
+  'stop_live': 'ZAUSTAVI',
+  'live_code_label': 'LIVE KOD',
+  'live_syncing': 'SINHRONIZACIJA...',
+  'live_confirm_stop': 'ZAUSTAVITI LIVE SESIJU?',
+  'live_stop_warn': 'Ovo će završiti live sesiju i obrisati podatke sa weba. Ovo se ne može poništiti.',
   'how_to_play': 'PRAVILA',
   'rules_impostor_title': 'PRAVILA: ULJEZI',
   'rules_impostor_content':

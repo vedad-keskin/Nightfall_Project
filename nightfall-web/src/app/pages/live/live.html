@@ -1,0 +1,212 @@
+<div class="live-page">
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="header-frame">
+            <h1 class="page-title">{{ ls.t('live_page_title') }}</h1>
+            <p class="page-subtitle">{{ ls.t('live_page_subtitle') }}</p>
+        </div>
+    </header>
+
+    <!-- Code Entry (shown when not connected) -->
+    @if (!hasSession()) {
+    <section class="code-entry-section">
+        <div class="code-card">
+            <div class="code-card-border">
+                <div class="code-card-inner">
+                    <label class="code-label">{{ ls.t('live_enter_code') }}</label>
+                    <div class="code-input-row">
+                        <input
+                            type="text"
+                            class="code-input"
+                            [value]="codeInput()"
+                            (input)="onCodeInput($any($event.target).value)"
+                            (keydown.enter)="connect()"
+                            maxlength="6"
+                            placeholder="ABCDEF"
+                            spellcheck="false"
+                            autocomplete="off"
+                        />
+                        <button
+                            class="pixel-btn connect-btn"
+                            [disabled]="codeInput().length !== 6"
+                            (click)="connect()"
+                        >
+                            {{ ls.t('live_connect') }}
+                        </button>
+                    </div>
+                    @if (error()) {
+                    <p class="error-text">{{ error() }}</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    }
+
+    <!-- Connected Session -->
+    @if (hasSession()) {
+    <section class="session-section">
+        <!-- Session Bar -->
+        <div class="session-bar">
+            <div class="session-status">
+                <span class="status-dot" [class.connected]="connected()"></span>
+                <span class="status-label">
+                    {{ connected() ? ls.t('live_connected') : ls.t('live_connecting') }}
+                </span>
+                <span class="session-code">{{ sessionCode() }}</span>
+            </div>
+            <button class="pixel-btn disconnect-btn" (click)="disconnect()">
+                {{ ls.t('live_disconnect') }}
+            </button>
+        </div>
+
+        <!-- No Data State -->
+        @if (players().length === 0) {
+        <div class="no-data">
+            <div class="no-data-icon">⏳</div>
+            <p>{{ ls.t('live_no_data') }}</p>
+        </div>
+        }
+
+        <!-- Rankings -->
+        @if (players().length > 0) {
+        <div class="rankings-container">
+            <div class="rankings-border-outer">
+                <div class="rankings-border-mid">
+                    <div class="rankings-border-inner">
+                        @for (player of players(); track player.id; let i = $index) {
+                        <div
+                            class="player-row"
+                            [class.expanded]="isExpanded(player.id)"
+                            [class.rank-up]="getRankChange(player, i + 1) === 'up'"
+                            [class.rank-down]="getRankChange(player, i + 1) === 'down'"
+                            (click)="togglePlayer(player.id)"
+                        >
+                            <!-- Main Row -->
+                            <div class="player-main">
+                                <span class="player-rank" [style.color]="getRankColor(i + 1)">
+                                    {{ i + 1 }}.
+                                </span>
+                                @if (getRankChange(player, i + 1) === 'up') {
+                                <span class="rank-arrow up">▲</span>
+                                }
+                                @if (getRankChange(player, i + 1) === 'down') {
+                                <span class="rank-arrow down">▼</span>
+                                }
+                                <span class="player-name">{{ player.name }}</span>
+                                <span class="player-points" [style.color]="getRankColor(i + 1)">
+                                    {{ player.points }}
+                                </span>
+                                <span class="player-pts-label">{{ ls.t('live_pts') }}</span>
+                                <span class="chevron" [class.open]="isExpanded(player.id)">›</span>
+                            </div>
+
+                            <!-- Expanded Analytics -->
+                            @if (isExpanded(player.id)) {
+                            <div class="player-details" (click)="$event.stopPropagation()">
+                                <!-- Overview Stats -->
+                                <div class="stats-grid">
+                                    <div class="stat-card">
+                                        <span class="stat-value neutral">{{ getTotalGames(player) }}</span>
+                                        <span class="stat-label">{{ ls.t('live_total_games') }}</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-value" [class.green]="+(getWinRate(player)) >= 50" [class.red]="+(getWinRate(player)) < 50">
+                                            {{ getWinRate(player) }}%
+                                        </span>
+                                        <span class="stat-label">{{ ls.t('live_win_rate') }}</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-value green">{{ getTotalWins(player) }}</span>
+                                        <span class="stat-label">{{ ls.t('live_wins') }}</span>
+                                    </div>
+                                    <div class="stat-card">
+                                        <span class="stat-value red">{{ getTotalGames(player) - getTotalWins(player) }}</span>
+                                        <span class="stat-label">{{ ls.t('live_losses') }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Alliance Breakdown -->
+                                @if (getTotalGames(player) > 0) {
+                                <div class="section-header">
+                                    <div class="section-accent"></div>
+                                    <span>{{ ls.t('live_alliance_breakdown') }}</span>
+                                    <div class="section-accent"></div>
+                                </div>
+                                <div class="alliance-list">
+                                    @for (a of [
+                                        { id: 1, key: 'live_village_wins' },
+                                        { id: 2, key: 'live_werewolf_wins' },
+                                        { id: 3, key: 'live_special_wins' }
+                                    ]; track a.id) {
+                                    <div class="alliance-row">
+                                        <div class="alliance-bar" [style.background]="getAllianceColor(a.id)"></div>
+                                        <span class="alliance-name" [style.color]="getAllianceColor(a.id)">
+                                            {{ ls.t($any(a.key)) }}
+                                        </span>
+                                        <span class="alliance-stat">
+                                            {{ getAllianceWins(player, a.id) }}/{{ getAllianceGames(player, a.id) }}
+                                        </span>
+                                        <span class="alliance-pct" [style.color]="getAllianceColor(a.id)">
+                                            {{ getAlliancePct(player, a.id) }}%
+                                        </span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill"
+                                            [style.width.%]="getAlliancePct(player, a.id)"
+                                            [style.background]="getAllianceColor(a.id)">
+                                        </div>
+                                    </div>
+                                    }
+                                </div>
+                                }
+
+                                <!-- Role History -->
+                                @if (getRoleStats(player).length > 0) {
+                                <div class="section-header">
+                                    <div class="section-accent"></div>
+                                    <span>{{ ls.t('live_role_history') }}</span>
+                                    <div class="section-accent"></div>
+                                </div>
+                                <div class="role-list">
+                                    @for (s of getRoleStats(player); track s.roleId) {
+                                    <div class="role-row">
+                                        <div class="role-color-bar" [style.background]="getRoleColor(s.roleId)"></div>
+                                        <div class="role-info">
+                                            <span class="role-name-text" [style.color]="getRoleColor(s.roleId)">
+                                                {{ s.roleName.toUpperCase() }}
+                                            </span>
+                                            <span class="role-meta">
+                                                {{ ls.t('live_played') }}: {{ s.played }}
+                                                &nbsp;&nbsp;
+                                                {{ ls.t('live_won') }}: {{ s.won }}
+                                            </span>
+                                        </div>
+                                        <span class="role-pct"
+                                            [class.green]="getRolePct(s) >= 50"
+                                            [class.red]="getRolePct(s) < 50">
+                                            {{ getRolePct(s) }}%
+                                        </span>
+                                    </div>
+                                    }
+                                </div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </section>
+    }
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <div class="footer-frame">
+            <p>{{ ls.t('footer_text') }}</p>
+        </div>
+    </footer>
+</div>

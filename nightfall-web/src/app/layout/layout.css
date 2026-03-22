@@ -87,6 +87,35 @@
     text-shadow: 0 0 8px rgba(255, 23, 68, 0.4);
 }
 
+/* ── Live Link ── */
+
+.live-link {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background: #52B788;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(82, 183, 136, 0.6); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(82, 183, 136, 0); }
+}
+
+.nav-links a.live-link.active {
+    color: #52B788;
+    border-color: #52B788;
+    background: rgba(82, 183, 136, 0.15);
+    text-shadow: 0 0 8px rgba(82, 183, 136, 0.4);
+}
+
 /* ── Hamburger ── */
 
 .hamburger {

@@ -10,17 +10,26 @@ import 'package:nightfall_project/impostor_game/layouts/game_layout.dart';
 import 'package:nightfall_project/werewolves_game/layouts/game_layout.dart';
 import 'package:nightfall_project/services/language_service.dart';
 import 'package:nightfall_project/services/sound_settings_service.dart';
+import 'package:nightfall_project/services/live_session_service.dart';
 import 'package:nightfall_project/base_components/pixel_sound_button.dart';
 import 'package:nightfall_project/base_components/pixel_swipe_indicator.dart';
 import 'package:nightfall_project/base_components/nightfall_intro_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  final liveSession = LiveSessionService();
+  await liveSession.loadExistingSession();
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LanguageService()),
         ChangeNotifierProvider(create: (_) => SoundSettingsService()),
+        ChangeNotifierProvider.value(value: liveSession),
       ],
       child: const MyApp(),
     ),
