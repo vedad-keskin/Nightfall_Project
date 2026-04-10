@@ -140,7 +140,7 @@ final List<Word> crtaniWords = [
   Word(id: 232, name: 'Shere Khan', categoryId: 3, hint: 'Zubi'),
   Word(id: 233, name: 'Bambi', categoryId: 3, hint: 'Cvjetić'),
   Word(id: 234, name: '101 Dalmatinac', categoryId: 3, hint: 'Tačke'),
-  Word(id: 235, name: 'Crulla Devil', categoryId: 3, hint: 'Bunda'),
+  Word(id: 235, name: 'Cruella De Vil', categoryId: 3, hint: 'Bunda'),
   Word(id: 236, name: 'Šlep', categoryId: 3, hint: 'Hrđa'),
   Word(id: 237, name: 'Shimmer i Shine', categoryId: 3, hint: 'Sjaj'),
   Word(id: 238, name: 'Bob Graditelj', categoryId: 3, hint: 'Kaciga'),
@@ -153,7 +153,7 @@ final List<Word> crtaniWords = [
   Word(id: 245, name: 'Oblačno s ćuftama', categoryId: 3, hint: 'Oblak'),
   Word(id: 246, name: 'Buck', categoryId: 3, hint: 'Zub'),
   Word(id: 247, name: 'Courage', categoryId: 3, hint: 'Strah'),
-  Word(id: 248, name: 'Frizer', categoryId: 3, hint: 'Led'),
+  Word(id: 248, name: 'Freezer', categoryId: 3, hint: 'Led'),
   Word(id: 249, name: 'Encanto', categoryId: 3, hint: 'Kuća'),
   Word(id: 250, name: 'Nebesa', categoryId: 3, hint: 'Baloni'),
 ];
